@@ -1,10 +1,37 @@
 ---
-import '../styles/global.css';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { site } from '../config/site';
+
+const services = (await getCollection('services'))
+  .filter((s) => s.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+const testimonials = await getCollection('testimonials');
 ---
-<html lang="en">
-  <head><meta charset="utf-8" /><title>Smoke</title></head>
-  <body class="bg-surface text-text">
-    <h1 class="text-brand font-display">Summit Heating &amp; Air</h1>
-    <p class="text-text-muted">tokens resolve</p>
-  </body>
-</html>
+<Base title={site.name} description={site.description}>
+  <Hero headline={site.tagline} subhead={site.description} ctaLabel="Get a quote" ctaHref="/contact" />
+  <section class="bg-surface-alt py-[--spacing-section]">
+    <div class="mx-auto max-w-6xl px-4">
+      <SectionHeading eyebrow="What we do" heading="Services" />
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        {services.map((s) => (
+          <ServiceCard title={s.data.title} summary={s.data.summary} icon={s.data.icon} href={`/services/${s.id}`} />
+        ))}
+      </div>
+    </div>
+  </section>
+  <section class="py-[--spacing-section]">
+    <div class="mx-auto max-w-6xl px-4">
+      <SectionHeading eyebrow="Reviews" heading="What our customers say" />
+      <div class="mt-10 grid gap-6 md:grid-cols-3">
+        {testimonials.map((t) => <TestimonialCard {...t.data} />)}
+      </div>
+    </div>
+  </section>
+  <CtaBand heading="Ready for reliable comfort?" ctaLabel="Contact us" ctaHref="/contact" />
+</Base>

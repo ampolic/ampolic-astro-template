@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Prose from '../components/Prose.astro';
+import CtaBand from '../components/CtaBand.astro';
+---
+<Base
+  title="About us"
+  description="Summit Heating & Air has kept Boulder-area homes comfortable since 2009 — licensed, local, and honest."
+>
+  <section class="py-[--spacing-section]">
+    <div class="mx-auto max-w-6xl px-4">
+      <h1 class="font-display text-4xl font-semibold text-balance sm:text-5xl">About Summit Heating & Air</h1>
+      <p class="mt-5 max-w-[52ch] text-lg text-text-muted">
+        A family-owned HVAC company built on straight answers and work we're proud to sign our name to.
+      </p>
+    </div>
+  </section>
+  <section class="bg-surface-alt py-[--spacing-section]">
+    <div class="mx-auto max-w-6xl px-4">
+      <SectionHeading eyebrow="Our story" heading="Sixteen years of Boulder winters and summers" />
+      <Prose>
+        <p>
+          Summit Heating & Air started in 2009 with one truck, one technician, and a simple idea: tell
+          people the truth about what their system needs, then do the work right the first time. Our
+          founder spent a decade installing furnaces for a national chain before getting tired of
+          quota-driven upsells and started Summit to do it differently.
+        </p>
+        <p>
+          Boulder's climate doesn't make it easy — dry, triple-digit summer afternoons followed by
+          winter nights well below freezing, all within a few months of each other. That range has
+          shaped how we work. We size every system for the elevation and swings of the Front Range,
+          not a generic spec sheet, and we stand behind every repair and install with a written
+          workmanship warranty.
+        </p>
+        <h2>What hasn't changed</h2>
+        <p>
+          We're still locally owned, still licensed and insured in Boulder County, and still small
+          enough that the person who answers your call knows the technician showing up at your door.
+          Every estimate is free, every price is explained before we start, and we never charge for a
+          diagnosis we can't fix on the same visit.
+        </p>
+        <h2>Where we're headed</h2>
+        <p>
+          Today our crew of certified technicians handles AC repair and installation, furnace and
+          heat pump service, and indoor air quality systems for homes across the greater Boulder area.
+          The truck count has grown, but the promise hasn't: honest quotes, no surprises, and comfort
+          you can count on all year round.
+        </p>
+      </Prose>
+    </div>
+  </section>
+  <CtaBand heading="Ready to work with a crew you can trust?" ctaLabel="Get a quote" ctaHref="/contact" />
+</Base>
