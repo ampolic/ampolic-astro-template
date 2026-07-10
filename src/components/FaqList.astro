@@ -1,12 +1,14 @@
 ---
-interface Props { items: Array<{ question: string; body: string }> }
+interface Props { items: Array<{ question: string; Content: any }> }
 const { items } = Astro.props;
 ---
 <div class="mx-auto max-w-2xl divide-y divide-line">
   {items.map((f) => (
     <details class="group py-4">
       <summary class="flex cursor-pointer items-center justify-between font-medium">{f.question}<span class="text-brand transition group-open:rotate-45">+</span></summary>
-      <div class="mt-3 text-text-muted" set:html={f.body} />
+      <div class="mt-3 text-text-muted">
+        <f.Content />
+      </div>
     </details>
   ))}
 </div>

@@ -1,8 +1,15 @@
 ---
+import { getCollection, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Prose from '../components/Prose.astro';
 import CtaBand from '../components/CtaBand.astro';
+import FaqList from '../components/FaqList.astro';
+
+const faqEntries = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
+const faqItems = await Promise.all(
+  faqEntries.map(async (f) => ({ question: f.data.question, Content: (await render(f)).Content }))
+);
 ---
 <Base
   title="About us"
@@ -48,6 +55,12 @@ import CtaBand from '../components/CtaBand.astro';
           you can count on all year round.
         </p>
       </Prose>
+    </div>
+  </section>
+  <section class="py-[--spacing-section]">
+    <div class="mx-auto max-w-6xl px-4">
+      <SectionHeading eyebrow="FAQ" heading="Common questions" />
+      <FaqList items={faqItems} />
     </div>
   </section>
   <CtaBand heading="Ready to work with a crew you can trust?" ctaLabel="Get a quote" ctaHref="/contact" />
