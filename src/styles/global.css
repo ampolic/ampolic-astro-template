@@ -1,4 +1,64 @@
 @import 'tailwindcss';
+
 @theme {
+  /* Fonts — swap the import in Base.astro + these tokens per client */
+  --font-display: 'Manrope Variable', sans-serif;
+  --font-sans: 'Inter Variable', sans-serif;
+
+  /* Brand — the only brand color components may reference */
   --color-brand: #1d4ed8;
+  --color-brand-dark: #60a5fa; /* dark-tuned brand, AA on dark surfaces */
+  --color-brand-contrast: #ffffff;
+
+  /* Semantic neutrals (light defaults) */
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7f7f5;
+  --color-text: #171717;
+  --color-text-muted: #525252;
+  --color-line: #e5e5e5;
+
+  /* Shape & depth */
+  --radius-base: 0.5rem;
+  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.08);
+
+  /* Rhythm */
+  --spacing-section: clamp(4rem, 10vw, 8rem);
+}
+
+/* Dark overrides — remap the SAME token names so components never branch.
+   Applied both by system preference and by an explicit [data-theme] choice.
+   Implemented as two explicit rules because CSS can't nest an at-rule
+   inside a selector list. */
+
+/* Explicit choice wins */
+:root[data-theme='dark'] {
+  --color-brand: #60a5fa;
+  --color-brand-contrast: #0a0a0a;
+  --color-surface: #0a0a0a;
+  --color-surface-alt: #171717;
+  --color-text: #f5f5f5;
+  --color-text-muted: #a3a3a3;
+  --color-line: #262626;
+  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.5);
+}
+
+/* System preference, only when the user hasn't explicitly chosen light */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']):not([data-theme='dark']) {
+    --color-brand: #60a5fa;
+    --color-brand-contrast: #0a0a0a;
+    --color-surface: #0a0a0a;
+    --color-surface-alt: #171717;
+    --color-text: #f5f5f5;
+    --color-text-muted: #a3a3a3;
+    --color-line: #262626;
+    --shadow-card: 0 1px 3px rgb(0 0 0 / 0.5);
+  }
+}
+
+/* Base page defaults */
+html {
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-sans);
 }
