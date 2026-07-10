@@ -1,0 +1,6 @@
+name = "astro-business-starter"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "dist"
+
+# Secrets are set in the Cloudflare dashboard, NOT committed:
+#   TURNSTILE_SECRET_KEY, RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL
