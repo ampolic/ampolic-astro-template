@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+
+const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+---
+<Base
+  title="Services"
+  description="AC repair and installation, heating systems, and indoor air quality solutions for Boulder-area homes."
+>
+  <section class="py-[--spacing-section]">
+    <div class="mx-auto max-w-6xl px-4">
+      <h1 class="font-display text-4xl font-semibold text-balance sm:text-5xl">Services</h1>
+    </div>
+  </section>
+  <section class="bg-surface-alt py-[--spacing-section]">
+    <div class="mx-auto max-w-6xl px-4">
+      <div class="grid gap-6 md:grid-cols-3">
+        {services.map((s) => (
+          <ServiceCard title={s.data.title} summary={s.data.summary} icon={s.data.icon} href={`/services/${s.id}`} />
+        ))}
+      </div>
+    </div>
+  </section>
+  <CtaBand heading="Ready for reliable comfort?" ctaLabel="Contact us" ctaHref="/contact" />
+</Base>
