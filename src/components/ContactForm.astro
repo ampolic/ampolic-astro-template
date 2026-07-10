@@ -1,0 +1,68 @@
+---
+import { site } from '../config/site';
+import Button from './Button.astro';
+---
+
+<form id="contact" method="POST" action={site.form.endpoint} class="mx-auto grid max-w-xl gap-4">
+  <input type="hidden" name="startedAt" value="" />
+  {/* Honeypot — visually hidden (not display:none) so bots fill it; hidden from assistive tech. */}
+  <div class="absolute -left-[9999px]" aria-hidden="true">
+    <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+  </div>
+  <label class="grid gap-1">
+    Name
+    <input
+      required
+      name="name"
+      autocomplete="name"
+      class="min-h-11 rounded-[--radius-base] border border-line bg-surface px-3"
+    />
+  </label>
+  <label class="grid gap-1">
+    Email
+    <input
+      required
+      type="email"
+      name="email"
+      autocomplete="email"
+      class="min-h-11 rounded-[--radius-base] border border-line bg-surface px-3"
+    />
+  </label>
+  <label class="grid gap-1">
+    Message
+    <textarea
+      required
+      name="message"
+      rows="5"
+      class="rounded-[--radius-base] border border-line bg-surface p-3"
+    ></textarea>
+  </label>
+  <div class="cf-turnstile" data-sitekey={site.form.turnstileSiteKey}></div>
+  <Button type="submit">Send message</Button>
+  <p id="contact-status" role="status" aria-live="polite" class="text-text-muted"></p>
+</form>
+
+<script>
+  const form = document.getElementById('contact') as HTMLFormElement;
+  (form.elements.namedItem('startedAt') as HTMLInputElement).value = String(Date.now());
+
+  // Load Turnstile only when JS is present (progressive enhancement).
+  const s = document.createElement('script');
+  s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+  s.async = true;
+  document.head.appendChild(s);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.getElementById('contact-status')!;
+    status.textContent = 'Sending…';
+    const res = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { accept: 'application/json' },
+    });
+    const data = await res.json().catch(() => ({ ok: false }));
+    status.textContent = data.ok ? 'Thanks — we’ll be in touch shortly.' : 'Something went wrong. Please call us.';
+    if (data.ok) form.reset();
+  });
+</script>
