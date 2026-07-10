@@ -7,7 +7,7 @@ const posts = (await getCollection('posts', (p) => !p.data.draft)).sort(
 );
 ---
 <Base title="Blog" description="Tips and guides from our team.">
-  <section class="py-[--spacing-section]">
+  <section class="py-(--spacing-section)">
     <div class="mx-auto max-w-3xl px-4">
       <h1 class="font-display text-4xl font-semibold">Blog</h1>
       <ul class="mt-10 divide-y divide-line">

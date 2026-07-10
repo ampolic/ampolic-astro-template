@@ -11,7 +11,7 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 <Base title={post.data.title} description={post.data.description}>
-  <article class="py-[--spacing-section]">
+  <article class="py-(--spacing-section)">
     <div class="mx-auto max-w-3xl px-4">
       <h1 class="font-display text-4xl font-semibold">{post.data.title}</h1>
       <Prose><Content /></Prose>

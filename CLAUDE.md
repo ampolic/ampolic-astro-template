@@ -18,6 +18,7 @@ The build plan is at docs/PLAN.md — follow it; do not substitute stack choices
 - Components reference design tokens only. NEVER hardcode hex colors,
   border-radius values, or shadows in components or pages.
 - One brand color (--color-brand). Neutrals carry the rest.
+- Reference tokens with the paren shorthand: `py-(--spacing-section)`, `rounded-(--radius-base)` — the `[--token]` bracket form is invalid in Tailwind v4 (compiles without `var()`, silently no-ops).
 - All business facts (name, contact, hours, nav, socials, form endpoint,
   analytics) live in src/config/site.ts. Never inline them in components.
 

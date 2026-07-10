@@ -19,7 +19,7 @@ import { Icon } from 'astro-icon/components';
       <div class="mt-2 flex gap-3">
         {site.socials.map((s) => (
           <a href={s.href} aria-label={s.label}
-             class="inline-grid size-11 place-items-center rounded-[--radius-base] text-text-muted hover:text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
+             class="inline-grid size-11 place-items-center rounded-(--radius-base) text-text-muted hover:text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
             <Icon name={s.icon} class="size-5" />
           </a>
         ))}

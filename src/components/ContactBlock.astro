@@ -9,5 +9,5 @@ import { site } from '../config/site';
     <p><a href={`mailto:${site.email}`} class="text-brand hover:underline">{site.email}</a></p>
     {site.hours.map((h) => <p class="text-text-muted">{h.days}: {h.opens}–{h.closes}</p>)}
   </div>
-  <div class="min-h-48 rounded-[--radius-base] border border-line bg-surface-alt"><slot name="map" /></div>
+  <div class="min-h-48 rounded-(--radius-base) border border-line bg-surface-alt"><slot name="map" /></div>
 </div>

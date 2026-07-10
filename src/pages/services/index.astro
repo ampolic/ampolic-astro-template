@@ -10,12 +10,12 @@ const services = (await getCollection('services')).sort((a, b) => a.data.order -
   title="Services"
   description="AC repair and installation, heating systems, and indoor air quality solutions for Boulder-area homes."
 >
-  <section class="py-[--spacing-section]">
+  <section class="py-(--spacing-section)">
     <div class="mx-auto max-w-6xl px-4">
       <h1 class="font-display text-4xl font-semibold text-balance sm:text-5xl">Services</h1>
     </div>
   </section>
-  <section class="bg-surface-alt py-[--spacing-section]">
+  <section class="bg-surface-alt py-(--spacing-section)">
     <div class="mx-auto max-w-6xl px-4">
       <div class="grid gap-6 md:grid-cols-3">
         {services.map((s) => (

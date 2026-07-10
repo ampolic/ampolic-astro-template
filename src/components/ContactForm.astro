@@ -15,7 +15,7 @@ import Button from './Button.astro';
       required
       name="name"
       autocomplete="name"
-      class="min-h-11 rounded-[--radius-base] border border-line bg-surface px-3"
+      class="min-h-11 rounded-(--radius-base) border border-line bg-surface px-3"
     />
   </label>
   <label class="grid gap-1">
@@ -25,7 +25,7 @@ import Button from './Button.astro';
       type="email"
       name="email"
       autocomplete="email"
-      class="min-h-11 rounded-[--radius-base] border border-line bg-surface px-3"
+      class="min-h-11 rounded-(--radius-base) border border-line bg-surface px-3"
     />
   </label>
   <label class="grid gap-1">
@@ -34,7 +34,7 @@ import Button from './Button.astro';
       required
       name="message"
       rows="5"
-      class="rounded-[--radius-base] border border-line bg-surface p-3"
+      class="rounded-(--radius-base) border border-line bg-surface p-3"
     ></textarea>
   </label>
   <div class="cf-turnstile" data-sitekey={site.form.turnstileSiteKey}></div>
