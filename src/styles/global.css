@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
 @theme {
   /* Fonts — swap the import in Base.astro + these tokens per client */
   --font-display: 'Manrope Variable', sans-serif;
