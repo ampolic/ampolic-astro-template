@@ -1,12 +1,12 @@
 ---
 interface Props { href?: string; variant?: 'solid' | 'outline' | 'ghost' | 'inverse'; type?: 'button' | 'submit' }
 const { href, variant = 'solid', type = 'button' } = Astro.props;
-const base = 'inline-flex min-h-11 items-center justify-center rounded-[--radius-base] px-5 font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand';
+const base = 'inline-flex min-h-11 items-center justify-center rounded-[--radius-base] px-5 font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2';
 const styles = {
-  solid: 'bg-brand text-brand-contrast hover:opacity-90',
-  outline: 'border border-brand text-brand hover:bg-brand hover:text-brand-contrast',
-  ghost: 'text-brand hover:bg-surface-alt',
-  inverse: 'border border-brand-contrast text-brand-contrast hover:bg-brand-contrast hover:text-brand',
+  solid: 'bg-brand text-brand-contrast hover:opacity-90 focus-visible:outline-brand',
+  outline: 'border border-brand text-brand hover:bg-brand hover:text-brand-contrast focus-visible:outline-brand',
+  ghost: 'text-brand hover:bg-surface-alt focus-visible:outline-brand',
+  inverse: 'border border-brand-contrast text-brand-contrast hover:bg-brand-contrast hover:text-brand focus-visible:outline-brand-contrast',
 }[variant];
 const cls = `${base} ${styles}`;
 ---

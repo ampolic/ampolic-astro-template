@@ -42,24 +42,28 @@ export const onRequestPost: (ctx: { request: Request; env: Env }) => Promise<Res
   if (!basic.ok) return fail('Your message could not be validated.');
 
   const token = String(form.get('cf-turnstile-response') ?? '');
-  if (token) {
-    const ip = request.headers.get('cf-connecting-ip') ?? '';
-    if (!(await verifyTurnstile(token, env.TURNSTILE_SECRET_KEY, ip))) return fail('Verification failed.');
-  }
-  // No token → no-JS path: honeypot + timing already passed above.
+  try {
+    if (token) {
+      const ip = request.headers.get('cf-connecting-ip') ?? '';
+      if (!(await verifyTurnstile(token, env.TURNSTILE_SECRET_KEY, ip))) return fail('Verification failed.');
+    }
+    // No token → no-JS path: honeypot + timing already passed above.
 
-  const sent = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, 'content-type': 'application/json' },
-    body: JSON.stringify({
-      from: env.CONTACT_FROM_EMAIL,
-      to: env.CONTACT_TO_EMAIL,
-      reply_to: submission.email,
-      subject: `Website enquiry from ${submission.name}`,
-      text: `${submission.name} <${submission.email}>\n\n${submission.message}`,
-    }),
-  });
-  if (!sent.ok) return fail('We could not send your message. Please call us.', 502);
+    const sent = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        from: env.CONTACT_FROM_EMAIL,
+        to: env.CONTACT_TO_EMAIL,
+        reply_to: submission.email,
+        subject: `Website enquiry from ${submission.name}`,
+        text: `${submission.name} <${submission.email}>\n\n${submission.message}`,
+      }),
+    });
+    if (!sent.ok) return fail('We could not send your message. Please call us.', 502);
+  } catch {
+    return fail('We could not send your message. Please try again or call us.', 502);
+  }
 
   return wantsJson
     ? new Response(JSON.stringify({ ok: true }), { headers: { 'content-type': 'application/json' } })

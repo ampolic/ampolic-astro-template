@@ -39,6 +39,13 @@ describe('contact function', () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
+  it('returns 502 without throwing when fetch rejects with a network error', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('network'));
+    const res = await onRequestPost({ request: req({ name: 'A', email: 'a@b.com', message: 'hi there', website: '', startedAt: '0' }), env });
+    expect(res.status).toBe(502);
+    expect(await res.json()).toEqual({ ok: false, error: 'We could not send your message. Please try again or call us.' });
+  });
+
   it('sends via Resend after a successful Turnstile verification', async () => {
     const fetchSpy = vi
       .spyOn(globalThis, 'fetch')

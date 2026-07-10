@@ -4,7 +4,7 @@ interface Props { author: string; role: string; quote: string; rating?: number }
 const { author, role, quote, rating } = Astro.props;
 ---
 <Card>
-  {rating && <p class="text-brand" aria-label={`${rating} out of 5`}>{'★'.repeat(rating)}</p>}
+  {rating && <p class="text-brand" role="img" aria-label={`${rating} out of 5`}>{'★'.repeat(rating)}</p>}
   <blockquote class="mt-2 text-lg">“{quote}”</blockquote>
   <footer class="mt-4 text-text-muted"><span class="font-medium text-text">{author}</span> · {role}</footer>
 </Card>
