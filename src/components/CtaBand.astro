@@ -1,0 +1,11 @@
+---
+import Button from './Button.astro';
+interface Props { heading: string; ctaLabel: string; ctaHref: string }
+const { heading, ctaLabel, ctaHref } = Astro.props;
+---
+<section class="bg-brand text-brand-contrast">
+  <div class="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-[--spacing-section] text-center">
+    <h2 class="font-display text-3xl font-semibold text-balance sm:text-4xl">{heading}</h2>
+    <Button href={ctaHref} variant="inverse">{ctaLabel}</Button>
+  </div>
+</section>

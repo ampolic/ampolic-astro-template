@@ -1,0 +1,13 @@
+---
+import { site } from '../config/site';
+---
+<div class="grid gap-8 sm:grid-cols-2">
+  <div class="space-y-2">
+    <p>{site.address.street}</p>
+    <p>{site.address.locality}, {site.address.region} {site.address.postalCode}</p>
+    <p><a href={`tel:${site.phone}`} class="text-brand hover:underline">{site.phone}</a></p>
+    <p><a href={`mailto:${site.email}`} class="text-brand hover:underline">{site.email}</a></p>
+    {site.hours.map((h) => <p class="text-text-muted">{h.days}: {h.opens}–{h.closes}</p>)}
+  </div>
+  <div class="min-h-48 rounded-[--radius-base] border border-line bg-surface-alt"><slot name="map" /></div>
+</div>

@@ -1,0 +1,13 @@
+---
+import Card from './Card.astro';
+import { Icon } from 'astro-icon/components';
+interface Props { title: string; summary: string; icon: string; href: string }
+const { title, summary, icon, href } = Astro.props;
+---
+<a href={href} class="block focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
+  <Card>
+    <Icon name={icon} class="size-8 text-brand" />
+    <h3 class="mt-4 font-display text-xl font-semibold">{title}</h3>
+    <p class="mt-2 text-text-muted">{summary}</p>
+  </Card>
+</a>

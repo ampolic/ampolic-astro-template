@@ -1,0 +1,15 @@
+---
+import Button from './Button.astro';
+interface Props { headline: string; subhead?: string; ctaLabel?: string; ctaHref?: string }
+const { headline, subhead, ctaLabel, ctaHref } = Astro.props;
+---
+<section class="py-[--spacing-section]">
+  <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 md:grid-cols-2">
+    <div data-reveal>
+      <h1 class="font-display text-4xl font-semibold text-balance sm:text-5xl">{headline}</h1>
+      {subhead && <p class="mt-5 max-w-[52ch] text-lg text-text-muted">{subhead}</p>}
+      {ctaLabel && ctaHref && <div class="mt-8"><Button href={ctaHref}>{ctaLabel}</Button></div>}
+    </div>
+    <div><slot name="image" /></div>
+  </div>
+</section>
