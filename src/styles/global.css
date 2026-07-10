@@ -34,7 +34,7 @@
 
 /* Explicit choice wins */
 :root[data-theme='dark'] {
-  --color-brand: #60a5fa;
+  --color-brand: var(--color-brand-dark);
   --color-brand-contrast: #0a0a0a;
   --color-surface: #0a0a0a;
   --color-surface-alt: #171717;
@@ -47,7 +47,7 @@
 /* System preference, only when the user hasn't explicitly chosen light */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']):not([data-theme='dark']) {
-    --color-brand: #60a5fa;
+    --color-brand: var(--color-brand-dark);
     --color-brand-contrast: #0a0a0a;
     --color-surface: #0a0a0a;
     --color-surface-alt: #171717;
