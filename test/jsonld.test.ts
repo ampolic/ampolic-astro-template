@@ -15,6 +15,25 @@ describe('LocalBusiness JSON-LD', () => {
   it('emits one openingHoursSpecification per hours row', () => {
     expect(ld.openingHoursSpecification).toHaveLength(site.hours.length);
   });
+  it('emits dayOfWeek as an array of valid schema.org day names', () => {
+    const validDayNames = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    ld.openingHoursSpecification.forEach((spec, i) => {
+      expect(Array.isArray(spec.dayOfWeek)).toBe(true);
+      expect(spec.dayOfWeek).toEqual(site.hours[i].dayOfWeek);
+      spec.dayOfWeek.forEach((day) => {
+        expect(validDayNames).toContain(day);
+      });
+    });
+    expect(ld.openingHoursSpecification[0].dayOfWeek[0]).toBe('Monday');
+  });
   it('lists socials under sameAs', () => {
     expect(ld.sameAs).toEqual(site.socials.map((s) => s.href));
   });

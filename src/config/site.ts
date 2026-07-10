@@ -9,7 +9,7 @@ export interface Site {
   phone: string;
   address: { street: string; locality: string; region: string; postalCode: string; country: string };
   geo: { lat: number; lng: number };
-  hours: Array<{ days: string; opens: string; closes: string }>;
+  hours: Array<{ days: string; dayOfWeek: string[]; opens: string; closes: string }>;
   nav: Array<{ label: string; href: string }>;
   socials: Array<{ label: string; href: string; icon: string }>;
   analytics: { provider: 'none' | 'plausible' | 'ga'; id?: string };
@@ -29,8 +29,13 @@ export const site: Site = {
   address: { street: '1420 Pearl St', locality: 'Boulder', region: 'CO', postalCode: '80302', country: 'US' },
   geo: { lat: 40.019, lng: -105.278 },
   hours: [
-    { days: 'Mon–Fri', opens: '07:30', closes: '18:00' },
-    { days: 'Sat', opens: '08:00', closes: '14:00' },
+    {
+      days: 'Mon–Fri',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '07:30',
+      closes: '18:00',
+    },
+    { days: 'Sat', dayOfWeek: ['Saturday'], opens: '08:00', closes: '14:00' },
   ],
   nav: [
     { label: 'Services', href: '/services' },

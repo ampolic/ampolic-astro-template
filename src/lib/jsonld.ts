@@ -22,7 +22,7 @@ export function buildLocalBusinessJsonLd(site: Site) {
     geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng },
     openingHoursSpecification: site.hours.map((h) => ({
       '@type': 'OpeningHoursSpecification',
-      dayOfWeek: h.days,
+      dayOfWeek: h.dayOfWeek,
       opens: h.opens,
       closes: h.closes,
     })),
