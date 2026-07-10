@@ -37,5 +37,8 @@ const jsonld = buildLocalBusinessJsonLd(site);
       import { initMotion } from '../scripts/motion';
       initMotion();
     </script>
+    {site.analytics.provider === 'plausible' && site.analytics.id && (
+      <script is:inline defer data-domain={site.analytics.id} src="https://plausible.io/js/script.js"></script>
+    )}
   </body>
 </html>

@@ -1,0 +1,98 @@
+# Client Setup — Astro Business Starter Rebrand Checklist
+
+Follow this checklist to rebrand the template for a new client. Each step is required only once per deployment.
+
+## 1. Site Configuration
+
+- [ ] Edit `src/config/site.ts`:
+  - Fill `name`, `legalName`, `tagline`, `description`, `url`
+  - Update `logo`, `email`, `phone`, `address`, `geo`
+  - Set business hours in `hours`
+  - Update `nav` links and `socials` (label, href, icon)
+  - Set `form.recipientLabel` (e.g., "the Acme team")
+  - Set `analytics.provider` (default `'none'` emits zero third-party JS; choose `'plausible'` or `'ga'` and provide `id`)
+  - Set `form.turnstileSiteKey` (Cloudflare Turnstile site key for the contact form)
+
+## 2. Visual Identity (@theme tokens)
+
+- [ ] Edit `src/styles/global.css` (the `@theme` block):
+  - Set `--color-brand` to the client's primary brand color (hex)
+  - Set `--color-brand-dark` for dark mode (ensure ≥ WCAG AA contrast on light text)
+  - Verify all neutrals (--color-surface, --color-surface-alt, --color-text, --color-text-muted, --color-border) match the brand's aesthetic
+  - All radii and shadows should remain consistent across light/dark
+- [ ] Edit `src/layouts/Base.astro`:
+  - Swap display font: replace `@fontsource-variable/manrope` with the client's chosen variable font (from Fontsource only)
+  - Update the CSS font-family in the `@theme` block if needed (currently `'Manrope'`)
+
+## 3. Design Validation
+
+- [ ] Run `/frontend-design` skill:
+  - Review the Hero section with the new brand tokens
+  - Validate light and dark mode contrast and visual hierarchy
+  - Confirm the primary CTA style matches brand guidelines
+- [ ] Verify mobile Lighthouse scores (after content):
+  - Performance ≥ 95, Accessibility ≥ 95, SEO 100
+  - Check no third-party JS loads (unless analytics.provider is set)
+
+## 4. Content & Media
+
+- [ ] Replace `public/og-default.png` with the client's OG image (1200×630px, includes logo/brand)
+- [ ] Replace `public/favicon.svg` with the client's favicon
+- [ ] Update content collections (via markdown):
+  - `src/content/services/` — add/edit the client's service offerings
+  - `src/content/testimonials/` — add client testimonials
+  - `src/content/team/` — add team member profiles (optional)
+  - `src/content/blog/` — add blog posts (optional)
+- [ ] Verify all collection frontmatter (title, description, published date, etc.) matches content structure
+
+## 5. Environment Variables (Cloudflare Pages)
+
+Set these in the Cloudflare Pages project settings (do NOT commit to `.env` or `env.example`):
+
+- [ ] `TURNSTILE_SECRET_KEY` — the Cloudflare Turnstile secret key (used to verify form submissions)
+- [ ] `RESEND_API_KEY` — the Resend API key (used to send contact form emails)
+- [ ] `CONTACT_TO_EMAIL` — the email address that receives form submissions (e.g., "hello@client.com")
+- [ ] `CONTACT_FROM_EMAIL` — the sender email (must be verified in Resend; e.g., "noreply@client.com")
+
+The contact form endpoint (`/api/contact`) is a Cloudflare Pages Function at `functions/api/contact.ts`. It:
+  - Verifies the Turnstile token (if provided) against TURNSTILE_SECRET_KEY
+  - Validates field presence and honeypot on no-JS fallback
+  - Sends via Resend using RESEND_API_KEY and CONTACT_TO_EMAIL
+  - Applies timing-based anti-spam to JS-stamped submits
+
+## 6. Cloudflare Pages Deployment
+
+- [ ] Connect the GitHub repository to Cloudflare Pages:
+  - Framework preset: `Astro`
+  - Build command: `pnpm build`
+  - Build output directory: `dist`
+- [ ] Ensure the Turnstile site key (in `site.ts`) matches the Turnstile project in Cloudflare
+- [ ] Test the contact form end-to-end:
+  - JS path: verify Turnstile challenge and email delivery
+  - No-JS path: verify form gracefully submits (POST to /api/contact) and emails arrive
+  - Honeypot field should remain hidden and empty on valid submissions
+
+## 7. Dark Mode (System-Aware)
+
+- [ ] Verify the theme toggle works in the header (toggles between light/dark)
+- [ ] Check that the system theme is detected on first visit (via `prefers-color-scheme`)
+- [ ] Confirm no flash of unstyled content (FOUC) on page load (the anti-FOUC script in Base.astro runs before paint)
+- [ ] Test with `prefers-reduced-motion: reduce` enabled — all motion must be disabled
+
+## 8. Pre-Launch Verification
+
+- [ ] Run `pnpm check` — all type checks pass
+- [ ] Run `pnpm build` — zero warnings, output in `dist/`
+- [ ] Run `pnpm test` — all tests pass (if any exist)
+- [ ] Grep `src/components src/pages` — no hardcoded hex colors, radii, or shadows (all must reference design tokens from @theme)
+- [ ] Verify analytics slot:
+  - If `provider: 'none'`, no third-party JS loads
+  - If `provider: 'plausible'`, the Plausible script loads only when `id` is set
+- [ ] Test form and navigation without JavaScript enabled (must remain fully functional)
+
+## 9. Go Live
+
+- [ ] Final Lighthouse audit on production
+- [ ] Set canonical URLs to the client's live domain (not `example.com`)
+- [ ] Update any remaining placeholder text or links
+- [ ] Brief the client on theme toggle, contact form, and analytics dashboard access
