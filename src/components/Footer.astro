@@ -17,7 +17,12 @@ import { Icon } from 'astro-icon/components';
     <nav class="flex flex-col gap-2" aria-label="Footer">
       {site.nav.map((i) => <a href={i.href} class="text-text-muted hover:text-text">{i.label}</a>)}
       <div class="mt-2 flex gap-3">
-        {site.socials.map((s) => <a href={s.href} aria-label={s.label}><Icon name={s.icon} class="size-5" /></a>)}
+        {site.socials.map((s) => (
+          <a href={s.href} aria-label={s.label}
+             class="inline-grid size-11 place-items-center rounded-[--radius-base] text-text-muted hover:text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
+            <Icon name={s.icon} class="size-5" />
+          </a>
+        ))}
       </div>
     </nav>
   </div>

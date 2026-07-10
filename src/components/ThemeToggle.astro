@@ -1,13 +1,15 @@
 ---
 import { Icon } from 'astro-icon/components';
 ---
-<button type="button" id="theme-toggle" class="grid size-11 place-items-center rounded-[--radius-base] text-text-muted hover:text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand" aria-label="Toggle color theme">
+<button type="button" data-theme-toggle class="grid size-11 place-items-center rounded-[--radius-base] text-text-muted hover:text-text focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand" aria-label="Toggle color theme">
   <Icon name="lucide:sun" class="size-5 dark:hidden" />
   <Icon name="lucide:moon" class="hidden size-5 dark:block" />
 </button>
 <script>
   import { toggleTheme } from '../scripts/theme';
-  document.getElementById('theme-toggle')?.addEventListener('click', () => {
-    toggleTheme(document.documentElement, localStorage);
+  document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      toggleTheme(document.documentElement, localStorage);
+    });
   });
 </script>
