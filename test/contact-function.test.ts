@@ -31,4 +31,25 @@ describe('contact function', () => {
     const res = await onRequestPost({ request: req({ name: 'A', email: 'a@b.com', message: 'hi there', website: '', startedAt: '0', 'cf-turnstile-response': 'tok' }), env });
     expect(res.status).toBe(400);
   });
+
+  it('rejects a blind bot that omits the hidden fields entirely, without emailing', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
+    const res = await onRequestPost({ request: req({ name: 'A', email: 'a@b.com', message: 'hi there' }), env });
+    expect(res.status).toBe(400);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it('sends via Resend after a successful Turnstile verification', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify({ success: true }), { status: 200 }))
+      .mockResolvedValueOnce(new Response('{}', { status: 200 }));
+    const res = await onRequestPost({
+      request: req({ name: 'A', email: 'a@b.com', message: 'hi there', website: '', startedAt: '0', 'cf-turnstile-response': 'tok' }),
+      env,
+    });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ ok: true });
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+  });
 });

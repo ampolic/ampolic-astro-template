@@ -10,10 +10,16 @@ describe('validateSubmission', () => {
   it('rejects a filled honeypot', () => {
     expect(validateSubmission({ ...base, website: 'spam' }, 5000).ok).toBe(false);
   });
-  it('rejects an implausibly fast submission', () => {
-    expect(validateSubmission(base, 1000).ok).toBe(false);
+  it('rejects an implausibly fast submission (JS-stamped startedAt)', () => {
+    expect(validateSubmission({ ...base, startedAt: 900 }, 1000).ok).toBe(false);
   });
   it('rejects a missing message', () => {
     expect(validateSubmission({ ...base, message: '' }, 5000).ok).toBe(false);
+  });
+  it('rejects a missing name', () => {
+    expect(validateSubmission({ ...base, name: '' }, 5000).ok).toBe(false);
+  });
+  it('rejects an email without an @', () => {
+    expect(validateSubmission({ ...base, email: 'not-an-email' }, 5000).ok).toBe(false);
   });
 });

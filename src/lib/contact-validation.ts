@@ -8,7 +8,7 @@ export interface Submission {
 
 export function validateSubmission(f: Submission, now: number): { ok: true } | { ok: false; reason: string } {
   if (f.website.trim() !== '') return { ok: false, reason: 'honeypot' };
-  if (now - f.startedAt < 3000) return { ok: false, reason: 'too-fast' };
+  if (f.startedAt > 0 && now - f.startedAt < 3000) return { ok: false, reason: 'too-fast' };
   if (!f.name.trim() || !f.email.includes('@') || !f.message.trim()) return { ok: false, reason: 'incomplete' };
   return { ok: true };
 }

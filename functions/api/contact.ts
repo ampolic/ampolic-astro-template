@@ -20,6 +20,16 @@ async function verifyTurnstile(token: string, secret: string, ip: string): Promi
 export const onRequestPost: (ctx: { request: Request; env: Env }) => Promise<Response> = async ({ request, env }) => {
   const form = await request.formData();
   const wantsJson = (request.headers.get('accept') ?? '').includes('application/json');
+
+  const fail = (msg: string, status = 400) =>
+    wantsJson
+      ? new Response(JSON.stringify({ ok: false, error: msg }), { status, headers: { 'content-type': 'application/json' } })
+      : new Response(`<h1>Could not send</h1><p>${msg}</p><a href="/contact">Back</a>`, { status, headers: { 'content-type': 'text/html' } });
+
+  // A real browser submit always includes these hidden fields (even empty).
+  // Blind bots that POST only name/email/message omit them entirely — reject closed.
+  if (!form.has('website') || !form.has('startedAt')) return fail('Invalid submission.');
+
   const submission: Submission = {
     name: String(form.get('name') ?? ''),
     email: String(form.get('email') ?? ''),
@@ -27,11 +37,6 @@ export const onRequestPost: (ctx: { request: Request; env: Env }) => Promise<Res
     website: String(form.get('website') ?? ''),
     startedAt: Number(form.get('startedAt') ?? 0),
   };
-
-  const fail = (msg: string, status = 400) =>
-    wantsJson
-      ? new Response(JSON.stringify({ ok: false, error: msg }), { status, headers: { 'content-type': 'application/json' } })
-      : new Response(`<h1>Could not send</h1><p>${msg}</p><a href="/contact">Back</a>`, { status, headers: { 'content-type': 'text/html' } });
 
   const basic = validateSubmission(submission, Date.now());
   if (!basic.ok) return fail('Your message could not be validated.');
