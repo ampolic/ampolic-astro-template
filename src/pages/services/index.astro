@@ -19,7 +19,7 @@ const services = (await getCollection('services')).sort((a, b) => a.data.order -
     <div class="mx-auto max-w-6xl px-4">
       <div class="grid gap-6 md:grid-cols-3">
         {services.map((s) => (
-          <ServiceCard title={s.data.title} summary={s.data.summary} icon={s.data.icon} href={`/services/${s.id}`} />
+          <ServiceCard title={s.data.title} summary={s.data.summary} icon={s.data.icon} href={`/services/${s.id}`} headingLevel={2} />
         ))}
       </div>
     </div>
