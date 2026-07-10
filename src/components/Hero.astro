@@ -1,15 +1,32 @@
 ---
 import Button from './Button.astro';
-interface Props { headline: string; subhead?: string; ctaLabel?: string; ctaHref?: string }
-const { headline, subhead, ctaLabel, ctaHref } = Astro.props;
+interface Props {
+  eyebrow?: string;
+  headline: string;
+  subhead?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  phone?: string;
+  phoneLabel?: string;
+}
+const { eyebrow, headline, subhead, ctaLabel, ctaHref, phone, phoneLabel } = Astro.props;
 ---
-<section class="py-[--spacing-section]">
-  <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 md:grid-cols-2">
-    <div>
-      <h1 class="font-display text-4xl font-semibold text-balance sm:text-5xl">{headline}</h1>
-      {subhead && <p class="mt-5 max-w-[52ch] text-lg text-text-muted">{subhead}</p>}
-      {ctaLabel && ctaHref && <div class="mt-8"><Button href={ctaHref}>{ctaLabel}</Button></div>}
+<section class="py-(--spacing-section)">
+  <div class="mx-auto max-w-6xl px-4">
+    <div class="max-w-3xl">
+      {eyebrow && (
+        <p class="font-mono text-sm uppercase tracking-[0.18em] text-brand" data-hero="1">{eyebrow}</p>
+      )}
+      <h1 class="mt-5 font-display text-5xl font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl" data-hero="2">{headline}</h1>
+      {subhead && <p class="mt-6 max-w-[48ch] text-lg text-text-muted sm:text-xl" data-hero="3">{subhead}</p>}
+      {(ctaLabel && ctaHref) || phone ? (
+        <div class="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4" data-hero="4">
+          {ctaLabel && ctaHref && <Button href={ctaHref}>{ctaLabel}</Button>}
+          {phone && (
+            <a href={`tel:${phone}`} class="font-mono text-base text-text underline-offset-4 hover:text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">{phoneLabel ?? phone}</a>
+          )}
+        </div>
+      ) : null}
     </div>
-    <div><slot name="image" /></div>
   </div>
 </section>

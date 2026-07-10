@@ -3,7 +3,7 @@ title: Indoor Air Quality Systems
 summary: Filters, purifiers, and humidity control to breathe easier at home.
 icon: lucide:air-vent
 order: 3
-featured: false
+featured: true
 ---
 
 Your heating and cooling system moves 8,000+ cubic feet of air through your home every hour. That's every breath you take. Why not make sure it's clean?

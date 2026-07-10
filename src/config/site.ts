@@ -14,12 +14,14 @@ export interface Site {
   socials: Array<{ label: string; href: string; icon: string }>;
   analytics: { provider: 'none' | 'plausible' | 'ga'; id?: string };
   form: { endpoint: string; turnstileSiteKey: string; recipientLabel: string };
+  /* Credibility facts rendered as the mono spec strip (est · rating · license · dispatch). */
+  trust: { established: number; ratingValue: number; reviewCount: number; license: string; dispatch: string };
 }
 
 export const site: Site = {
   name: 'Summit Heating & Air',
   legalName: 'Summit Heating & Air LLC',
-  tagline: 'Comfort you can count on, all year round.',
+  tagline: 'Comfort, engineered.',
   description:
     'Licensed HVAC service for the greater Boulder area — AC repair & install, furnace and heating, and indoor air quality.',
   url: 'https://example.com',
@@ -49,6 +51,7 @@ export const site: Site = {
   ],
   analytics: { provider: 'none' },
   form: { endpoint: '/api/contact', turnstileSiteKey: '1x00000000000000000000AA', recipientLabel: 'the Summit team' },
+  trust: { established: 2009, ratingValue: 4.9, reviewCount: 312, license: 'EA-4471', dispatch: '24/7 dispatch' },
 };
 
 export default site;

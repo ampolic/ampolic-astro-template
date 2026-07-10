@@ -76,7 +76,7 @@ AA-verified at implementation; values below are the design target.
 | `--color-line` | `#D6DCDB` | cool hairline — borders, not shadows, do the structural work. |
 | `--radius-base` | `0.25rem` | 4px — crisp and engineered, rejects the pillowy `rounded-2xl` default. |
 | `--shadow-card` | `0 1px 2px rgb(16 40 40 / 0.05)` | near-zero; hairline borders carry separation. |
-| `--spacing-section` | `clamp(4.5rem, 9vw, 7.5rem)` | generous vertical rhythm. |
+| `--spacing-section` | `clamp(2.25rem, 4.5vw, 3.75rem)` | compact vertical rhythm. |
 
 ### Color (dark override — same token names)
 
@@ -109,7 +109,7 @@ Licensed HVAC for the Front Range — AC,          ← Hanken subhead (site.desc
 heating, and indoor air quality.
 [ Get a quote ]   ( 303 ) 555-0142               ← teal-fill CTA + ghost; phone in mono
 ──────────────────────────────────────────────
-EST. 2009 · 4.9★ 312 rev · LIC #EA-4471 · 24/7 DISPATCH   ← spec strip (mono)
+EST. 2009 · RATED 4.9/5 312 rev · LIC #EA-4471 · 24/7 DISPATCH   ← spec strip (mono)
 ```
 
 - **Headline** pulls from `site.tagline`. **Recommendation:** tighten the tagline
@@ -131,7 +131,9 @@ Order follows `PLAN.md`: hero → services → social proof → CTA → contact.
 
 1. **Hero** — on `--color-surface`. As above.
 2. **Spec / trust strip** — thin full-width band, monospace metrics row
-   (`EST · rating · license · dispatch`). This *replaces* the badge-soup logo
+   (`EST · rating-as-fraction · license · dispatch`; the rating is set `4.9/5`,
+   never a `★` glyph — the mono face has no star and §7 rejects gold stars).
+   This *replaces* the badge-soup logo
    wall and the giant yellow "24/7 EMERGENCY" button entirely.
 3. **Services** — on `--color-surface-alt`. `SectionHeading` with mono eyebrow
    `WHAT WE DO` + Archivo heading "Services". Three `ServiceCard`s: hairline
