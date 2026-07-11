@@ -1,0 +1,25 @@
+---
+import { site } from '../config/site';
+/* Keyless OpenStreetMap embed centered on site.geo — no API key, no tracking
+   script, no client JS. Interactive (pan/zoom). spans = how tightly the map frames
+   the office by default (degrees lon/lat, symmetric so the marker is centered). */
+interface Props { lonSpan?: number; latSpan?: number }
+const { lonSpan = 0.09, latSpan = 0.06 } = Astro.props;
+const { lat, lng } = site.geo;
+const bbox = [lng - lonSpan, lat - latSpan, lng + lonSpan, lat + latSpan].map((n) => n.toFixed(4)).join('%2C');
+const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}`;
+---
+<figure class="overflow-hidden rounded-(--radius-base) border border-line">
+  <div class="relative aspect-[3/2] w-full overflow-hidden">
+    <iframe
+      src={src}
+      title={`Service area map centered on ${site.address.locality}, ${site.address.region}`}
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      class="absolute inset-x-0 top-0 block h-[calc(100%+34px)] w-full border-0"
+    ></iframe>
+  </div>
+  <figcaption class="border-t border-line bg-surface-alt px-4 py-3 font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
+    Serving {site.serviceArea} · Map © OpenStreetMap
+  </figcaption>
+</figure>

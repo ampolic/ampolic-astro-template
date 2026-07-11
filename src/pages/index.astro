@@ -7,6 +7,7 @@ import ServiceCard from '../components/ServiceCard.astro';
 import TestimonialCard from '../components/TestimonialCard.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { site } from '../config/site';
+import heroImage from '../assets/images/hero-technician-gauge.webp';
 
 const services = (await getCollection('services'))
   .filter((s) => s.data.featured)
@@ -34,6 +35,8 @@ const spec = [
     ctaHref="/contact"
     phone={site.phone}
     phoneLabel={phoneLabel}
+    image={heroImage}
+    imageAlt="A Summit technician charging a home air-conditioning condenser with a refrigerant manifold gauge"
   />
 
   <!-- Spec strip: credibility as one mono data row, not a badge wall -->
@@ -58,6 +61,8 @@ const spec = [
             icon={s.data.icon}
             href={`/services/${s.id}`}
             index={String(i + 1).padStart(2, '0')}
+            image={s.data.image}
+            imageAlt={s.data.imageAlt}
           />
         ))}
       </div>

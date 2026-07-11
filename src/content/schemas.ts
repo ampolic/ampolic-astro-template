@@ -6,12 +6,16 @@ export const serviceSchema = z.object({
   icon: z.string(),
   order: z.number(),
   featured: z.boolean().default(false),
+  /* Optional supporting photo (added in content.config via image()) + its alt text. */
+  imageAlt: z.string().optional(),
 });
 
 export const postSchema = z.object({
   title: z.string(),
   description: z.string(),
   date: z.coerce.date(),
+  /* Optional last-updated date; drives "Updated …" and JSON-LD dateModified. */
+  updated: z.coerce.date().optional(),
   tags: z.array(z.string()).default([]),
   draft: z.boolean().default(false),
 });

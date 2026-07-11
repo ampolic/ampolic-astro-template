@@ -14,24 +14,43 @@ export function initMotion(): void {
         requestAnimationFrame(raf);
       };
       requestAnimationFrame(raf);
+      // Keep ScrollTrigger in lockstep with Lenis' smoothed scroll position.
+      lenis.on('scroll', ScrollTrigger.update);
+
+      // Smooth-scroll in-page anchor links (e.g. the post TOC) through Lenis.
+      // Lenis honors the target's scroll-margin-top, so the heading's scroll-mt
+      // (set in Prose) clears the sticky header — no extra offset needed. No-JS
+      // falls back to native anchors + the same scroll-margin-top.
+      document.querySelectorAll<HTMLAnchorElement>('a[data-toc-link]').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          const id = link.dataset.tocLink;
+          const target = id ? document.getElementById(id) : null;
+          if (!target) return;
+          e.preventDefault();
+          lenis.scrollTo(target);
+          history.pushState(null, '', `#${id}`);
+        });
+      });
 
       // Mechanical settle: crisp deceleration, no bounce/overshoot.
       const ease = 'power3.out';
+      const from = { opacity: 0, y: 12 };
+      // fromTo (not from): an explicit end state can never be mis-captured as opacity:0 by a
+      // ScrollTrigger.refresh() that fires between tween creation and activation — which is exactly
+      // what a lazy image decoding inside a reveal target used to do, leaving cards stuck invisible.
+      const to = { opacity: 1, y: 0, duration: 0.45, ease };
 
       // Hero page-load sequence: eyebrow → headline → subhead → CTA, 80ms apart.
       const heroEls = gsap.utils.toArray<HTMLElement>('[data-hero]');
       if (heroEls.length) {
-        gsap.from(heroEls, { opacity: 0, y: 12, duration: 0.45, ease, stagger: 0.08 });
+        gsap.fromTo(heroEls, from, { ...to, stagger: 0.08 });
       }
 
       // Spec-strip metrics tick in one after another — readouts powering on.
       const specEls = gsap.utils.toArray<HTMLElement>('[data-spec]');
       if (specEls.length) {
-        gsap.from(specEls, {
-          opacity: 0,
-          y: 12,
-          duration: 0.45,
-          ease,
+        gsap.fromTo(specEls, from, {
+          ...to,
           stagger: 0.09,
           scrollTrigger: { trigger: specEls[0], start: 'top 90%', once: true },
         });
@@ -39,11 +58,8 @@ export function initMotion(): void {
 
       // Grids: stagger children 60ms on enter.
       document.querySelectorAll<HTMLElement>('[data-stagger]').forEach((grid) => {
-        gsap.from(Array.from(grid.children), {
-          opacity: 0,
-          y: 12,
-          duration: 0.45,
-          ease,
+        gsap.fromTo(Array.from(grid.children), from, {
+          ...to,
           stagger: 0.06,
           scrollTrigger: { trigger: grid, start: 'top 85%', once: true },
         });
@@ -51,11 +67,8 @@ export function initMotion(): void {
 
       // Enter-only fade/rise for any remaining sections.
       document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
-        gsap.from(el, {
-          opacity: 0,
-          y: 12,
-          duration: 0.45,
-          ease,
+        gsap.fromTo(el, from, {
+          ...to,
           scrollTrigger: { trigger: el, start: 'top 85%', once: true },
         });
       });

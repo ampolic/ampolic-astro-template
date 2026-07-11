@@ -1,0 +1,34 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PostRow from '../../../components/PostRow.astro';
+import { getPublishedPosts, getAllTags, postsForTagSlug } from '../../../lib/posts';
+import { site } from '../../../config/site';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return getAllTags(posts).map((t) => ({
+    params: { tag: t.slug },
+    props: { label: t.tag, posts: postsForTagSlug(posts, t.slug) },
+  }));
+}
+const { label, posts } = Astro.props;
+---
+<Base title={`Posts tagged “${label}”`} description={`Articles about ${label} from ${site.name}.`}>
+  <section class="py-(--spacing-section)">
+    <div class="mx-auto max-w-3xl px-4">
+      <p class="font-mono text-xs uppercase tracking-[0.12em] text-brand">Tag</p>
+      <h1 class="mt-2 font-display text-4xl font-semibold">{label}</h1>
+      <p class="mt-2 text-text-muted">
+        {posts.length} {posts.length === 1 ? 'article' : 'articles'} ·
+        <a href="/blog/tags" class="text-brand underline underline-offset-2">All tags</a>
+      </p>
+      <ul class="mt-10 space-y-8">
+        {posts.map((p) => (
+          <li>
+            <PostRow post={p} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>

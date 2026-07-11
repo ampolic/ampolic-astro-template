@@ -48,3 +48,16 @@ The build plan is at docs/PLAN.md — follow it; do not substitute stack choices
 - No hex values in src/components or src/pages (grep to verify)
 - Rebrand test passes: site.ts + @theme + font swap = coherent new brand
 
+## Stock images
+Use the image-banks MCP (Pexels). Always download into src/assets/images/
+(never hotlink), prefer landscape ≥1600px for hero images, portrait for
+testimonial/team slots. Record photographer name + Pexels URL in
+docs/IMAGE-CREDITS.md. Serve only via astro:assets <Image /> with explicit
+dimensions.
+
+## Visual verification (mandatory for any UI change)
+After any change affecting rendering: start `pnpm dev`, use Playwright MCP to
+screenshot the affected pages at 1440px and 375px widths, view the screenshots,
+and check them against docs/DESIGN.md before declaring the task done.
+Specifically check: section spacing/rhythm, typography scale, contrast,
+and anything that reads as a generic template.

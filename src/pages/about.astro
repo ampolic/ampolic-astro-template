@@ -1,10 +1,12 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Prose from '../components/Prose.astro';
 import CtaBand from '../components/CtaBand.astro';
 import FaqList from '../components/FaqList.astro';
+import aboutImage from '../assets/images/about-technician.webp';
 
 const faqEntries = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
 const faqItems = await Promise.all(
@@ -13,46 +15,53 @@ const faqItems = await Promise.all(
 ---
 <Base
   title="About us"
-  description="Summit Heating & Air has kept Boulder-area homes comfortable since 2009 — licensed, local, and honest."
+  description="Summit Heating & Air has kept Boulder-area homes comfortable since 2009. Licensed, local, and straight with you."
 >
   <section class="py-(--spacing-section)">
     <div class="mx-auto max-w-6xl px-4">
       <h1 class="font-display text-4xl font-semibold text-balance sm:text-5xl">About Summit Heating & Air</h1>
       <p class="mt-5 max-w-[52ch] text-lg text-text-muted">
-        A family-owned HVAC company built on straight answers and work we're proud to sign our name to.
+        A family-owned HVAC company built on straight answers and work we stand behind.
       </p>
     </div>
   </section>
   <section class="bg-surface-alt py-(--spacing-section)">
     <div class="mx-auto max-w-6xl px-4">
+      <Image
+        src={aboutImage}
+        alt="A Summit technician rebuilding a pump assembly at the shop workbench"
+        widths={[768, 1280, 1600]}
+        sizes="(min-width: 72rem) 72rem, 100vw"
+        loading="lazy"
+        class="mb-12 aspect-[16/9] w-full rounded-(--radius-base) border border-line object-cover"
+      />
       <SectionHeading eyebrow="Our story" heading="Sixteen years of Boulder winters and summers" />
       <Prose>
         <p>
-          Summit Heating & Air started in 2009 with one truck, one technician, and a simple idea: tell
+          Summit Heating & Air started in 2009 with one truck, one technician, and a simple rule: tell
           people the truth about what their system needs, then do the work right the first time. Our
-          founder spent a decade installing furnaces for a national chain before getting tired of
-          quota-driven upsells and started Summit to do it differently.
+          founder had spent a decade installing furnaces for a national chain, and left when he got
+          tired of chasing upsell quotas. Summit was his way of doing the job differently.
         </p>
         <p>
-          Boulder's climate doesn't make it easy — dry, triple-digit summer afternoons followed by
-          winter nights well below freezing, all within a few months of each other. That range has
-          shaped how we work. We size every system for the elevation and swings of the Front Range,
-          not a generic spec sheet, and we stand behind every repair and install with a written
-          workmanship warranty.
+          Boulder's climate doesn't make the work easy. Triple-digit summer afternoons give way to
+          winter nights well below freezing, sometimes only a few months apart. That range shapes how
+          we size equipment: we account for the elevation and the swings of the Front Range instead of
+          a generic spec sheet, and we back every repair and install with a written workmanship warranty.
         </p>
         <h2>What hasn't changed</h2>
         <p>
           We're still locally owned, still licensed and insured in Boulder County, and still small
-          enough that the person who answers your call knows the technician showing up at your door.
-          Every estimate is free, every price is explained before we start, and we never charge for a
-          diagnosis we can't fix on the same visit.
+          enough that whoever answers your call knows the technician heading to your door. Estimates
+          are free, every price gets explained before we start, and we don't charge for a diagnosis
+          when we can't fix the problem on the same visit.
         </p>
         <h2>Where we're headed</h2>
         <p>
-          Today our crew of certified technicians handles AC repair and installation, furnace and
-          heat pump service, and indoor air quality systems for homes across the greater Boulder area.
-          The truck count has grown, but the promise hasn't: honest quotes, no surprises, and comfort
-          you can count on all year round.
+          Today our certified crew handles AC repair and installation, furnace and heat pump service,
+          and indoor air quality for homes across the greater Boulder area. We run more trucks than we
+          used to, but the promise is the same: honest quotes, no surprises, and a house that stays
+          comfortable all year.
         </p>
       </Prose>
     </div>

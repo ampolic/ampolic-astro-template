@@ -29,3 +29,31 @@ export function buildLocalBusinessJsonLd(site: Site) {
     sameAs: site.socials.map((s) => s.href),
   };
 }
+
+export function buildBlogPostingJsonLd(opts: {
+  site: Site;
+  title: string;
+  description?: string;
+  datePublished: Date;
+  dateModified?: Date;
+  url: string;
+  image?: string;
+}) {
+  const { site, title, description, datePublished, dateModified, url, image } = opts;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: title,
+    ...(description ? { description } : {}),
+    datePublished: datePublished.toISOString(),
+    dateModified: (dateModified ?? datePublished).toISOString(),
+    ...(image ? { image: [image] } : {}),
+    author: { '@type': 'Organization', name: site.name, url: site.url },
+    publisher: {
+      '@type': 'Organization',
+      name: site.legalName,
+      logo: { '@type': 'ImageObject', url: new URL(site.logo, site.url).href },
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  };
+}

@@ -1,5 +1,63 @@
 ---
 ---
-<div class="max-w-[68ch] leading-relaxed [&_h2]:mt-10 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-semibold [&_p]:mt-4 [&_a]:text-brand [&_a]:underline">
+<div class="prose max-w-[68ch] leading-relaxed">
   <slot />
 </div>
+
+<style is:global>
+  .prose > * + * { margin-top: 1rem; }
+  .prose h2 {
+    margin-top: 2.5rem;
+    scroll-margin-top: 7rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  .prose h3 {
+    margin-top: 2rem;
+    scroll-margin-top: 7rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .prose a {
+    color: var(--color-brand);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose ul { list-style: disc; padding-left: 1.5rem; }
+  .prose ol { list-style: decimal; padding-left: 1.5rem; }
+  .prose li { margin-top: 0.5rem; padding-left: 0.25rem; }
+  .prose blockquote {
+    border-left: 2px solid var(--color-brand);
+    padding-left: 1rem;
+    font-size: 1.125rem;
+    font-style: italic;
+    color: var(--color-text-muted);
+  }
+  .prose figure { margin-block: 1.5rem; }
+  .prose figcaption {
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+  .prose img { border-radius: var(--radius-base); border: 1px solid var(--color-line); }
+  .prose :not(pre) > code {
+    border-radius: var(--radius-base);
+    background: var(--color-surface-alt);
+    padding: 0.1rem 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+  .prose pre {
+    overflow-x: auto;
+    border-radius: var(--radius-base);
+    border: 1px solid var(--color-line);
+    padding: 1rem;
+    font-size: 0.875rem;
+  }
+  .prose table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+  .prose th, .prose td { border: 1px solid var(--color-line); padding: 0.5rem 0.75rem; text-align: left; }
+  .prose hr { border: 0; border-top: 1px solid var(--color-line); }
+</style>

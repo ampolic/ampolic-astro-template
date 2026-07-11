@@ -1,20 +1,78 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Prose from '../../components/Prose.astro';
+import PostToc from '../../components/PostToc.astro';
+import TagList from '../../components/TagList.astro';
+import PostNav from '../../components/PostNav.astro';
+import RelatedPosts from '../../components/RelatedPosts.astro';
+import { readingTime } from '../../lib/readingTime';
+import { buildBlogPostingJsonLd } from '../../lib/jsonld';
+import { getPublishedPosts, getAdjacentPosts, getRelatedPosts } from '../../lib/posts';
+import { site } from '../../config/site';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts', (p) => !p.data.draft);
-  return posts.map((p) => ({ params: { slug: p.id }, props: { post: p } }));
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, ...getAdjacentPosts(post, posts), related: getRelatedPosts(post, posts, 3) },
+  }));
 }
-const { post } = Astro.props;
-const { Content } = await render(post);
+const { post, prev, next, related } = Astro.props;
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const hasToc = toc.length >= 2;
+const { words, minutes } = readingTime(post.body ?? '');
+
+const canonical = new URL(`/blog/${post.id}/`, site.url).href;
+const cover = post.data.cover ? await getImage({ src: post.data.cover, width: 1200 }) : undefined;
+const blogJsonLd = buildBlogPostingJsonLd({
+  site,
+  title: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.date,
+  dateModified: post.data.updated,
+  url: canonical,
+  image: cover ? new URL(cover.src, site.url).href : undefined,
+});
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+const published = fmtDate(post.data.date);
+const updated =
+  post.data.updated && post.data.updated.getTime() > post.data.date.getTime()
+    ? fmtDate(post.data.updated)
+    : null;
 ---
-<Base title={post.data.title} description={post.data.description}>
+<Base title={post.data.title} description={post.data.description} image={`/og/${post.id}.png`}>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(blogJsonLd)} />
   <article class="py-(--spacing-section)">
     <div class="mx-auto max-w-3xl px-4">
-      <h1 class="font-display text-4xl font-semibold">{post.data.title}</h1>
-      <Prose><Content /></Prose>
+      <div class="relative">
+        {hasToc && (
+          <div class="absolute top-0 right-full mr-8 hidden h-full xl:block">
+            <PostToc headings={toc} words={words} minutes={minutes} class="sticky top-28 w-56" />
+          </div>
+        )}
+        <p class="font-mono text-xs uppercase tracking-[0.12em] text-brand">
+          {published} · {minutes} min read · {words.toLocaleString()} words{updated && ` · Updated ${updated}`}
+        </p>
+        <h1 class="mt-3 font-display text-4xl font-semibold text-balance">{post.data.title}</h1>
+        <TagList tags={post.data.tags} class="mt-4" />
+        {post.data.cover && (
+          <Image
+            src={post.data.cover}
+            alt=""
+            widths={[480, 768, 1152]}
+            sizes="(min-width: 48rem) 48rem, 100vw"
+            loading="eager"
+            class="mt-8 aspect-[16/9] w-full rounded-(--radius-base) border border-line object-cover"
+          />
+        )}
+        <Prose><Content /></Prose>
+        <PostNav prev={prev} next={next} />
+        <RelatedPosts posts={related} />
+      </div>
     </div>
   </article>
 </Base>

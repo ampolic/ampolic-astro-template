@@ -3,4 +3,4 @@ question: How often should I have my system maintained?
 order: 4
 ---
 
-We recommend two annual tune-ups: one in spring before AC season and one in fall before heating. Each visit takes 45 minutes and includes a full diagnostic, filter replacement, refrigerant check, electrical inspection, and lubrication of moving parts. Regular maintenance catches small problems before they fail and can extend your system's life by 5+ years.
+Twice a year: once in spring before AC season and once in fall before heating. Each visit runs about 45 minutes and covers a full diagnostic, a new filter, a refrigerant check, an electrical inspection, and lubrication of the moving parts. Regular maintenance catches small problems early and can add five years or more to a system's life.

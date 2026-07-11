@@ -4,7 +4,7 @@ import { serviceSchema, postSchema, testimonialSchema, faqSchema } from './conte
 
 const services = defineCollection({
   loader: glob({ base: './src/content/services', pattern: '**/[^_]*.{md,mdx}' }),
-  schema: serviceSchema,
+  schema: ({ image }) => serviceSchema.extend({ image: image().optional() }),
 });
 const posts = defineCollection({
   loader: glob({ base: './src/content/posts', pattern: '**/[^_]*.{md,mdx}' }),

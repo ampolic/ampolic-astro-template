@@ -1,0 +1,15 @@
+---
+/* Reusable agency attribution badge. Drop into any site built on this template:
+   it carries its own fixed identity (Ampolic Digital Solutions) and themes itself
+   via the standard design tokens, so no per-site config is needed. */
+import { Icon } from 'astro-icon/components';
+---
+<a
+  href="https://ampolic.com/"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="group inline-flex items-center gap-1.5 text-xs text-text-muted transition-colors hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+>
+  <Icon name="lucide:zap" class="size-3.5 text-brand transition-transform group-hover:scale-110" />
+  <span>Powered by <span class="font-medium text-text">Ampolic Digital Solutions</span></span>
+</a>

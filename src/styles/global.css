@@ -13,6 +13,10 @@
   --color-brand-dark: #2dd4bf; /* dark-tuned brand, AA on dark surfaces */
   --color-brand-contrast: #ffffff;
 
+  /* Photo hero — CONSTANT across light/dark: white text sits over imagery, not a surface */
+  --color-scrim: #05100d; /* dark teal-ink gradient over photos, guarantees AA for overlaid text */
+  --color-on-hero: #f4f8f7; /* near-white headline/CTA text on photo + scrim */
+
   /* Semantic neutrals (light defaults) — faint teal-green undertone, never pure grey */
   --color-surface: #fafbfb;
   --color-surface-alt: #eef1f1;

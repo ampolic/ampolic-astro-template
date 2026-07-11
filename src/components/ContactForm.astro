@@ -62,7 +62,7 @@ import Button from './Button.astro';
       headers: { accept: 'application/json' },
     });
     const data = await res.json().catch(() => ({ ok: false }));
-    status.textContent = data.ok ? 'Thanks — we’ll be in touch shortly.' : 'Something went wrong. Please call us.';
+    status.textContent = data.ok ? 'Thanks. We’ll be in touch shortly.' : 'Something went wrong. Please give us a call.';
     if (data.ok) form.reset();
   });
 </script>

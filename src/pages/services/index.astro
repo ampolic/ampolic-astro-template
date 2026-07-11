@@ -8,7 +8,7 @@ const services = (await getCollection('services')).sort((a, b) => a.data.order -
 ---
 <Base
   title="Services"
-  description="AC repair and installation, heating systems, and indoor air quality solutions for Boulder-area homes."
+  description="AC repair and installation, heating, and indoor air quality for Boulder-area homes."
 >
   <section class="py-(--spacing-section)">
     <div class="mx-auto max-w-6xl px-4">
@@ -19,10 +19,10 @@ const services = (await getCollection('services')).sort((a, b) => a.data.order -
     <div class="mx-auto max-w-6xl px-4">
       <div class="grid gap-6 md:grid-cols-3">
         {services.map((s) => (
-          <ServiceCard title={s.data.title} summary={s.data.summary} icon={s.data.icon} href={`/services/${s.id}`} headingLevel={2} />
+          <ServiceCard title={s.data.title} summary={s.data.summary} icon={s.data.icon} href={`/services/${s.id}`} headingLevel={2} image={s.data.image} imageAlt={s.data.imageAlt} />
         ))}
       </div>
     </div>
   </section>
-  <CtaBand heading="Ready for reliable comfort?" ctaLabel="Contact us" ctaHref="/contact" />
+  <CtaBand heading="Ready to book a visit?" ctaLabel="Contact us" ctaHref="/contact" />
 </Base>

@@ -1,0 +1,34 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getPublishedPosts, getAllTags } from '../../../lib/posts';
+
+const posts = await getPublishedPosts();
+const tags = getAllTags(posts);
+---
+<Base title="Tags" description="Browse blog articles by topic.">
+  <section class="py-(--spacing-section)">
+    <div class="mx-auto max-w-3xl px-4">
+      <h1 class="font-display text-4xl font-semibold">Browse by tag</h1>
+      <p class="mt-2 text-text-muted">
+        <a href="/blog" class="text-brand underline underline-offset-2">← Back to all posts</a>
+      </p>
+      <ul class="mt-10 divide-y divide-line">
+        {
+          tags.map((t) => (
+            <li>
+              <a
+                href={`/blog/tags/${t.slug}`}
+                class="group flex items-baseline justify-between gap-4 py-4 transition-colors hover:text-brand"
+              >
+                <span class="font-display text-xl font-semibold">{t.tag}</span>
+                <span class="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
+                  {t.count} {t.count === 1 ? 'post' : 'posts'}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Base>

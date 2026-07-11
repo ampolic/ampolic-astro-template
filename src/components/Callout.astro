@@ -1,0 +1,20 @@
+---
+import { Icon } from 'astro-icon/components';
+interface Props { type?: 'tip' | 'note' | 'warning'; title?: string }
+const { type = 'note', title } = Astro.props;
+const variants = {
+  tip: { icon: 'lucide:lightbulb', label: 'Pro tip' },
+  note: { icon: 'lucide:info', label: 'Note' },
+  warning: { icon: 'lucide:triangle-alert', label: 'Warning' },
+};
+const { icon, label } = variants[type];
+---
+<aside
+  class="my-6 flex gap-3 rounded-(--radius-base) border border-line border-l-2 border-l-brand bg-surface-alt p-4"
+>
+  <Icon name={icon} class="mt-0.5 size-5 shrink-0 text-brand" />
+  <div class="min-w-0 [&>*:first-child]:mt-0 [&_p]:mt-2">
+    <p class="font-display text-sm font-semibold text-text">{title ?? label}</p>
+    <div class="text-text-muted"><slot /></div>
+  </div>
+</aside>

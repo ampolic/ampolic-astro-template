@@ -1,23 +1,25 @@
 ---
 title: Indoor Air Quality Systems
-summary: Filters, purifiers, and humidity control to breathe easier at home.
+summary: Filters, purifiers, and humidity control so the air at home is easier to breathe.
 icon: lucide:air-vent
 order: 3
 featured: true
+image: ../../assets/images/service-air-quality.webp
+imageAlt: Spiral sheet-metal supply ducts running along a ceiling
 ---
 
-Your heating and cooling system moves 8,000+ cubic feet of air through your home every hour. That's every breath you take. Why not make sure it's clean?
+Your heating and cooling system moves more than 8,000 cubic feet of air through your home every hour. That's the air you breathe, so it's worth keeping clean.
 
-## Whole-Home Filtration
+## Filtration
 
-Standard 1-inch filters catch large particles. Our upgraded media filters capture dust, pollen, and pet dander far more effectively. We'll fit your system with the right MERV rating for your needs and budget.
+Standard 1-inch filters only catch the big stuff. Upgraded media filters trap much finer dust, pollen, and pet dander. We fit your system with the right MERV rating for your home and your budget.
 
-## Humidification & Dehumidification
+## Humidity control
 
-Dry Colorado winters can crack lips, dry skin, and harm furniture. Summer humidity can foster mold. We install bypass or whole-home humidifiers and dehumidifiers that integrate with your thermostat, keeping your home at the perfect moisture level year-round.
+Dry Colorado winters chap skin and split wood furniture. Damp summers invite mold. We install whole-home humidifiers and dehumidifiers that work with your thermostat to hold a steady, comfortable moisture level through both.
 
-## UV & HEPA
+## UV and HEPA
 
-For allergy sufferers or homes with pets, we offer UV light coils and standalone HEPA purifiers. These work alongside your furnace to eliminate bacteria, viruses, and fine particulates.
+If someone in the house has allergies, or you have pets, UV coils and standalone HEPA purifiers add another layer. They run alongside your furnace to kill bacteria and viruses and pull fine particles out of the air.
 
-All installations include testing, ductwork inspection, and guidance on filter replacement schedules.
+Every install includes testing, a ductwork inspection, and a plan for when to change your filters.

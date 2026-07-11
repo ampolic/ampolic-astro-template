@@ -1,21 +1,23 @@
 ---
 title: Heating System Installation & Repair
-summary: Furnace and heat pump service for Boulder winters — efficient, reliable, and ready when the cold arrives.
+summary: Furnace and heat pump service for Boulder winters, ready before the cold sets in.
 icon: lucide:flame
 order: 2
 featured: true
+image: ../../assets/images/service-heating.webp
+imageAlt: A high-efficiency heat pump and insulated buffer tanks in a home mechanical room
 ---
 
-A furnace breakdown in December isn't optional — you need heat fast. We repair gas furnaces, heat pumps, and hybrid systems. If replacement makes sense, we'll explain why and install a unit sized perfectly for your home.
+A furnace that dies in December can't wait. We repair gas furnaces, heat pumps, and hybrid systems, usually the same day. If a replacement makes more sense than another repair, we'll show you the math and install a unit sized for your home.
 
-## Furnace Repair
+## Furnace repair
 
-Cracked heat exchangers, ignition failures, blower troubles, thermostat wiring — we handle the full range. Our diagnostic is thorough and honest. We'll repair what can be saved; we'll replace only when it's the safer, cheaper option long-term.
+Cracked heat exchangers, ignition failures, blower trouble, thermostat wiring: we handle all of it. We repair what can be saved, and we only recommend replacing a unit when that's the safer and cheaper choice over the long run.
 
-## Heat Pump Installation
+## Heat pump installation
 
-Heat pumps are the future of home heating: efficient, quiet, and they cool in summer too. We install systems from trusted manufacturers, handle the full electrical retrofit, and ensure your home stays comfortable in both heating and cooling seasons.
+A heat pump heats your home in winter and cools it in summer from one quiet, efficient unit. We install systems from manufacturers we trust, handle the electrical retrofit, and set them up to keep you comfortable in both seasons.
 
-## Hybrid Systems
+## Hybrid systems
 
-Can't choose? A hybrid system runs your furnace efficiently for deep cold and switches to the heat pump for lighter duty. You get the best of both — efficiency and comfort, year-round.
+A hybrid pairs the two. It runs the heat pump in mild weather and switches to the furnace when the temperature really drops. Through Colorado's swings between the two, that pairing keeps efficiency high all year.
