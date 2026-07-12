@@ -16,12 +16,18 @@ const { label, posts } = Astro.props;
 <Base title={`Posts tagged “${label}”`} description={`Articles about ${label} from ${site.name}.`}>
   <section class="py-(--spacing-section)">
     <div class="mx-auto max-w-3xl px-4">
-      <p class="font-mono text-xs uppercase tracking-[0.12em] text-brand">Tag</p>
-      <h1 class="mt-2 font-display text-4xl font-semibold">{label}</h1>
-      <p class="mt-2 text-text-muted">
-        {posts.length} {posts.length === 1 ? 'article' : 'articles'} ·
-        <a href="/blog/tags" class="text-brand underline underline-offset-2">All tags</a>
-      </p>
+      <h1 class="font-display text-4xl font-semibold">{label}</h1>
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-1.5 rounded-(--radius-base) border border-line bg-surface-alt px-2.5 py-1 font-mono text-xs uppercase tracking-[0.12em] text-text-muted transition-colors hover:border-brand hover:text-brand"
+        >
+          <span aria-hidden="true">←</span> All posts
+        </a>
+        <span class="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
+          {posts.length} {posts.length === 1 ? 'article' : 'articles'} tagged “{label}”
+        </span>
+      </div>
       <ul class="mt-10 space-y-8">
         {posts.map((p) => (
           <li>
