@@ -61,3 +61,28 @@ screenshot the affected pages at 1440px and 375px widths, view the screenshots,
 and check them against docs/DESIGN.md before declaring the task done.
 Specifically check: section spacing/rhythm, typography scale, contrast,
 and anything that reads as a generic template.
+
+## Privacy discipline
+- The privacy policy must stay accurate to what the site ACTUALLY does. Any
+  change that adds data collection — analytics, embeds, pixels, new form
+  fields, third-party scripts — is a privacy-policy-impacting change: update
+  src/pages/privacy.astro in the SAME task, driven by src/config/site.ts `legal`.
+- Default stance: no cookies, no analytics, and no third-party browser requests
+  beyond the form processor, Cloudflare hosting/Turnstile, and the OpenStreetMap
+  embed. Adding any new third-party request requires asking first.
+- Never present policy text as legal advice. Keep the "client must review with
+  counsel" comment at the bottom of privacy.astro and terms.astro intact.
+
+## Accessibility discipline
+- Every UI-affecting task must end with `pnpm test:a11y` passing (zero axe
+  violations, every page) IN ADDITION to `pnpm check` && `pnpm build`.
+- Any new interactive component ships with keyboard tests in tests/a11y.spec.ts
+  covering: reachability (Tab), a visible focus indicator, the expected key
+  operation, and escape/close behaviour where applicable. No keyboard test,
+  not done.
+- Prefer native HTML elements (details, popover, dialog, button) over
+  ARIA-recreated widgets. Adding `role=` or `aria-*` to recreate a behaviour a
+  native element already provides requires written justification in the diff.
+- A Lighthouse accessibility score of 100 is a FLOOR, not proof — it only
+  reflects the subset of checks that can be automated. Manual keyboard and
+  screen-reader passes (see docs/PRE-LAUNCH-CHECKLIST.md) are still required.

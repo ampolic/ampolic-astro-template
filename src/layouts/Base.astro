@@ -29,6 +29,9 @@ const jsonld = buildLocalBusinessJsonLd(site);
     <SEO title={title} description={description} canonical={canonical} image={image} noindex={noindex} />
     <link rel="alternate" type="application/rss+xml" title={`${site.name} · Blog`} href="/rss.xml" />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonld)} />
+    {/* Optional cookieless analytics tag. null by default → nothing injected. Enabling this
+        is a privacy-policy-impacting change: also set legal.analyticsProvider. */}
+    {site.legal.analyticsSnippet && <Fragment set:html={site.legal.analyticsSnippet} />}
   </head>
   <body class="bg-surface text-text font-sans flex min-h-dvh flex-col">
     <a href="#main" class="sr-only focus:not-sr-only">Skip to content</a>

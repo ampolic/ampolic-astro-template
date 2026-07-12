@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import Prose from '../components/Prose.astro';
+import { site } from '../config/site';
+
+const { legal, analytics } = site;
+
+/* Name the analytics vendor for the policy only if one is actually configured.
+   Prefer the explicit legal.analyticsProvider label; otherwise fall back to the
+   live analytics.provider so enabling analytics keeps this page accurate. */
+const analyticsName =
+  legal.analyticsProvider ??
+  (analytics.provider === 'plausible'
+    ? 'Plausible Analytics'
+    : analytics.provider === 'ga'
+      ? 'Google Analytics'
+      : null);
+---
+<Base
+  title="Privacy Policy"
+  description={`How ${site.name} handles the limited information collected through this website.`}
+  noindex={false}
+>
+  <section class="py-(--spacing-section)">
+    <div class="mx-auto max-w-6xl px-4">
+      <h1 class="font-display text-4xl font-semibold">Privacy Policy</h1>
+      <p class="mt-4 text-text-muted">Effective {legal.effectiveDate}</p>
+      <div class="mt-10">
+        <Prose>
+          <p>
+            This policy explains what information {legal.businessLegalName} (&ldquo;we&rdquo;,
+            &ldquo;us&rdquo;) collects through this website, why we collect it, and the choices you
+            have. We aim to collect as little as possible: the site runs no advertising trackers and,
+            by default, sets no cookies.
+          </p>
+
+          <h2>Information we collect</h2>
+          <p>
+            The only information you actively provide is through our contact form. When you submit it,
+            we receive the <strong>name</strong>, <strong>email address</strong>, and
+            <strong>message</strong> you enter. We use these details solely to read and respond to
+            your inquiry. We do not sell this information or use it for marketing unless you separately
+            ask us to.
+          </p>
+
+          <h2>How your form submission is handled</h2>
+          <p>
+            When you send the form, it is transmitted to our website&rsquo;s own submission endpoint
+            and delivered to us by email through <a href={legal.formProcessor.privacyUrl} rel="noopener"
+            >{legal.formProcessor.name}</a>, our email delivery provider. Your message is processed only
+            to reach us; please review {legal.formProcessor.name}&rsquo;s privacy policy for how they
+            handle email in transit.
+          </p>
+          <p>
+            To reduce spam, the form is protected by Cloudflare Turnstile, a privacy-focused alternative
+            to CAPTCHA. When JavaScript is enabled, it loads a small script from Cloudflare and performs
+            an automated check to confirm you are human. Turnstile is designed not to track you across
+            sites for advertising. If you browse with JavaScript disabled, the form still works and this
+            script does not load.
+          </p>
+
+          <h2>Hosting and server logs</h2>
+          <p>
+            This site is hosted on Cloudflare Pages. Like most web hosts, Cloudflare may automatically
+            record limited technical information &mdash; such as your IP address and browser user agent
+            &mdash; to deliver the site, keep it secure, and defend against abuse. This is standard
+            operational logging, not analytics profiling. See
+            <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener">Cloudflare&rsquo;s privacy policy</a>
+            for details.
+          </p>
+
+          <h2>Embedded map</h2>
+          <p>
+            Our contact page embeds an interactive map served by OpenStreetMap. When that page loads,
+            your browser makes a request to openstreetmap.org, which necessarily shares your IP address
+            with the OpenStreetMap Foundation so the map can be displayed. This request is not used for
+            advertising or cross-site tracking. A plain
+            &ldquo;View on OpenStreetMap&rdquo; link is provided as an alternative. See the
+            <a href="https://wiki.osmfoundation.org/wiki/Privacy_Policy" rel="noopener">OpenStreetMap Foundation privacy policy</a>.
+          </p>
+
+          <h2>Fonts and other assets</h2>
+          <p>
+            Fonts, images, and scripts used by this site are served from our own domain. We do not load
+            fonts, stylesheets, or scripts from third-party content delivery networks, and we run no
+            advertising or social-media tracking pixels.
+          </p>
+
+          <h2>Cookies and analytics</h2>
+          {analyticsName ? (
+            <p>
+              This site uses <strong>{analyticsName}</strong> to understand, in aggregate, how visitors
+              use the site. This may involve requests to {analyticsName} and, depending on its
+              configuration, cookies or similar technologies. We do not use this data to identify you
+              personally or to serve advertising.
+            </p>
+          ) : (
+            <p>
+              By default, this site sets <strong>no cookies</strong> and runs <strong>no analytics or
+              tracking scripts</strong>. Nothing on the site attempts to identify you or follow you
+              across other websites.
+            </p>
+          )}
+
+          <h2>Your choices and rights</h2>
+          <p>
+            Because we only hold what you send us through the contact form, you can ask us to access,
+            correct, or delete that information at any time by emailing
+            <a href={`mailto:${legal.contactEmail}`}>{legal.contactEmail}</a>. Depending on where you
+            live, you may have additional rights under local law; contact us and we will do our best to
+            honor them.
+          </p>
+
+          <h2>Changes to this policy</h2>
+          <p>
+            We may update this policy as our practices or the services we rely on change. When we do,
+            we will revise the effective date shown at the top of this page.
+          </p>
+
+          <h2>Contact</h2>
+          <p>
+            Questions about this policy? Email
+            <a href={`mailto:${legal.contactEmail}`}>{legal.contactEmail}</a>.
+          </p>
+        </Prose>
+      </div>
+    </div>
+  </section>
+  {/* Template boilerplate — client must review with counsel before publishing. This
+      text describes only what the default template does; verify it against the client's
+      actual services, then have a lawyer review it. Not legal advice. */}
+</Base>

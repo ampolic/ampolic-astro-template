@@ -8,6 +8,9 @@ const { lonSpan = 0.012, latSpan = 0.008 } = Astro.props;
 const { lat, lng } = site.geo;
 const bbox = [lng - lonSpan, lat - latSpan, lng + lonSpan, lat + latSpan].map((n) => n.toFixed(4)).join('%2C');
 const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}`;
+/* Plain link to the same location on openstreetmap.org — the accessible fallback
+   when the iframe is blocked or JS is off. Renders and works with zero client JS. */
+const viewUrl = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=15/${lat}/${lng}`;
 ---
 <figure class="overflow-hidden rounded-(--radius-base) border border-line">
   <div class="relative aspect-[3/2] w-full overflow-hidden">
@@ -19,4 +22,12 @@ const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=
       class="absolute inset-0 block h-full w-full border-0"
     ></iframe>
   </div>
+  <figcaption class="border-t border-line bg-surface-alt px-3 py-2 text-sm">
+    <a
+      href={viewUrl}
+      target="_blank"
+      rel="noopener"
+      class="text-brand hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+    >View on OpenStreetMap</a>
+  </figcaption>
 </figure>

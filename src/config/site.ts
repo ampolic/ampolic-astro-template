@@ -44,6 +44,32 @@ export interface Site {
   /* Literal colors for build-time OG social cards. Satori needs concrete values;
      keep these in sync with the corresponding @theme tokens in global.css. */
   og: { bg: string; fg: string; brand: string };
+  /* Privacy/terms config. Drives the /privacy and /terms pages; see the Legal type. */
+  legal: Legal;
+}
+
+/* Legal/privacy config. Feeds the /privacy and /terms pages. Values here are template
+   placeholders — the client is responsible for reviewing both pages with counsel. */
+export interface Legal {
+  /* Registered entity name used in policy documents. Mirror of `legalName`; keep in sync. */
+  businessLegalName: string;
+  /* Address where privacy/legal requests are received. Usually the same as `email`. */
+  contactEmail: string;
+  /* Date the current policy text takes effect. CLIENT MUST SET before launch. */
+  effectiveDate: string;
+  /* Date the accessibility statement was last reviewed against the live site.
+     Shown on /accessibility. Re-check and bump this whenever UI changes. */
+  lastReviewed: string;
+  /* Service that receives contact-form submissions — named and linked in the privacy policy. */
+  formProcessor: { name: string; privacyUrl: string };
+  /* Analytics vendor name shown in the privacy policy, or null when no analytics runs.
+     Default null: the template ships zero analytics. Set the name AND wire the tag together. */
+  analyticsProvider: string | null;
+  /* Optional raw <script> markup for a cookieless/self-hosted analytics tag, injected in <head>.
+     null = nothing injected. Not used by the default template. */
+  analyticsSnippet: string | null;
+  /* Governing-law / jurisdiction placeholder for the terms page. CLIENT MUST SET. */
+  jurisdictionNote: string;
 }
 
 export const site: Site = {
@@ -84,6 +110,18 @@ export const site: Site = {
   form: { endpoint: '/api/contact', turnstileSiteKey: '1x00000000000000000000AA', recipientLabel: 'the Summit team' },
   trust: { established: 2009, ratingValue: 4.9, reviewCount: 312, license: 'EA-4471', dispatch: '24/7 dispatch' },
   og: { bg: '#0b1413', fg: '#f4f8f7', brand: '#2dd4bf' },
+  legal: {
+    businessLegalName: 'Summit Heating & Air LLC',
+    contactEmail: 'hello@summithvac.example',
+    effectiveDate: '2026-07-12',
+    lastReviewed: '2026-07-12',
+    /* Submissions post to the first-party /api/contact function, which delivers email via Resend.
+       Point this at whatever service actually handles the client's form. */
+    formProcessor: { name: 'Resend', privacyUrl: 'https://resend.com/legal/privacy-policy' },
+    analyticsProvider: null,
+    analyticsSnippet: null,
+    jurisdictionNote: 'the State of Colorado, United States',
+  },
 };
 
 export default site;

@@ -13,6 +13,30 @@ Follow this checklist to rebrand the template for a new client. Each step is req
   - Set `analytics.provider` (default `'none'` emits zero third-party JS; choose `'plausible'` or `'ga'` and provide `id`)
   - Set `form.turnstileSiteKey` (Cloudflare Turnstile site key for the contact form)
 
+## Legal setup
+
+The `/privacy` and `/terms` pages are generated from the `legal` block in `src/config/site.ts`.
+The text is a conservative **starting point**, not legal advice — the client is responsible for
+reviewing both pages with their own counsel before launch.
+
+- [ ] Fill the `legal` block in `src/config/site.ts`:
+  - `businessLegalName` (registered entity), `contactEmail`, `effectiveDate`, `jurisdictionNote`
+    (governing-law region for the terms page)
+  - Confirm `formProcessor` names the service that actually delivers form submissions and links its
+    real privacy policy
+- [ ] Confirm the privacy page matches the services actually in use: the contact form fields
+  (name, email, message), the form processor, the OpenStreetMap embed, Cloudflare hosting/Turnstile,
+  and analytics only if enabled. Remove or amend any paragraph that no longer applies.
+- [ ] If enabling analytics: prefer a **cookieless** provider (Cloudflare Web Analytics or Plausible).
+  Set `legal.analyticsProvider` to the vendor's display name so the privacy page names it, and wire the
+  tag via `analytics.provider` (Plausible) or `legal.analyticsSnippet` (custom cookieless tag).
+  If the client insists on GA4 or ad pixels, a consent banner is likely required — that is **out of
+  template scope**; handle it per client.
+- [ ] Escalation — recommend the client consult a lawyer directly if the business is health-related,
+  targets children, sells online, or runs email marketing. These carry obligations this template does
+  not attempt to cover.
+- [ ] The client accepts responsibility for the legal review of both the privacy and terms pages.
+
 ## 2. Visual Identity (@theme tokens)
 
 - [ ] Edit `src/styles/global.css` (the `@theme` block):
@@ -96,3 +120,4 @@ The contact form endpoint (`/api/contact`) is a Cloudflare Pages Function at `fu
 - [ ] Set canonical URLs to the client's live domain (not `example.com`)
 - [ ] Update any remaining placeholder text or links
 - [ ] Brief the client on theme toggle, contact form, and analytics dashboard access
+- [ ] Complete `docs/PRE-LAUNCH-CHECKLIST.md` before DNS cutover

@@ -33,7 +33,7 @@ const { headings, words, minutes, class: className } = Astro.props;
               h.depth >= 3 && 'pl-4',
             ]}
           >
-            <span class="font-mono text-[0.7rem] tabular-nums text-text-muted/70 transition-colors group-hover:text-text-muted group-data-[active]:text-brand">
+            <span class="font-mono text-[0.7rem] tabular-nums text-text-muted transition-colors group-data-[active]:text-brand">
               {String(i + 1).padStart(2, '0')}
             </span>
             <span>{h.text}</span>

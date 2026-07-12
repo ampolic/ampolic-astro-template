@@ -1,0 +1,89 @@
+---
+import Base from '../layouts/Base.astro';
+import Prose from '../components/Prose.astro';
+import { site } from '../config/site';
+
+const { legal } = site;
+---
+<Base
+  title="Accessibility"
+  description={`How ${site.name} works to keep this website usable for everyone.`}
+  noindex={false}
+>
+  <section class="py-(--spacing-section)">
+    <div class="mx-auto max-w-6xl px-4">
+      <h1 class="font-display text-4xl font-semibold">Accessibility Statement</h1>
+      <p class="mt-4 text-text-muted">Last reviewed {legal.lastReviewed}</p>
+      <div class="mt-10">
+        <Prose>
+          <p>
+            {legal.businessLegalName} is committed to making this website usable for as many people as
+            possible, including people who rely on assistive technology. We treat accessibility as an
+            ongoing part of how the site is built and maintained, not a one-time task.
+          </p>
+
+          <h2>Conformance target</h2>
+          <p>
+            We aim to meet <strong>WCAG 2.2 Level AA</strong> (the Web Content Accessibility Guidelines
+            published by the W3C). These guidelines explain how to make web content more accessible to
+            people with a wide range of disabilities, including visual, motor, auditory, and cognitive
+            differences.
+          </p>
+
+          <h2>Measures we take</h2>
+          <ul>
+            <li>
+              <strong>Semantic HTML.</strong> Pages are built from real headings, lists, landmarks,
+              and native controls so their structure is conveyed to assistive technology.
+            </li>
+            <li>
+              <strong>Keyboard operability.</strong> Every interactive element — navigation, the menu,
+              the share menu, the FAQ, and the contact form — can be reached and operated with a
+              keyboard alone, with a visible focus indicator at each stop.
+            </li>
+            <li>
+              <strong>Colour contrast.</strong> Text and interface colours are chosen to meet the
+              WCAG AA contrast minimums in both light and dark themes.
+            </li>
+            <li>
+              <strong>Reduced motion.</strong> Animations are subtle and enter-only, and are disabled
+              entirely for visitors whose system requests reduced motion.
+            </li>
+            <li>
+              <strong>Works without JavaScript.</strong> Navigation, the FAQ, and the contact form
+              remain fully usable when scripting is unavailable.
+            </li>
+            <li>
+              <strong>Text alternatives.</strong> Meaningful images carry descriptive alternative text;
+              decorative images are hidden from assistive technology.
+            </li>
+          </ul>
+
+          <h2>Ongoing testing</h2>
+          <p>
+            Accessibility is checked with automated tooling (axe-core across every page) and with
+            keyboard and screen-reader spot checks. Automated tests catch only part of the picture, so
+            we also rely on manual review — and on feedback from people who use the site.
+          </p>
+
+          <h2>Known limitations</h2>
+          <p>
+            Despite our efforts, some content may not yet be fully accessible. If you encounter a
+            barrier, please tell us — reports directly help us prioritise fixes.
+          </p>
+
+          <h2>Reporting a barrier</h2>
+          <p>
+            If any part of this site is difficult to use, email
+            <a href={`mailto:${legal.contactEmail}`}>{legal.contactEmail}</a>. Please describe the page,
+            what you were trying to do, and the assistive technology or browser you were using, and we
+            will do our best to help and to correct the problem.
+          </p>
+        </Prose>
+      </div>
+    </div>
+  </section>
+  {/* Template boilerplate — this statement describes what the default template does. The client
+      should keep it accurate as the site changes (re-test and update `legal.lastReviewed`), and is
+      responsible for confirming the claims hold for their content. Not legal advice. */}
+</Base>
