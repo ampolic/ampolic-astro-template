@@ -57,6 +57,9 @@ importers:
       '@cloudflare/vitest-pool-workers':
         specifier: ^0.18.2
         version: 0.18.2(@vitest/runner@4.1.10)(@vitest/snapshot@4.1.10)(vitest@4.1.10(@types/node@24.13.3)(vite@6.4.3(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.0)))
+      '@iconify-json/simple-icons':
+        specifier: ^1.2.89
+        version: 1.2.89
       '@resvg/resvg-js':
         specifier: ^2.6.2
         version: 2.6.2
@@ -715,6 +718,9 @@ packages:
 
   '@iconify-json/lucide@1.2.116':
     resolution: {integrity: sha512-mbwPmiUXaZyLMSeQOxiTqz2fmZikD9qiGnMBiev47UUNY9uGCEgMg9iUYwaJzCtJTDtAIyK4vokfIpqsVorgSw==}
+
+  '@iconify-json/simple-icons@1.2.89':
+    resolution: {integrity: sha512-hRaCY5s2G5oWAIhc4LCGYn6g6RrwLL4zhoLOT+KUO3joVCxVlZKA+839bv/47Nbe9/ZD4UA6dznZ4XPYcI53wA==}
 
   '@iconify/tools@4.2.0':
     resolution: {integrity: sha512-WRxPva/ipxYkqZd1+CkEAQmd86dQmrwH0vwK89gmp2Kh2WyyVw57XbPng0NehP3x4V1LzLsXUneP1uMfTMZmUA==}
@@ -3895,6 +3901,10 @@ snapshots:
   '@fontsource-variable/jetbrains-mono@5.2.8': {}
 
   '@iconify-json/lucide@1.2.116':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/simple-icons@1.2.89':
     dependencies:
       '@iconify/types': 2.0.0
 

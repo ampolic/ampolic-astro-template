@@ -7,6 +7,7 @@ import PostToc from '../../components/PostToc.astro';
 import TagList from '../../components/TagList.astro';
 import PostNav from '../../components/PostNav.astro';
 import RelatedPosts from '../../components/RelatedPosts.astro';
+import ShareMenu from '../../components/ShareMenu.astro';
 import { readingTime } from '../../lib/readingTime';
 import { buildBlogPostingJsonLd } from '../../lib/jsonld';
 import { getPublishedPosts, getAdjacentPosts, getRelatedPosts } from '../../lib/posts';
@@ -26,6 +27,8 @@ const hasToc = toc.length >= 2;
 const { words, minutes } = readingTime(post.body ?? '');
 
 const canonical = new URL(`/blog/${post.id}/`, site.url).href;
+const shareUrl = new URL(Astro.url.pathname, Astro.site).href;
+const shareOgImage = new URL(`/og/${post.id}.png`, Astro.site).href;
 const cover = post.data.cover ? await getImage({ src: post.data.cover, width: 1200 }) : undefined;
 const blogJsonLd = buildBlogPostingJsonLd({
   site,
@@ -57,7 +60,10 @@ const updated =
         <p class="font-mono text-xs uppercase tracking-[0.12em] text-brand">
           {published} · {minutes} min read · {words.toLocaleString()} words{updated && ` · Updated ${updated}`}
         </p>
-        <h1 class="mt-3 font-display text-4xl font-semibold text-balance">{post.data.title}</h1>
+        <div class="flex items-start justify-between gap-4">
+          <h1 class="mt-3 font-display text-4xl font-semibold text-balance">{post.data.title}</h1>
+          <ShareMenu title={post.data.title} url={shareUrl} ogImage={shareOgImage} class="mt-3 shrink-0" />
+        </div>
         <TagList tags={post.data.tags} class="mt-4" />
         {post.data.cover && (
           <Image

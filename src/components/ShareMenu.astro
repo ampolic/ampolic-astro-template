@@ -1,0 +1,98 @@
+---
+import { Icon } from 'astro-icon/components';
+import { buildShareItems } from '../lib/share';
+
+interface Props { title: string; url: string; ogImage: string; class?: string }
+const { title, url, ogImage, class: className } = Astro.props;
+
+const items = buildShareItems(title, url, ogImage);
+const opt = 'flex min-h-11 items-center gap-2.5 rounded-(--radius-base) px-3 text-sm hover:bg-surface-alt focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand';
+---
+<div class:list={['inline-block', className]}>
+  <button
+    type="button"
+    popovertarget="share-panel"
+    aria-haspopup="menu"
+    class="share-trigger inline-flex min-h-11 items-center gap-2 rounded-(--radius-base) border border-brand px-4 font-medium text-brand transition hover:bg-brand hover:text-brand-contrast focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+  >
+    <Icon name="lucide:share-2" class="size-5" /> Share
+  </button>
+  <div
+    id="share-panel"
+    popover="auto"
+    data-url={url}
+    data-title={title}
+    class="w-[min(20rem,calc(100vw-2rem))] rounded-(--radius-base) border border-line bg-surface p-2 shadow-card"
+  >
+    <div class:list={['share-grid grid gap-1', items.length <= 2 ? 'grid-cols-1' : 'grid-cols-2']}>
+      {items.map((item) =>
+        item.href ? (
+          <a href={item.href} target="_blank" rel="noopener" aria-label={item.aria} class={opt}>
+            <Icon name={item.icon} class="size-5 shrink-0" /> <span>{item.label}</span>
+          </a>
+        ) : (
+          <button type="button" data-share={item.key} hidden aria-label={item.aria} class={opt}>
+            {item.key === 'copy' ? (
+              <>
+                <Icon name="lucide:link" class="copy-link size-5 shrink-0" />
+                <Icon name="lucide:check" class="copy-check size-5 shrink-0" />
+              </>
+            ) : (
+              <Icon name={item.icon} class="size-5 shrink-0" />
+            )}
+            <span data-copy-label>{item.label}</span>
+          </button>
+        )
+      )}
+    </div>
+  </div>
+</div>
+
+<style>
+  .copy-check { display: none; }
+  [data-copied='true'] .copy-link { display: none; }
+  [data-copied='true'] .copy-check { display: inline-block; }
+  /* Fallback: the UA centers the popover in the viewport (fine on mobile).
+     Where CSS anchor positioning exists, pin it below the trigger, right-aligned. */
+  @supports (anchor-name: --a) {
+    .share-trigger { anchor-name: --share-anchor; }
+    #share-panel {
+      position-anchor: --share-anchor;
+      position-area: bottom span-left;
+      margin: 0.5rem 0 0 0;
+      position-try-fallbacks: flip-block, flip-inline;
+    }
+  }
+</style>
+
+<script>
+  const panel = document.getElementById('share-panel');
+  if (panel) {
+    const url = panel.dataset.url ?? '';
+    const title = panel.dataset.title ?? '';
+    const grid = panel.querySelector('.share-grid');
+    const native = panel.querySelector<HTMLButtonElement>('[data-share="native"]');
+    if (native && navigator.share) {
+      native.hidden = false;
+      grid?.prepend(native);
+      native.addEventListener('click', () => navigator.share({ title, url }).catch(() => {}));
+    }
+    const copy = panel.querySelector<HTMLButtonElement>('[data-share="copy"]');
+    if (copy && navigator.clipboard?.writeText) {
+      copy.hidden = false;
+      const label = copy.querySelector<HTMLElement>('[data-copy-label]');
+      const original = label?.textContent ?? '';
+      copy.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(url);
+          copy.dataset.copied = 'true';
+          if (label) label.textContent = 'Copied';
+          setTimeout(() => {
+            delete copy.dataset.copied;
+            if (label) label.textContent = original;
+          }, 1500);
+        } catch {}
+      });
+    }
+  }
+</script>

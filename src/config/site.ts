@@ -1,3 +1,20 @@
+/* Blog share targets. 'native' = device share sheet, 'copy' = copy link —
+   both are JS-only and hidden when unsupported. The rest are plain intent links. */
+export type ShareTarget =
+  | 'native'
+  | 'copy'
+  | 'x'
+  | 'facebook'
+  | 'linkedin'
+  | 'bluesky'
+  | 'threads'
+  | 'whatsapp'
+  | 'telegram'
+  | 'reddit'
+  | 'pinterest'
+  | 'email'
+  | 'sms';
+
 export interface Site {
   name: string;
   legalName: string;
@@ -16,6 +33,10 @@ export interface Site {
   /* Primary conversion action, reused in the nav and hero. */
   cta: { label: string; href: string };
   socials: Array<{ label: string; href: string; icon: string }>;
+  /* Which share targets appear on blog posts, in render order. Full menu:
+     native, copy, x, facebook, linkedin, bluesky, threads, whatsapp,
+     telegram, reddit, pinterest, email, sms. */
+  shareLinks: ShareTarget[];
   analytics: { provider: 'none' | 'plausible' | 'ga'; id?: string };
   form: { endpoint: string; turnstileSiteKey: string; recipientLabel: string };
   /* Credibility facts rendered as the mono spec strip (est · rating · license · dispatch). */
@@ -58,6 +79,7 @@ export const site: Site = {
     { label: 'Facebook', href: 'https://facebook.com/', icon: 'lucide:facebook' },
     { label: 'Instagram', href: 'https://instagram.com/', icon: 'lucide:instagram' },
   ],
+  shareLinks: ['native', 'copy', 'facebook', 'whatsapp', 'x', 'email'],
   analytics: { provider: 'none' },
   form: { endpoint: '/api/contact', turnstileSiteKey: '1x00000000000000000000AA', recipientLabel: 'the Summit team' },
   trust: { established: 2009, ratingValue: 4.9, reviewCount: 312, license: 'EA-4471', dispatch: '24/7 dispatch' },
