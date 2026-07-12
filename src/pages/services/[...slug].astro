@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Prose from '../../components/Prose.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 
 export async function getStaticPaths() {
   const services = await getCollection('services');
@@ -10,10 +11,16 @@ export async function getStaticPaths() {
 }
 const { service } = Astro.props;
 const { Content } = await render(service);
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Services', href: '/services' },
+  { label: service.data.title },
+];
 ---
 <Base title={service.data.title} description={service.data.summary}>
   <article class="py-(--spacing-section)">
     <div class="mx-auto max-w-6xl px-4">
+      <Breadcrumbs items={crumbs} class="mb-5" />
       <h1 class="font-display text-4xl font-semibold">{service.data.title}</h1>
       {service.data.image && (
         <Image

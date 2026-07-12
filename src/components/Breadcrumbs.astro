@@ -1,0 +1,54 @@
+---
+import { Icon } from 'astro-icon/components';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  items: Crumb[];
+  class?: string;
+}
+const { items, class: className } = Astro.props;
+
+// Absolute item URLs for the JSON-LD, resolved against the configured site.
+const toAbs = (href: string) => new URL(href, Astro.site).href;
+
+// BreadcrumbList structured data — one per page. The current page (last item,
+// no href) carries a name but omits `item`, per Google's guidance.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: item.label,
+    ...(item.href ? { item: toAbs(item.href) } : {}),
+  })),
+};
+---
+<nav aria-label="Breadcrumb" class:list={[className]}>
+  <ol
+    class="flex flex-wrap items-center gap-x-1.5 gap-y-1 font-mono text-xs uppercase tracking-[0.12em] text-text-muted"
+  >
+    {
+      items.map((item, i) => (
+        <li class="flex min-w-0 items-center gap-x-1.5">
+          {i > 0 && (
+            <Icon name="lucide:chevron-right" class="size-3.5 shrink-0 text-line" aria-hidden="true" />
+          )}
+          {item.href ? (
+            <a href={item.href} class="whitespace-nowrap transition-colors hover:text-brand">
+              {item.label}
+            </a>
+          ) : (
+            <span aria-current="page" title={item.label} class="max-w-[15rem] truncate text-text sm:max-w-sm">
+              {item.label}
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+</nav>

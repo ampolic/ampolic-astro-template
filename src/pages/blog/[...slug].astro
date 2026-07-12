@@ -8,9 +8,10 @@ import TagList from '../../components/TagList.astro';
 import PostNav from '../../components/PostNav.astro';
 import RelatedPosts from '../../components/RelatedPosts.astro';
 import ShareMenu from '../../components/ShareMenu.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { readingTime } from '../../lib/readingTime';
 import { buildBlogPostingJsonLd } from '../../lib/jsonld';
-import { getPublishedPosts, getAdjacentPosts, getRelatedPosts } from '../../lib/posts';
+import { getPublishedPosts, getAdjacentPosts, getRelatedPosts, slugifyTag } from '../../lib/posts';
 import { site } from '../../config/site';
 
 export async function getStaticPaths() {
@@ -46,6 +47,15 @@ const updated =
   post.data.updated && post.data.updated.getTime() > post.data.date.getTime()
     ? fmtDate(post.data.updated)
     : null;
+
+// Home → Blog → [primary tag] → post. Tag level only when the post has a tag.
+const primaryTag = post.data.tags[0];
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Blog', href: '/blog' },
+  ...(primaryTag ? [{ label: primaryTag, href: `/blog/tags/${slugifyTag(primaryTag)}` }] : []),
+  { label: post.data.title },
+];
 ---
 <Base title={post.data.title} description={post.data.description} image={`/og/${post.id}.png`}>
   <script type="application/ld+json" is:inline set:html={JSON.stringify(blogJsonLd)} />
@@ -57,6 +67,7 @@ const updated =
             <PostToc headings={toc} words={words} minutes={minutes} class="sticky top-28 w-56" />
           </div>
         )}
+        <Breadcrumbs items={crumbs} class="mb-5" />
         <p class="font-mono text-xs uppercase tracking-[0.12em] text-brand">
           {published} · {minutes} min read · {words.toLocaleString()} words{updated && ` · Updated ${updated}`}
         </p>
