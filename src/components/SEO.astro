@@ -1,8 +1,15 @@
 ---
 import { site } from '../config/site';
-interface Props { title: string; description?: string; canonical?: string; image?: string; noindex?: boolean }
-const { title, description = site.description, canonical, image = '/og-default.png', noindex = false } = Astro.props;
-const pageTitle = title === site.name ? title : `${title} · ${site.name}`;
+interface Props { title: string; description: string; canonical?: string; image?: string; noindex?: boolean }
+const { title, description, canonical, image = '/og-default.png', noindex = false } = Astro.props;
+// Description is REQUIRED: every page must ship a unique meta description. Fail the
+// build loudly rather than silently falling back to a duplicated site-wide default.
+if (!description?.trim()) {
+  throw new Error(`<SEO> is missing a description for the page titled "${title}". Every page must pass a unique meta description.`);
+}
+// Homepage passes a full "[service] in [city] | [name]" title (already ends with the
+// business name); inner pages pass just the page name and get "| [name]" appended.
+const pageTitle = title.endsWith(site.name) ? title : `${title} | ${site.name}`;
 const canonicalUrl = new URL(canonical ?? Astro.url.pathname, site.url).href;
 const ogImage = new URL(image, site.url).href;
 ---

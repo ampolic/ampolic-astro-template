@@ -18,6 +18,9 @@ const testimonials = await getCollection('testimonials');
 const digits = site.phone.replace(/\D/g, '').slice(-10);
 const phoneLabel = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 
+// Homepage title models the local-SEO convention: "[primaryService] in [city] | [name]".
+const homeTitle = `${site.primaryService} in ${site.city} | ${site.name}`;
+
 const t = site.trust;
 const spec = [
   `Est. ${t.established}`,
@@ -26,10 +29,10 @@ const spec = [
   t.dispatch,
 ];
 ---
-<Base title={site.name} description={site.description}>
+<Base title={homeTitle} description={site.description}>
   <Hero
     eyebrow={`Licensed HVAC · ${site.address.locality}, ${site.address.region}`}
-    headline={site.tagline}
+    headline={`${site.city} heating & air conditioning, engineered for comfort.`}
     subhead={site.description}
     ctaLabel="Get a quote"
     ctaHref="/contact"

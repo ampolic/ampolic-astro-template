@@ -1,0 +1,11 @@
+# Cloudflare Pages redirects.  Format: <from>  <to>  <status>
+# Any time a route/slug is renamed, add a 301 line here in the SAME task (see CLAUDE.md).
+#
+# Legal-page long-form URLs → the canonical short slugs this template ships.
+# Clients often link the spelled-out forms from email footers, invoices, or old sites.
+/privacy-policy           /privacy         301
+/privacy-notice           /privacy         301
+/terms-of-service         /terms           301
+/terms-and-conditions     /terms           301
+/tos                      /terms           301
+/accessibility-statement  /accessibility   301

@@ -3,6 +3,9 @@ import { z } from 'astro/zod';
 export const serviceSchema = z.object({
   title: z.string(),
   summary: z.string(),
+  /* Meta description for the service detail page (~150 chars, unique per service).
+     Falls back to `summary` when omitted; set it when summary reads awkwardly as SEO copy. */
+  description: z.string().optional(),
   icon: z.string(),
   order: z.number(),
   featured: z.boolean().default(false),

@@ -37,4 +37,9 @@ describe('LocalBusiness JSON-LD', () => {
   it('lists socials under sameAs', () => {
     expect(ld.sameAs).toEqual(site.socials.map((s) => s.href));
   });
+  it('emits one areaServed City per configured service area', () => {
+    expect(ld.areaServed).toHaveLength(site.serviceAreas.length);
+    expect(ld.areaServed.map((a) => a.name)).toEqual(site.serviceAreas);
+    ld.areaServed.forEach((a) => expect(a['@type']).toBe('City'));
+  });
 });

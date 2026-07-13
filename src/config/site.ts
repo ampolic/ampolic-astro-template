@@ -20,6 +20,11 @@ export interface Site {
   legalName: string;
   tagline: string;
   description: string;
+  /* Primary offering, used to build the homepage <title> ("[primaryService] in [city] | [name]")
+     and AI-search summaries. Keep short and human, e.g. "HVAC Service". */
+  primaryService: string;
+  /* Marketing city for SEO titles + homepage copy. Keep in sync with address.locality. */
+  city: string;
   url: string;
   logo: string;
   email: string;
@@ -28,6 +33,9 @@ export interface Site {
   geo: { lat: number; lng: number };
   /* Plain-language service area, e.g. for the contact-page map caption. */
   serviceArea: string;
+  /* Towns/neighbourhoods served. Rendered as the footer "Serving:" line and injected
+     into LocalBusiness JSON-LD as areaServed. First entry should be the primary city. */
+  serviceAreas: string[];
   hours: Array<{ days: string; dayOfWeek: string[]; opens: string; closes: string }>;
   nav: Array<{ label: string; href: string }>;
   /* Primary conversion action, reused in the nav and hero. */
@@ -41,6 +49,13 @@ export interface Site {
   form: { endpoint: string; turnstileSiteKey: string; recipientLabel: string };
   /* Credibility facts rendered as the mono spec strip (est · rating · license · dispatch). */
   trust: { established: number; ratingValue: number; reviewCount: number; license: string; dispatch: string };
+  /* E-E-A-T author/credential slots rendered on the about page (and licenses in the footer).
+     Owner photo is optional — omit for an initials avatar. Licenses/certifications may be empty. */
+  credentials: {
+    owner: { name: string; title: string; photo?: string };
+    licenses: string[];
+    certifications: string[];
+  };
   /* Literal colors for build-time OG social cards. Satori needs concrete values;
      keep these in sync with the corresponding @theme tokens in global.css. */
   og: { bg: string; fg: string; brand: string };
@@ -78,6 +93,8 @@ export const site: Site = {
   tagline: 'Comfort, engineered.',
   description:
     'Licensed HVAC service for the greater Boulder area: AC repair and installation, furnace and heating, and indoor air quality.',
+  primaryService: 'HVAC Service',
+  city: 'Boulder',
   url: 'https://example.com',
   logo: '/favicon.svg',
   email: 'hello@summithvac.example',
@@ -85,6 +102,7 @@ export const site: Site = {
   address: { street: '1420 Pearl St', locality: 'Boulder', region: 'CO', postalCode: '80302', country: 'US' },
   geo: { lat: 40.019, lng: -105.278 },
   serviceArea: 'the greater Boulder area and Front Range',
+  serviceAreas: ['Boulder', 'Longmont', 'Louisville', 'Lafayette', 'Superior', 'Erie', 'Niwot', 'Gunbarrel'],
   hours: [
     {
       days: 'Mon-Fri',
@@ -109,6 +127,13 @@ export const site: Site = {
   analytics: { provider: 'none' },
   form: { endpoint: '/api/contact', turnstileSiteKey: '1x00000000000000000000AA', recipientLabel: 'the Summit team' },
   trust: { established: 2009, ratingValue: 4.9, reviewCount: 312, license: 'EA-4471', dispatch: '24/7 dispatch' },
+  credentials: {
+    owner: { name: 'Dave Sorenson', title: 'Founder & Master Technician' },
+    /* License statement for the about page. The bare number also appears as trust.license
+       on the homepage spec strip — keep the two in sync. */
+    licenses: ['Colorado Master HVAC Contractor #EA-4471', 'Licensed & insured in Boulder County'],
+    certifications: ['NATE-certified technicians', 'EPA 608 Universal certification'],
+  },
   og: { bg: '#0b1413', fg: '#f4f8f7', brand: '#2dd4bf' },
   legal: {
     businessLegalName: 'Summit Heating & Air LLC',

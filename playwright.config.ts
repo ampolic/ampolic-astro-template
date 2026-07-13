@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 /* Accessibility tests run against the PRODUCTION build, never dev mode:
    the webServer below builds the site and serves the static `dist/` via
    `astro preview`, so axe scans the exact HTML/CSS shipped to visitors. */
-const PORT = 4321;
+const PORT = Number(process.env.PORT ?? 4321);
 const BASE_URL = `http://localhost:${PORT}`;
 
 export default defineConfig({

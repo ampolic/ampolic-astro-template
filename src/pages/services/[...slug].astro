@@ -17,7 +17,7 @@ const crumbs = [
   { label: service.data.title },
 ];
 ---
-<Base title={service.data.title} description={service.data.summary}>
+<Base title={service.data.title} description={service.data.description ?? service.data.summary}>
   <article class="py-(--spacing-section)">
     <div class="mx-auto max-w-6xl px-4">
       <Breadcrumbs items={crumbs} class="mb-5" />

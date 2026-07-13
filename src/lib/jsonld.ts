@@ -20,6 +20,10 @@ export function buildLocalBusinessJsonLd(site: Site) {
       addressCountry: site.address.country,
     },
     geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng },
+    areaServed: site.serviceAreas.map((area) => ({
+      '@type': 'City',
+      name: area,
+    })),
     openingHoursSpecification: site.hours.map((h) => ({
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: h.dayOfWeek,

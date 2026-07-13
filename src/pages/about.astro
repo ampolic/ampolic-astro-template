@@ -6,12 +6,24 @@ import SectionHeading from '../components/SectionHeading.astro';
 import Prose from '../components/Prose.astro';
 import CtaBand from '../components/CtaBand.astro';
 import FaqList from '../components/FaqList.astro';
+import { site } from '../config/site';
 import aboutImage from '../assets/images/about-technician.webp';
 
 const faqEntries = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
 const faqItems = await Promise.all(
   faqEntries.map(async (f) => ({ question: f.data.question, Content: (await render(f)).Content }))
 );
+
+// E-E-A-T slots: owner identity, years in business, licenses/certifications.
+const { owner, licenses, certifications } = site.credentials;
+const years = new Date().getFullYear() - site.trust.established;
+const ownerInitials = owner.name
+  .split(' ')
+  .map((p) => p[0])
+  .join('')
+  .slice(0, 2)
+  .toUpperCase();
+const credentials = [...licenses, ...certifications];
 ---
 <Base
   title="About us"
@@ -67,6 +79,48 @@ const faqItems = await Promise.all(
     </div>
   </section>
   <section class="py-(--spacing-section)">
+    <div class="mx-auto max-w-6xl px-4">
+      <SectionHeading eyebrow="Who you're hiring" heading="Ownership & credentials" />
+      <div class="mt-12 grid gap-10 md:grid-cols-2 md:items-start">
+        <!-- Owner slot: photo (or initials fallback) + name + title -->
+        <div class="flex items-center gap-5">
+          {owner.photo ? (
+            <img
+              src={owner.photo}
+              alt={`${owner.name}, ${owner.title}`}
+              width="80"
+              height="80"
+              class="size-20 shrink-0 rounded-full border border-line object-cover"
+            />
+          ) : (
+            <span
+              aria-hidden="true"
+              class="grid size-20 shrink-0 place-items-center rounded-full border border-line bg-surface-alt font-display text-2xl font-semibold text-brand"
+            >{ownerInitials}</span>
+          )}
+          <div>
+            <p class="font-display text-xl font-semibold">{owner.name}</p>
+            <p class="text-text-muted">{owner.title}</p>
+            <p class="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
+              {years} years in business · Est. {site.trust.established}
+            </p>
+          </div>
+        </div>
+        <!-- Licenses & certifications slot -->
+        {credentials.length > 0 && (
+          <div>
+            <p class="font-mono text-xs uppercase tracking-[0.15em] text-brand">Licenses & certifications</p>
+            <ul class="mt-4 space-y-2 text-text-muted">
+              {credentials.map((c) => (
+                <li class="flex gap-2"><span aria-hidden="true" class="text-brand">✓</span>{c}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+  <section class="bg-surface-alt py-(--spacing-section)">
     <div class="mx-auto max-w-6xl px-4">
       <SectionHeading eyebrow="FAQ" heading="Common questions" />
       <FaqList items={faqItems} />
