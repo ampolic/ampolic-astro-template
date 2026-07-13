@@ -94,6 +94,9 @@ toggles. Accessibility lives in the code and responds to real user preferences.
   - `src/content/team/` — add team member profiles (optional)
   - `src/content/blog/` — add blog posts (optional)
 - [ ] Verify all collection frontmatter (title, description, published date, etc.) matches content structure
+- [ ] Local-SEO copy: the homepage H1/intro must name the city (from `site.ts` `city`), and each
+  service page should name the areas served where it reads naturally — not stuffed. The footer
+  "Serving:" line and JSON-LD `areaServed` are generated from `site.ts` `serviceAreas`.
 
 ## 5. Environment Variables (Cloudflare Pages)
 
@@ -139,6 +142,24 @@ The contact form endpoint (`/api/contact`) is a Cloudflare Pages Function at `fu
   - If `provider: 'none'`, no third-party JS loads
   - If `provider: 'plausible'`, the Plausible script loads only when `id` is set
 - [ ] Test form and navigation without JavaScript enabled (must remain fully functional)
+
+## Search presence
+
+Do these at launch so the business is discoverable and its listings agree with the site.
+NAP = Name, Address, Phone — it must be **identical** everywhere it appears.
+
+- [ ] **Google Search Console:** verify the domain (DNS TXT record), then submit the sitemap —
+  `https://<domain>/sitemap-index.xml`. Confirm it reports the expected page count with no errors.
+- [ ] **Google Business Profile:** claim and complete the listing — primary + secondary categories,
+  hours, service area, phone, website link, and real photos. The NAP on GBP must match
+  `src/config/site.ts` **exactly** (same street format, same phone format). A mismatch splits
+  local ranking signals.
+- [ ] **Bing Places** and **Apple Business Connect:** create/claim the listing on both, with the
+  same NAP, categories, hours, and website link.
+- [ ] Confirm `robots.txt` (generated) points at the live sitemap and that `llms.txt` renders at
+  `https://<domain>/llms.txt`.
+- [ ] **Schedule a 30-day post-launch Search Console review:** check indexed-page coverage, top
+  queries, and any crawl or structured-data errors, and fix what surfaced.
 
 ## 9. Go Live
 

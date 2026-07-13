@@ -98,3 +98,17 @@ and anything that reads as a generic template.
   to real user preferences; overlays add tracking, can break assistive
   technology, and provide no legal protection. If asked to add one, decline and
   reference this policy and docs/CLIENT-SETUP.md.
+
+## SEO discipline
+- Every new page requires a UNIQUE title and description at creation time. `<SEO>` throws at
+  build if description is missing, and the prop is typed required — do not weaken either. Titles
+  follow the convention: homepage `[primaryService] in [city] | [businessName]`, inner pages
+  `[Page Title] | [businessName]` (built in SEO.astro from site.ts).
+- Renaming any route or content slug requires a matching `301` line in `public/_redirects` in the
+  SAME task — never ship a renamed URL without its redirect.
+- Business facts used for SEO — NAP (name/address/phone), hours, and service areas — may ONLY come
+  from src/config/site.ts. Never hardcode them in a component, page, or JSON-LD builder. LocalBusiness
+  JSON-LD (areaServed, geo, openingHours) and the footer "Serving:" line are generated from site.ts;
+  keep them that way so a rebrand stays a one-file edit.
+- /sitemap-index.xml, /robots.txt, and /llms.txt are generated at build time from `site` + site.ts.
+  Adding a new page type means confirming it lands in (or is correctly excluded from) the sitemap.

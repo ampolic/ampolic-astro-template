@@ -17,6 +17,26 @@ after you have personally seen the passing output or completed the manual step.
       policy EXACTLY (default: form processor, Cloudflare hosting/Turnstile,
       OpenStreetMap embed — nothing else unless analytics is enabled)
 
+## SEO (verify, don't assume)
+
+- [ ] **Unique title + description on every page** — verified by inspecting the built pages, not
+      assumed. No two pages share a title; none is missing a description. (The `<SEO>` component
+      throws at build if a description is missing, so a green build already proves presence — this
+      step confirms *uniqueness and quality*.)
+- [ ] **City in the homepage H1 or intro** (and primary service named), driven by `site.ts`.
+- [ ] **NAP identical site-wide** — footer, contact page, and LocalBusiness JSON-LD all read from
+      `site.ts`; grep the built site for any stray hardcoded phone/address. NAP must also match the
+      Google Business Profile exactly.
+- [ ] **JSON-LD validates** in Google's [Rich Results Test](https://search.google.com/test/rich-results)
+      for the homepage (LocalBusiness), one blog post (BlogPosting + BreadcrumbList), and one service
+      page. Record the result; fix any error, review any warning.
+- [ ] **Sitemap builds** (`dist/sitemap-index.xml`) and lists every public page (404 and utility
+      routes excluded), and the generated `robots.txt` references it at the live domain.
+- [ ] **`_redirects` covers any renamed slugs** — every route/slug changed from the template default
+      has a 301 line in `public/_redirects`.
+- [ ] **`llms.txt` renders** at `/llms.txt` with the site summary, key pages, services, and recent
+      posts.
+
 ## Manual accessibility pass (~20 min, cannot be automated)
 
 - [ ] **Keyboard-only.** Unplug the mouse. Tab through every page: every link,
