@@ -37,6 +37,32 @@ reviewing both pages with their own counsel before launch.
   not attempt to cover.
 - [ ] The client accepts responsibility for the legal review of both the privacy and terms pages.
 
+## Escalation & client FAQ
+
+### If the client asks for an accessibility widget/overlay
+
+Decline, and explain why. Canned response:
+
+> This site is built accessible at the code level — WCAG 2.2 AA, tested with both
+> automated tooling (axe on every page) and manual keyboard + screen-reader
+> passes, and it responds to visitors' own OS-level preferences for contrast,
+> reduced motion, and text size. That is what the standard requires and what
+> courts and regulators actually evaluate.
+>
+> An overlay widget (accessiBe, UserWay, and similar) adds cost and a third-party
+> script that tracks your visitors — which conflicts with the no-third-party
+> privacy posture this site ships with. Overlays can interfere with the screen
+> readers and assistive tech people already use, and they have shown up *in* ADA
+> complaints rather than preventing them. They do not provide legal protection.
+>
+> If a visitor hits a specific barrier, they can report it via the contact on the
+> accessibility statement page and we fix it at the source — a durable fix, not a
+> layer painted on top.
+
+This matches the standing policy in the root `CLAUDE.md` (Accessibility
+discipline): no third-party overlays, no homegrown font-size / "colorblind mode"
+toggles. Accessibility lives in the code and responds to real user preferences.
+
 ## 2. Visual Identity (@theme tokens)
 
 - [ ] Edit `src/styles/global.css` (the `@theme` block):

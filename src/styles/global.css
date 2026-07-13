@@ -69,3 +69,49 @@ html {
   color: var(--color-text);
   font-family: var(--font-sans);
 }
+
+
+/* High-contrast preference — responds to the user's OS/browser "increase
+   contrast" setting (Windows/macOS high-contrast, GNOME, or DevTools emulation).
+   Adjusts TOKENS ONLY, never components: muted text is pushed toward the body
+   text color (≥7:1 on both surfaces), lines are darkened to clearly visible
+   borders, the soft card shadow is solidified into a 1px border-equivalent,
+   the photo scrim goes fully black, and (light only) the brand fill is darkened
+   so white text on it clears 7:1. Dark-mode values are re-declared here because
+   the non-HC dark rules above out-specify this block's :root. */
+@media (prefers-contrast: more) {
+  /* Light (default) */
+  :root {
+    --color-text-muted: #333f3e; /* 10.5:1 on surface, 9.6:1 on surface-alt */
+    --color-line: #808b89; /* 3.4:1 / 3.1:1 — borders clearly visible */
+    --color-brand: #0b5e5d; /* darkened teal: white on brand → 7.6:1 */
+    --color-scrim: #000000; /* max token-level scrim; opacity stops are in Hero.astro */
+    --shadow-card: 0 0 0 1px var(--color-line); /* solid hairline, not a soft shadow */
+  }
+
+  /* Dark — explicit choice */
+  :root[data-theme='dark'] {
+    --color-text-muted: #a7b5b3; /* 8.8:1 on surface, 7.9:1 on surface-alt */
+    --color-line: #6b7876; /* 4.1:1 / 3.7:1 */
+    --shadow-card: 0 0 0 1px var(--color-line);
+    /* brand stays #2dd4bf: dark ink on it is already 9.1:1 */
+  }
+
+  /* Dark — system preference, no explicit choice */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']):not([data-theme='dark']) {
+      --color-text-muted: #a7b5b3;
+      --color-line: #6b7876;
+      --shadow-card: 0 0 0 1px var(--color-line);
+    }
+  }
+
+  /* Two-tone focus ring: a near-black/near-white pair from tokens guarantees a
+     ≥3:1 edge against any surface, brand fill, or hero scrim, in both themes.
+     Unlayered, so it overrides the components' layered outline utilities. */
+  :focus-visible {
+    outline: 3px solid var(--color-text);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px var(--color-surface);
+  }
+}

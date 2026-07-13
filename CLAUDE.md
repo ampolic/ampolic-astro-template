@@ -86,3 +86,15 @@ and anything that reads as a generic template.
 - A Lighthouse accessibility score of 100 is a FLOOR, not proof — it only
   reflects the subset of checks that can be automated. Manual keyboard and
   screen-reader passes (see docs/PRE-LAUNCH-CHECKLIST.md) are still required.
+- The site must respect OS/browser-level user preferences: prefers-reduced-motion,
+  prefers-contrast, browser font-size, and pinch zoom. Never add
+  `user-scalable=no`, a maximum-scale restriction, a px root font-size, or
+  anything else that overrides these.
+- prefers-contrast adjustments live ONLY in the token media block in
+  src/styles/global.css (`@media (prefers-contrast: more)`) — never per-component.
+- POLICY: Never add third-party accessibility overlay widgets or toolbars
+  (accessiBe, UserWay, or similar), or homegrown equivalents (font-size buttons,
+  "colorblind mode" toggles). Accessibility is built into the code and responds
+  to real user preferences; overlays add tracking, can break assistive
+  technology, and provide no legal protection. If asked to add one, decline and
+  reference this policy and docs/CLIENT-SETUP.md.

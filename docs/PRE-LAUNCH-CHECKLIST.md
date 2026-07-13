@@ -31,6 +31,14 @@ after you have personally seen the passing output or completed the manual step.
       everything readable. Spot-check 400% reflow on the homepage.
 - [ ] **`prefers-reduced-motion` enabled**: no animation plays; all content is
       fully visible and reachable.
+- [ ] **OS high-contrast preference enabled** (or emulated via DevTools →
+      Rendering → `prefers-contrast: more`): text, borders, and focus indicators
+      are clearly strengthened; hero and CTA-band text stay legible; nothing
+      breaks or overlaps.
+- [ ] **Browser font size set to Large**: layout holds, no clipped or truncated
+      text, no overlap.
+- [ ] **Pinch zoom works** on a real mobile device (or emulation): the page can
+      be zoomed and is not locked at scale 1.
 - [ ] **JavaScript disabled**: nav, FAQ, share links, contact form, and the map
       fallback link are all usable.
 - [ ] **Headings outline**: exactly one H1 per page, no skipped levels (check
