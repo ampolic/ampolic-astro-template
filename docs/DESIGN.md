@@ -2,7 +2,7 @@
 
 > Design spec for the `astro-business-starter` demo site. This is the reference
 > the theming work implements against. Scope is strictly the theming surface
-> defined in `PLAN.md` §3: the `@theme` token block in `src/styles/global.css`,
+> defined by the theming contract in `CLAUDE.md`: the `@theme` token block in `src/styles/global.css`,
 > the Fontsource font imports in `Base.astro`, and hero/section composition.
 > Component internals are **not** in scope.
 >
@@ -34,12 +34,14 @@ Arial, Space Grotesk). Verified present on npm (@5.2.x).
 | Body / UI | `@fontsource-variable/hanken-grotesk` | `'Hanken Grotesk Variable'` | body copy, buttons, nav; neutral, a touch warmer than Inter |
 | Mono | `@fontsource-variable/jetbrains-mono` | `'JetBrains Mono Variable'` | **the signature** — eyebrows, spec numbers, phone, license #, ratings |
 
-`Base.astro` imports (replaces the current Inter/Manrope imports):
+`Base.astro` loads these as latin-subset `@font-face` rules (via `?url` asset imports),
+so only the three latin woff2 files ship to the browser:
 
 ```ts
-import '@fontsource-variable/archivo';
-import '@fontsource-variable/hanken-grotesk';
-import '@fontsource-variable/jetbrains-mono';
+import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url';
+import hankenLatin from '@fontsource-variable/hanken-grotesk/files/hanken-grotesk-latin-wght-normal.woff2?url';
+import monoLatin from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
+// …then declared as @font-face for 'Archivo Variable' / 'Hanken Grotesk Variable' / 'JetBrains Mono Variable'
 ```
 
 > **Why a mono is a first-class font here:** the whole direction rests on
@@ -51,8 +53,7 @@ import '@fontsource-variable/jetbrains-mono';
 
 ## 3. `@theme` token values
 
-Light is the default (`PLAN.md` §10: business sites default light). Dark is
-tuned and wired through the existing `[data-theme]` remap. Exact hex is
+Light is the default. Dark is tuned and wired through the existing `[data-theme]` remap. Exact hex is
 AA-verified at implementation; values below are the design target.
 
 ### Fonts
@@ -99,8 +100,15 @@ than defaulted.
 
 ## 4. Hero concept — "the instrument panel"
 
-Left-weighted, asymmetric. **No grinning-technician stock photo.** Typography
-and a data readout carry the hero.
+Full-viewport, left-weighted, asymmetric. **A single real work photo carries the
+hero** — a technician charging a condenser with a manifold gauge in frame — sitting
+full-bleed behind a teal-ink scrim gradient, with the readout text riding on the
+scrim in near-white so it always clears AA. Not a grinning-salesperson stock shot.
+
+> Decision note: an earlier draft of this spec called for a *purely typographic*
+> hero. The shipped homepage uses the full-bleed photo above by project decision;
+> the `--color-scrim` / `--color-on-hero` tokens exist precisely to keep overlaid
+> text legible. Do not "restore" the typographic hero without a new decision.
 
 ```
 LICENSED HVAC · BOULDER, CO                      ← mono eyebrow, teal
@@ -112,24 +120,23 @@ heating, and indoor air quality.
 EST. 2009 · RATED 4.9/5 312 rev · LIC #EA-4471 · 24/7 DISPATCH   ← spec strip (mono)
 ```
 
-- **Headline** pulls from `site.tagline`. **Recommendation:** tighten the tagline
-  in `site.ts` to `"Comfort, engineered."` (from the current "Comfort you can
-  count on, all year round."). Optional — the composition works with either.
-- **Optional right side:** a single restrained equipment/install photo in a
-  1px-bordered frame with a mono caption, e.g. `MODEL: TRANE XR16 — BOULDER, CO`.
-  If no strong image exists, the hero stays purely typographic and the spec
-  strip carries the right-hand weight. (Images via `astro:assets` with explicit
-  dimensions, per the quality bar.)
-- The **spec strip** is composed on the page (not inside `Hero.astro`) so
-  components stay clean.
+- **Headline** is composed in `index.astro` (currently `"{city} heating & air
+  conditioning, engineered for comfort."`); the terse `site.tagline`
+  (`"Comfort, engineered."`) is reused elsewhere. Archivo, tight tracking.
+- **Contrast is guaranteed by the scrim**, not by luck: the `--color-scrim`
+  gradient + `--color-on-hero` text tokens (see `Hero.astro`) keep the eyebrow,
+  headline, subhead, and CTA AA over any photo. The photo loads via `astro:assets`
+  with explicit dimensions and `fetchpriority="high"`.
+- The **spec strip** is a separate full-width band immediately below the hero
+  (§5.2), composed on the page (not inside `Hero.astro`) so components stay clean.
 
 ---
 
 ## 5. Homepage composition (section by section)
 
-Order follows `PLAN.md`: hero → services → social proof → CTA → contact.
+Order: hero → services → social proof → CTA → contact.
 
-1. **Hero** — on `--color-surface`. As above.
+1. **Hero** — full-bleed photo + teal-ink scrim (not a surface band). As §4.
 2. **Spec / trust strip** — thin full-width band, monospace metrics row
    (`EST · rating-as-fraction · license · dispatch`; the rating is set `4.9/5`,
    never a `★` glyph — the mono face has no star and §7 rejects gold stars).
@@ -194,4 +201,4 @@ enter-only floor.
 Everything above is expressed through `@theme` tokens + three font imports +
 hero/section composition. Swapping brand color, the three font packages, and the
 `site.ts` facts yields a coherent, differently-branded site with zero component
-changes — the template's core promise (`PLAN.md` §9.6).
+changes — the template's core promise.

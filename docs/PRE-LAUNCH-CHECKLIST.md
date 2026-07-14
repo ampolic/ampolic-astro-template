@@ -36,6 +36,8 @@ after you have personally seen the passing output or completed the manual step.
       has a 301 line in `public/_redirects`.
 - [ ] **`llms.txt` renders** at `/llms.txt` with the site summary, key pages, services, and recent
       posts.
+- [ ] **`security.txt` and `humans.txt` render** — `/.well-known/security.txt` (Contact address
+      plus a future-dated `Expires`) and `/humans.txt` (colophon). Both generate at build time.
 
 ## Manual accessibility pass (~20 min, cannot be automated)
 
@@ -49,8 +51,9 @@ after you have personally seen the passing output or completed the manual step.
       meaning, not filename noise.
 - [ ] **200% browser zoom** on every page: no horizontal scroll, no overlap,
       everything readable. Spot-check 400% reflow on the homepage.
-- [ ] **`prefers-reduced-motion` enabled**: no animation plays; all content is
-      fully visible and reachable.
+- [ ] **`prefers-reduced-motion` enabled**: no animation plays — including
+      page-navigation View Transitions, which fall back to an instant swap; all
+      content is fully visible and reachable.
 - [ ] **OS high-contrast preference enabled** (or emulated via DevTools →
       Rendering → `prefers-contrast: more`): text, borders, and focus indicators
       are clearly strengthened; hero and CTA-band text stay legible; nothing
