@@ -29,7 +29,7 @@ to WebP into `src/assets/images/`; served only via `astro:assets` `<Image />`.
 
 ## Fonts
 
-`src/assets/og/Archivo.ttf` — Archivo (variable), Omnibus-Type, SIL Open Font
-License 1.1 (`src/assets/og/OFL.txt`). Used **only at build time** by Satori to
-render blog OG social cards; never served to the browser. Source:
-https://github.com/google/fonts/tree/main/ofl/archivo
+`src/assets/og/Archivo-{Regular,SemiBold,Bold}.ttf` — Archivo (three static
+weights), Omnibus-Type, SIL Open Font License 1.1 (`src/assets/og/OFL.txt`). Used
+**only at build time** by Satori to render blog OG social cards; never served to
+the browser. Source: https://github.com/google/fonts/tree/main/ofl/archivo

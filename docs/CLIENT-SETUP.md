@@ -71,11 +71,14 @@ toggles. Accessibility lives in the code and responds to real user preferences.
 - [ ] Edit `src/styles/global.css` (the `@theme` block):
   - Set `--color-brand` to the client's primary brand color (hex)
   - Set `--color-brand-dark` for dark mode (ensure ≥ WCAG AA contrast on light text)
-  - Verify all neutrals (--color-surface, --color-surface-alt, --color-text, --color-text-muted, --color-border) match the brand's aesthetic
+  - Verify all neutrals (--color-surface, --color-surface-alt, --color-text, --color-text-muted, --color-line) match the brand's aesthetic
   - All radii and shadows should remain consistent across light/dark
-- [ ] Edit `src/layouts/Base.astro`:
-  - Swap display font: replace `@fontsource-variable/manrope` with the client's chosen variable font (from Fontsource only)
-  - Update the CSS font-family in the `@theme` block if needed (currently `'Manrope'`)
+- [ ] Swap fonts (only if the brand needs it) — Fontsource variable packages only, no font CDN:
+  - The three fonts load as latin-subset `@font-face` rules in `src/layouts/Base.astro`
+    (Archivo = display, Hanken Grotesk = body/UI, JetBrains Mono = the "readout" voice for
+    facts/numbers). To swap one, change its `?url` import and the matching `@font-face`.
+  - Update the corresponding `--font-display` / `--font-sans` / `--font-mono` token in the
+    `@theme` block of `src/styles/global.css`.
 
 ## 3. Design Validation
 
@@ -97,8 +100,8 @@ toggles. Accessibility lives in the code and responds to real user preferences.
 - [ ] Update content collections (via markdown):
   - `src/content/services/` — add/edit the client's service offerings
   - `src/content/testimonials/` — add client testimonials
-  - `src/content/team/` — add team member profiles (optional)
-  - `src/content/blog/` — add blog posts (optional)
+  - `src/content/faq/` — add frequently-asked questions
+  - `src/content/posts/` — add blog posts (optional)
 - [ ] Verify all collection frontmatter (title, description, published date, etc.) matches content structure
 - [ ] Local-SEO copy: the homepage H1/intro must name the city (from `site.ts` `city`), and each
   service page should name the areas served where it reads naturally — not stuffed. The footer

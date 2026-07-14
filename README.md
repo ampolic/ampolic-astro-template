@@ -1,176 +1,133 @@
 # Astro Business Starter
 
-A modern, fast, and themeable static business website template built with Astro 5, Tailwind CSS v4, and Cloudflare. Zero third-party JavaScript by default; all motion via GSAP + Lenis; contact form with anti-spam (Turnstile + Resend).
+A fast, accessible, themeable static website template for small businesses, built with
+Astro 5, Tailwind CSS v4, and Cloudflare Pages. **Zero third-party JavaScript by
+default**, and every visual choice lives in design tokens so a rebrand is essentially a
+one-file edit.
+
+The repo ships a complete demo brand — **Summit Heating & Air**, a fictional Boulder, CO
+HVAC company — so it demonstrates convincingly out of the box.
 
 ## Stack
 
-- **Astro 5** — static site generation with `.astro` components (no React/Vue/Svelte)
-- **Tailwind CSS v4** — CSS-first theming via `@theme` block in `src/styles/global.css`
-- **GSAP + Lenis** — scroll animation and smooth scrolling (via `src/scripts/motion.ts`)
-- **Fontsource** — variable fonts (no external CDN; currently Inter + Manrope)
-- **Cloudflare Pages** — deploy target; contact form via Pages Functions
-- **Resend** — transactional email for contact submissions
-- **Cloudflare Turnstile** — privacy-first CAPTCHA for form anti-spam
+- **Astro 5** — static output (`output: 'static'`), pure `.astro` components (no React/Vue/Svelte)
+- **Tailwind CSS v4** — CSS-first theming via the `@theme` block in `src/styles/global.css`
+  (through `@tailwindcss/vite`; no `tailwind.config.js`)
+- **Fonts** — self-hosted Fontsource variable fonts, latin subset: **Archivo** (display) ·
+  **Hanken Grotesk** (body/UI) · **JetBrains Mono** (the "readout" voice for facts & numbers).
+  No font CDN.
+- **GSAP + Lenis** — subtle enter-only motion + smooth scroll, all via `src/scripts/motion.ts`,
+  fully disabled under `prefers-reduced-motion`
+- **astro-icon + Lucide** — build-time inlined SVG icons
+- **Cloudflare Pages** — static host; the contact form is a Pages Function (`functions/api/contact.ts`)
+- **Resend** (transactional email) + **Cloudflare Turnstile** (privacy-first anti-spam)
 
-No third-party analytics by default. Optionally enable Plausible or Google Analytics via `site.analytics` in `src/config/site.ts`.
+Also included: light/dark theming, native cross-document View Transitions, a print
+stylesheet, LocalBusiness JSON-LD, generated `sitemap` / `robots.txt` / `llms.txt` /
+`security.txt` / `humans.txt`, a build-time OG-image endpoint, and an axe-core
+accessibility test suite.
 
-## Getting Started
+No third-party analytics by default. Optionally enable Plausible or GA via `site.analytics`
+in `src/config/site.ts`.
 
-### Prerequisites
+## Getting started
 
-- Node.js 18+ and pnpm
-
-### Development
+Prerequisites: Node.js 18+ and pnpm.
 
 ```bash
-pnpm install          # Install dependencies
-pnpm dev              # Start dev server (http://localhost:3000)
-pnpm check            # Type check (astro check)
-pnpm build            # Build for production (output: dist/)
-pnpm test             # Run tests (if any)
+pnpm install
+pnpm dev          # dev server → http://localhost:4321
+pnpm check        # astro check (strict TS)
+pnpm build        # production build → dist/
+pnpm preview      # serve the built site
+pnpm test         # unit tests (vitest)
+pnpm test:a11y    # accessibility tests (Playwright + axe, every page)
+pnpm format       # prettier
 ```
 
-### File Structure
+## Project structure
 
 ```
 src/
-  components/         # .astro components (Header, Footer, SEO, etc.)
-  config/site.ts      # Site metadata, nav, business facts, analytics config
-  content/            # Content collections (services, testimonials, team, blog)
-  layouts/Base.astro  # Main layout (includes anti-FOUC, analytics slot)
-  pages/              # Route pages (.astro)
-  scripts/motion.ts   # GSAP + Lenis initialization
-  styles/global.css   # Global styles + Tailwind @theme block (all colors, radii, shadows)
-public/
-  favicon.svg         # Favicon (replace with client's)
-  og-default.png      # OG image (replace with client's)
-  robots.txt          # SEO robots directive
+  components/         # .astro components (Header, Footer, Hero, SEO, ShareMenu, …)
+  config/site.ts      # ALL business facts: name, nav, contact, hours, socials, analytics, legal, credit
+  content/            # content collections: services, posts, testimonials, faq
+  content.config.ts   # collection definitions (schemas in content/schemas.ts, Zod-validated)
+  layouts/Base.astro  # shell: font @font-face, <head>, anti-FOUC theme script, Header/Footer
+  lib/                # helpers (jsonld, posts, share, readingTime, contact-validation)
+  pages/              # routes + generated endpoints: robots.txt.ts, llms.txt.ts, rss.xml.ts,
+                      #   .well-known/security.txt.ts, humans.txt.ts, og/[slug].png.ts (sitemap via integration)
+  scripts/            # motion.ts (GSAP+Lenis), theme.ts, prefersReducedMotion.ts
+  styles/global.css   # Tailwind entry + @theme tokens (colors, radii, shadows, fonts) + print + view-transitions
+public/               # favicon.svg (theme-aware), favicon.ico, apple-touch-icon.png, og-default.png,
+                      #   _headers, _redirects, rss.xsl
 functions/api/        # Cloudflare Pages Functions (contact.ts)
-docs/
-  PLAN.md             # Project architecture and design decisions
-  CLIENT-SETUP.md     # Per-client rebrand checklist
+scripts/              # build tooling (gen-apple-touch-icon.mjs)
+tests/                # a11y.spec.ts + unit tests
+docs/                 # DESIGN.md, CLIENT-SETUP.md, PRE-LAUNCH-CHECKLIST.md, IMAGE-CREDITS.md
+CLAUDE.md             # the working guardrails (stack, theming discipline, a11y/SEO/privacy rules)
 ```
 
 ## Theming
 
-All visual identity lives in two places:
+All visual identity lives in **two** places, so a rebrand touches nothing else:
 
-1. **`src/styles/global.css`** — the `@theme` block:
-   - `--color-brand` — primary brand color (light mode)
-   - `--color-brand-dark` — brand color for dark mode
-   - `--color-surface`, `--color-surface-alt` — backgrounds
-   - `--color-text`, `--color-text-muted` — text colors
-   - `--color-border` — border color
-   - `--spacing-section` — vertical section rhythm
-   - All border-radius and box-shadow values
-   - Font families (currently `'Inter'` and `'Manrope'`)
+1. **`src/styles/global.css`** — the `@theme` block: `--color-brand` (+ `--color-brand-dark`
+   for dark mode), the neutral surface/text/line tokens, `--color-scrim` / `--color-on-hero`
+   (text over hero photos), `--radius-base`, `--shadow-card`, `--spacing-section`, and the
+   `--font-display` / `--font-sans` / `--font-mono` families.
+2. **`src/layouts/Base.astro`** — the three Fontsource `@font-face` imports.
 
-2. **`src/layouts/Base.astro`** — font imports:
-   - Display font: `@fontsource-variable/manrope` (replace for rebranding)
-   - Body font: `@fontsource-variable/inter`
+Components reference tokens only — never hardcoded hex, radii, or shadows. The full
+discipline lives in **`CLAUDE.md`**; the demo brand's visual direction is in
+**`docs/DESIGN.md`**.
 
-Components reference design tokens only; no hardcoded hex colors, radii, or shadows.
+### Light & dark mode
 
-### Light & Dark Mode
+System-aware: detects `prefers-color-scheme` on first visit, toggles from the header
+(stored in `localStorage`), and avoids FOUC (an inline `<script>` sets `data-theme` before
+paint). Dark mode remaps the same token names, so components never branch. All motion is
+disabled under `prefers-reduced-motion`.
 
-The theme is system-aware by default:
-- Detects `prefers-color-scheme: dark` on first visit
-- User can toggle via the theme button in the header (stored in `localStorage`)
-- No flash of unstyled content (FOUC) — an inline `<script>` in `<head>` sets `data-theme` before paint
-- All motion is disabled under `prefers-reduced-motion: reduce`
+## Content model
 
-## Contact Form
+Four Zod-validated collections in `src/content/` (schemas in `content/schemas.ts`):
 
-The contact form (at `/contact`) submits to the `/api/contact` endpoint, a Cloudflare Pages Function at `functions/api/contact.ts`.
+- **services** — `title`, `summary`, `description?`, `icon` (Lucide name), `order`,
+  `featured`, optional `image` + `imageAlt`, body
+- **posts** — `title`, `description`, `date`, `updated?`, `tags`, `draft`, `cover?`, body
+- **testimonials** — `author`, `role`, `quote`, `rating?`
+- **faq** — `question`, `order`, body
 
-### Anti-Spam Design
+Adding a service/post/testimonial/FAQ is a single new markdown/MDX file — no code changes.
 
-**With JavaScript:**
-- Cloudflare Turnstile CAPTCHA (privacy-first, no data sale)
-- Token sent to the backend and verified against `TURNSTILE_SECRET_KEY`
-- Timing-based rate-limiting (minimum 1s between submit clicks)
-- Honeypot field (hidden, should remain empty on valid submits)
+## Contact form
 
-**Without JavaScript (graceful fallback):**
-- Form submits via POST with field-presence validation
-- Honeypot remains hidden; timing-only check does not apply
-- Backend verifies all required fields are present
+`/contact` posts to `/api/contact`, a Cloudflare Pages Function (`functions/api/contact.ts`).
 
-### Environment Variables
+- **With JS:** Turnstile CAPTCHA (verified server-side against `TURNSTILE_SECRET_KEY`), a
+  timing check, and a honeypot.
+- **Without JS:** the form still POSTs; the function validates field presence + honeypot.
+  Fully functional with JavaScript disabled.
 
-Set these in Cloudflare Pages project settings (not committed):
+Set these in the Cloudflare Pages project settings (never commit them):
 
 ```
-TURNSTILE_SECRET_KEY    # Cloudflare Turnstile secret (verify tokens)
-RESEND_API_KEY          # Resend API key (send emails)
-CONTACT_TO_EMAIL        # Recipient email (e.g., hello@client.com)
-CONTACT_FROM_EMAIL      # Sender email (must be verified in Resend)
+TURNSTILE_SECRET_KEY   RESEND_API_KEY   CONTACT_TO_EMAIL   CONTACT_FROM_EMAIL
 ```
 
-## Analytics (Optional)
+## Deployment (Cloudflare Pages)
 
-By default, `site.analytics.provider` is set to `'none'` — zero third-party JavaScript.
+Framework preset **Astro**, build command `pnpm build`, output directory `dist`. Add the env
+vars above. The `functions/` directory deploys automatically as Pages Functions.
 
-To enable analytics, update `src/config/site.ts`:
+Before shipping a client, work through **`docs/PRE-LAUNCH-CHECKLIST.md`** (automated gates,
+manual accessibility pass, SEO, and legal).
 
-```typescript
-analytics: {
-  provider: 'plausible',  // or 'ga' or 'none'
-  id: 'example.com'       // Plausible domain or GA property ID
-}
-```
+## Rebranding for a client
 
-The analytics script (if configured) loads in the `<body>` of `src/layouts/Base.astro`:
-
-```astro
-{site.analytics.provider === 'plausible' && site.analytics.id && (
-  <script is:inline defer data-domain={site.analytics.id} src="https://plausible.io/js/script.js"></script>
-)}
-```
-
-## Deployment
-
-### Cloudflare Pages
-
-1. Connect your GitHub repository to Cloudflare Pages
-2. Set build settings:
-   - **Framework:** Astro
-   - **Build command:** `pnpm build`
-   - **Build output directory:** `dist`
-3. Add environment variables (see Contact Form section)
-4. Deploy
-
-The `functions/` directory is automatically deployed as Cloudflare Pages Functions.
-
-### Build Verification
-
-Before deployment:
-
-```bash
-pnpm check && pnpm build
-```
-
-Both must pass with zero warnings. Verify:
-- Client-side JavaScript < 60KB gzipped
-- Lighthouse (mobile): Performance ≥ 95, Accessibility ≥ 95, SEO 100
-- No hardcoded colors in components/pages (all via @theme)
-- Analytics script does not render by default (provider: 'none')
-
-## Design Quality Standards
-
-- **One H1 per page** — clear page hierarchy
-- **Body text 16–18px, line-height ≥ 1.6, measure ≤ 70ch** — readable prose
-- **Section rhythm** — alternating surface/surface-alt backgrounds with `--spacing-section` padding
-- **Exactly one primary CTA per page** — obvious conversion path
-- **WCAG AA contrast** — all text meets color contrast standards
-- **Visible focus states** — keyboard navigation is clear and accessible
-- **44px tap targets** — touch-friendly buttons and links
-- **Motion ≤ 0.6s, enter-only, subtle** — no pinning, no scroll-jacking
-- **No JavaScript required** — navigation, accordion, and contact form all work without JS
-
-## For Clients
-
-See `docs/CLIENT-SETUP.md` for the per-client rebrand checklist: updating site config, theming, content, media, environment variables, and Cloudflare deployment.
+See **`docs/CLIENT-SETUP.md`** — the step-by-step rebrand checklist: site config, brand
+tokens, fonts, content, media, Cloudflare env, and search presence.
 
 ## License
 

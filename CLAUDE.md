@@ -1,7 +1,8 @@
 # astro-business-starter — agent rules
 
 Reusable static template for small-business websites. Clean, fast, professional.
-The build plan is at docs/PLAN.md — follow it; do not substitute stack choices.
+This file is the authoritative guardrail for working in this repo; the demo brand's
+visual spec is docs/DESIGN.md. Do not substitute the stack choices below.
 
 ## Stack (non-negotiable)
 - Astro 5, static output. Tailwind CSS v4 via @tailwindcss/vite ONLY —
@@ -39,9 +40,9 @@ The build plan is at docs/PLAN.md — follow it; do not substitute stack choices
   Both must pass before a task is done.
 - Adding a service/post/testimonial/FAQ must require only a new markdown
   file — if a code change is needed, the design is wrong; fix the template.
-- Do not add dependencies beyond those in docs/PLAN.md §0 without asking.
+- Do not add dependencies beyond those already in package.json without asking.
 
-## Definition of done (per PLAN.md §9)
+## Definition of done
 - astro check clean; build zero warnings
 - Lighthouse mobile: Perf ≥ 95, A11y ≥ 95, SEO 100
 - Client JS < 60KB gzipped
