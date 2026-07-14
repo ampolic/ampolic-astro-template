@@ -115,3 +115,160 @@ html {
     box-shadow: 0 0 0 6px var(--color-surface);
   }
 }
+
+/* ==========================================================================
+   Print stylesheet — every page, one place (no per-component print CSS).
+   SANCTIONED TOKEN EXCEPTION: on paper there is no theme and no dark mode, so
+   this block is the ONE place allowed to hardcode pure #fff / near-black #111.
+   It does so by re-pointing the design tokens to a paper palette — components
+   still reference tokens only, so a user who has toggled dark mode still prints
+   black-on-white. Everything lives inside @media print: zero screen/JS impact.
+   ========================================================================== */
+@media print {
+  /* Repaint the palette for paper by overriding tokens (defeats [data-theme]
+     and prefers-color-scheme with !important). Teal brand → black ink. */
+  :root,
+  :root[data-theme='dark'],
+  :root[data-theme='light'] {
+    --color-surface: #fff !important;
+    --color-surface-alt: #fff !important;
+    --color-text: #111 !important;
+    --color-text-muted: #333 !important;
+    --color-line: #bbb !important; /* hairline that still reads on paper */
+    --color-brand: #000 !important;
+    --color-brand-dark: #000 !important;
+    --color-brand-contrast: #000 !important;
+    --color-scrim: #fff !important;
+    --color-on-hero: #111 !important;
+    --shadow-card: none !important;
+  }
+
+  @page { margin: 18mm 16mm; }
+
+  html,
+  body {
+    background: #fff;
+    color: #111;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  /* Kill every shadow; hairline borders (via --color-line) carry structure. */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Reveal-animation safety — THE classic print bug. GSAP leaves inline
+     opacity:0 / translateY on scroll-reveal targets that never entered the
+     viewport; print captures that blank state. Force final values. Inline
+     styles mean !important is genuinely required here. */
+  [data-hero],
+  [data-spec],
+  [data-reveal],
+  [data-stagger] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Hide non-content chrome: nav, mobile menu, footer columns/socials, share
+     menu, OSM map iframe, hero background photo + scrim, CTA bands, agency
+     badge, and any decorative (aria-hidden) layer. */
+  header nav,
+  header details,
+  footer nav,
+  #share-panel,
+  .share-trigger,
+  iframe,
+  .aspect-\[3\/2\],                          /* OSM map's aspect box — collapse it, keep the caption link below */
+  form,                                      /* contact form: dead input boxes are noise on a printed page */
+  article nav:not([aria-label='Breadcrumb']), /* blog prev/next (keeps the breadcrumb trail) */
+  article section,                           /* blog "Keep reading" related-posts block */
+  article ul:has(a[href*='/blog/tags/']),    /* blog tags UI */
+  .-z-10,
+  [aria-hidden='true'],
+  section.bg-brand,
+  footer a[href^='https://ampolic.com'] {
+    display: none !important;
+  }
+
+  /* Header → just the business name as plain text at the top. */
+  header {
+    position: static !important;
+    border: 0 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+  }
+  header a[href='/'] {
+    font-size: 16pt;
+    font-weight: 700;
+    color: #000;
+  }
+
+  /* Hero: drop the full-viewport photo treatment, flow as a normal block. */
+  section.isolate {
+    min-height: 0 !important;
+    display: block !important;
+  }
+
+  /* Solid (brand-fill) buttons would be black-on-black once brand → #000;
+     render them as a plain outlined label so the CTA text still reads. */
+  a.bg-brand,
+  button.bg-brand {
+    background: transparent !important;
+    color: #000 !important;
+    border: 1px solid #000 !important;
+  }
+
+  /* Contact info is the payload on paper — make phone numbers unmissable. */
+  a[href^='tel:'] {
+    font-weight: 700;
+    color: #000;
+    text-decoration: none;
+  }
+
+  /* Featured images (blog cover, service hero) stay but never dominate. */
+  article img {
+    max-width: 50% !important;
+    height: auto;
+  }
+
+  /* Print the destination after real external content links, but NOT for
+     nav/footer/share (hidden), tel:/mailto: (visible already), or same-page
+     anchors (relative → never match ^=http). Scoped to <main> excludes footer. */
+  main a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 85%;
+    font-weight: normal;
+    word-break: break-all;
+  }
+
+  /* Blog-post print footer (hidden on screen via .hidden; shown here). */
+  [data-print-footer] {
+    display: block !important;
+    margin-top: 16pt;
+    padding-top: 8pt;
+    border-top: 1px solid #bbb;
+    font-family: var(--font-mono);
+    font-size: 9pt;
+    color: #333;
+  }
+
+  /* Page-break hygiene. */
+  h1, h2, h3 { break-after: avoid; }
+  p, li, blockquote { orphans: 3; widows: 3; }
+  figure,
+  blockquote,
+  pre,
+  img,
+  tr,
+  li,
+  details,
+  [data-spec],
+  .shadow-card {
+    break-inside: avoid;
+  }
+}

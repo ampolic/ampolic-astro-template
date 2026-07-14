@@ -87,6 +87,8 @@ const crumbs = [
           />
         )}
         <Prose><Content /></Prose>
+        {/* Print-only provenance line (hidden on screen; shown by @media print in global.css). */}
+        <p data-print-footer class="hidden">Printed from {canonical}</p>
         <PostNav prev={prev} next={next} />
         <RelatedPosts posts={related} />
       </div>
