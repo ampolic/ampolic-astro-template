@@ -1,7 +1,13 @@
 ---
-import '@fontsource-variable/archivo';
-import '@fontsource-variable/hanken-grotesk';
-import '@fontsource-variable/jetbrains-mono';
+// Latin-subset-only font loading. The Fontsource package index.css pulls in every
+// subset (latin, latin-ext, vietnamese, +cyrillic/greek for mono) — the non-latin
+// files are gated out at runtime by unicode-range but still ship in dist. Importing
+// just the latin woff2 (via ?url) and declaring the @font-face ourselves keeps the
+// deploy to the 3 files an English site actually serves. Weight ranges match the
+// package (Archivo/Hanken 100–900, JetBrains Mono 100–800).
+import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url';
+import hankenLatin from '@fontsource-variable/hanken-grotesk/files/hanken-grotesk-latin-wght-normal.woff2?url';
+import monoLatin from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 import '../styles/global.css';
 import SEO from '../components/SEO.astro';
 import Header from '../components/Header.astro';
@@ -11,13 +17,35 @@ import { buildLocalBusinessJsonLd } from '../lib/jsonld';
 interface Props { title: string; description: string; canonical?: string; image?: string; noindex?: boolean }
 const { title, description, canonical, image, noindex } = Astro.props;
 const jsonld = buildLocalBusinessJsonLd(site);
+const fontFace = `
+@font-face{font-family:'Archivo Variable';font-style:normal;font-display:swap;font-weight:100 900;src:url(${archivoLatin}) format('woff2-variations')}
+@font-face{font-family:'Hanken Grotesk Variable';font-style:normal;font-display:swap;font-weight:100 900;src:url(${hankenLatin}) format('woff2-variations')}
+@font-face{font-family:'JetBrains Mono Variable';font-style:normal;font-display:swap;font-weight:100 800;src:url(${monoLatin}) format('woff2-variations')}`;
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Latin-only @font-face, URLs resolved+hashed by Vite (?url imports above). */}
+    <style is:inline set:html={fontFace}></style>
+    {/* Favicon set: theme-aware SVG (adapts to light/dark browser UI via an embedded
+        media query), .ico fallback for legacy, and a solid-bg apple-touch-icon (iOS
+        ignores transparency) — regenerate the PNG when the client logo changes. */}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {/* Browser-UI theme color, per scheme, from the surface tokens. */}
+    <meta name="theme-color" content="#fafbfb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1413" media="(prefers-color-scheme: dark)" />
+    {/* Speculation Rules: prerender main-nav destinations on hover intent
+        (eagerness "moderate"). Chromium-only progressive enhancement; scoped to
+        header nav links, so the legal pages and 404 (footer-only / unlinked) are
+        never candidates. Coexists with Astro `prefetch: true`, which is dormant here
+        — no link opts in via data-astro-prefetch — so there is no double-fetch. */}
+    <script type="speculationrules" is:inline set:html={JSON.stringify({
+      prerender: [{ where: { selector_matches: 'header nav a' }, eagerness: 'moderate' }],
+    })}></script>
     {/* Anti-FOUC: the ONLY render-blocking script. Sets theme before paint. */}
     <script is:inline>
       (() => {
@@ -28,6 +56,7 @@ const jsonld = buildLocalBusinessJsonLd(site);
     </script>
     <SEO title={title} description={description} canonical={canonical} image={image} noindex={noindex} />
     <link rel="alternate" type="application/rss+xml" title={`${site.name} · Blog`} href="/rss.xml" />
+    <link rel="author" type="text/plain" href="/humans.txt" />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonld)} />
     {/* Optional cookieless analytics tag. null by default → nothing injected. Enabling this
         is a privacy-policy-impacting change: also set legal.analyticsProvider. */}
