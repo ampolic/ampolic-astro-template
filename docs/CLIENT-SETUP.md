@@ -12,6 +12,9 @@ Follow this checklist to rebrand the template for a new client. Each step is req
   - Set `form.recipientLabel` (e.g., "the Acme team")
   - Set `analytics.provider` (default `'none'` emits zero third-party JS; choose `'plausible'` or `'ga'` and provide `id`)
   - Set `form.turnstileSiteKey` (Cloudflare Turnstile site key for the contact form)
+  - Set `credit` (agency attribution): `credit.enabled` renders a discreet "Site by …" link in
+    the footer and a line in `humans.txt`. This is a **per-client agreement** — leave
+    `enabled: false` unless the client has agreed to the credit.
 
 ## Legal setup
 
@@ -87,7 +90,10 @@ toggles. Accessibility lives in the code and responds to real user preferences.
 ## 4. Content & Media
 
 - [ ] Replace `public/og-default.png` with the client's OG image (1200×630px, includes logo/brand)
-- [ ] Replace `public/favicon.svg` with the client's favicon
+- [ ] Replace `public/favicon.svg` with the client's favicon (keep the embedded
+  `prefers-color-scheme` block so the mark stays theme-aware)
+- [ ] Regenerate the iOS home-screen icon after swapping the logo:
+  `node scripts/gen-apple-touch-icon.mjs` (writes `public/apple-touch-icon.png`)
 - [ ] Update content collections (via markdown):
   - `src/content/services/` — add/edit the client's service offerings
   - `src/content/testimonials/` — add client testimonials

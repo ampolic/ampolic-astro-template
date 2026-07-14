@@ -1,0 +1,26 @@
+---
+interface Props {
+  email: string;
+  /** Extra classes for the anchor (matches how the plain <a> was styled before). */
+  class?: string;
+  /** Visible label override; defaults to the address itself. */
+  label?: string;
+}
+const { email, class: className, label } = Astro.props;
+
+// Obfuscate the address by HTML-entity-encoding every character — in BOTH the href
+// and the visible text — so it appears in the page source only as numeric character
+// references, not as a scrapeable `user@host` string. This needs no JavaScript (the
+// browser decodes entities at parse time), so the mailto works with JS disabled, and
+// the text copies and reads normally. aria-label is likewise encoded, so the plain
+// address reaches the accessibility tree without ever sitting in the raw markup.
+// NOTE: this only deters naive regex harvesters — a scraper that decodes HTML
+// entities still recovers the address. It is a cheap speed bump, not real protection.
+const enc = (s: string) => Array.from(s, (c) => `&#${c.codePointAt(0)};`).join('');
+const href = enc(`mailto:${email}`);
+const text = enc(label ?? email);
+const aria = enc(email);
+const classAttr = className ? ` class="${className}"` : '';
+const anchor = `<a href="${href}"${classAttr} aria-label="${aria}">${text}</a>`;
+---
+<Fragment set:html={anchor} />

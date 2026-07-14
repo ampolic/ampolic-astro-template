@@ -431,7 +431,7 @@ header details[open] > nav {
   .-z-10,
   [aria-hidden='true'],
   section.bg-brand,
-  footer a[href^='https://ampolic.com'] {
+  [data-site-credit] {                         /* footer agency credit — chrome, not content */
     display: none !important;
   }
 

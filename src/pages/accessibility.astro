@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Prose from '../components/Prose.astro';
+import EmailLink from '../components/EmailLink.astro';
 import { site } from '../config/site';
 
 const { legal } = site;
@@ -75,7 +76,7 @@ const { legal } = site;
           <h2>Reporting a barrier</h2>
           <p>
             If any part of this site is difficult to use, email
-            <a href={`mailto:${legal.contactEmail}`}>{legal.contactEmail}</a>. Please describe the page,
+            <EmailLink email={legal.contactEmail} />. Please describe the page,
             what you were trying to do, and the assistive technology or browser you were using, and we
             will do our best to help and to correct the problem.
           </p>

@@ -61,6 +61,9 @@ export interface Site {
   og: { bg: string; fg: string; brand: string };
   /* Privacy/terms config. Drives the /privacy and /terms pages; see the Legal type. */
   legal: Legal;
+  /* Discreet agency attribution in the footer + humans.txt. `enabled` is a
+     per-client agreement (see docs/CLIENT-SETUP.md) — off means no credit renders. */
+  credit: { enabled: boolean; name: string; url: string };
 }
 
 /* Legal/privacy config. Feeds the /privacy and /terms pages. Values here are template
@@ -147,6 +150,7 @@ export const site: Site = {
     analyticsSnippet: null,
     jurisdictionNote: 'the State of Colorado, United States',
   },
+  credit: { enabled: true, name: 'Ampolic Digital Solutions', url: 'https://ampolic.com' },
 };
 
 export default site;

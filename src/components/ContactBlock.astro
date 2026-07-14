@@ -1,5 +1,6 @@
 ---
 import { site } from '../config/site';
+import EmailLink from './EmailLink.astro';
 const hasMap = Astro.slots.has('map');
 ---
 <div class:list={['grid gap-8', hasMap && 'sm:grid-cols-2']}>
@@ -7,7 +8,7 @@ const hasMap = Astro.slots.has('map');
     <p>{site.address.street}</p>
     <p>{site.address.locality}, {site.address.region} {site.address.postalCode}</p>
     <p><a href={`tel:${site.phone}`} class="text-brand hover:underline">{site.phone}</a></p>
-    <p><a href={`mailto:${site.email}`} class="text-brand hover:underline">{site.email}</a></p>
+    <p><EmailLink email={site.email} class="text-brand hover:underline" /></p>
     {site.hours.map((h) => <p class="text-text-muted">{h.days}: {h.opens}–{h.closes}</p>)}
   </div>
   {hasMap && <div class="min-h-48 rounded-(--radius-base) border border-line bg-surface-alt"><slot name="map" /></div>}

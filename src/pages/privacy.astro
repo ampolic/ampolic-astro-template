@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Prose from '../components/Prose.astro';
+import EmailLink from '../components/EmailLink.astro';
 import { site } from '../config/site';
 
 const { legal, analytics } = site;
@@ -106,7 +107,7 @@ const analyticsName =
           <p>
             Because we only hold what you send us through the contact form, you can ask us to access,
             correct, or delete that information at any time by emailing
-            <a href={`mailto:${legal.contactEmail}`}>{legal.contactEmail}</a>. Depending on where you
+            <EmailLink email={legal.contactEmail} />. Depending on where you
             live, you may have additional rights under local law; contact us and we will do our best to
             honor them.
           </p>
@@ -120,7 +121,7 @@ const analyticsName =
           <h2>Contact</h2>
           <p>
             Questions about this policy? Email
-            <a href={`mailto:${legal.contactEmail}`}>{legal.contactEmail}</a>.
+            <EmailLink email={legal.contactEmail} />.
           </p>
         </Prose>
       </div>

@@ -1,7 +1,7 @@
 ---
 import { site } from '../config/site';
 import { Icon } from 'astro-icon/components';
-import PoweredByAmpolic from './PoweredByAmpolic.astro';
+import EmailLink from './EmailLink.astro';
 const year = new Date().getFullYear();
 ---
 <footer class="border-t border-line bg-surface-alt">
@@ -13,7 +13,7 @@ const year = new Date().getFullYear();
     <div class="text-text-muted">
       <p>{site.address.street}, {site.address.locality}, {site.address.region}</p>
       <p><a href={`tel:${site.phone}`} class="hover:text-text">{site.phone}</a></p>
-      <p><a href={`mailto:${site.email}`} class="hover:text-text">{site.email}</a></p>
+      <p><EmailLink email={site.email} class="hover:text-text" /></p>
       {site.hours.map((h) => <p>{h.days}: {h.opens}–{h.closes}</p>)}
       <p class="mt-3"><span class="text-text">Serving:</span> {site.serviceAreas.join(', ')}</p>
       {site.credentials.licenses.length > 0 && (
@@ -40,7 +40,12 @@ const year = new Date().getFullYear();
         <a href="/terms" class="hover:text-text">Terms</a>
         <a href="/accessibility" class="hover:text-text">Accessibility</a>
       </nav>
-      <PoweredByAmpolic />
+      {site.credit.enabled && (
+        <a href={site.credit.url} target="_blank" rel="noopener" data-site-credit
+           class="underline-offset-2 hover:text-text hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
+          Site by {site.credit.name}
+        </a>
+      )}
     </div>
   </div>
 </footer>
