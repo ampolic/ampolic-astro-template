@@ -27,7 +27,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const hasToc = toc.length >= 2;
 const { words, minutes } = readingTime(post.body ?? '');
 
-const canonical = new URL(`/blog/${post.id}/`, site.url).href;
+const canonical = new URL(`/blog/${post.id}`, site.url).href;
 const shareUrl = new URL(Astro.url.pathname, Astro.site).href;
 const shareOgImage = new URL(`/og/${post.id}.png`, Astro.site).href;
 const cover = post.data.cover ? await getImage({ src: post.data.cover, width: 1200 }) : undefined;

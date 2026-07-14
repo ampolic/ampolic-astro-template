@@ -10,7 +10,12 @@ if (!description?.trim()) {
 // Homepage passes a full "[service] in [city] | [name]" title (already ends with the
 // business name); inner pages pass just the page name and get "| [name]" appended.
 const pageTitle = title.endsWith(site.name) ? title : `${title} | ${site.name}`;
-const canonicalUrl = new URL(canonical ?? Astro.url.pathname, site.url).href;
+// trailingSlash: 'never' — normalise the path so every canonical is slash-free
+// (root stays '/'). build.format 'directory' would otherwise leave a trailing
+// slash on Astro.url.pathname.
+const rawPath = canonical ?? Astro.url.pathname;
+const canonicalPath = rawPath === '/' ? rawPath : rawPath.replace(/\/+$/, '');
+const canonicalUrl = new URL(canonicalPath, site.url).href;
 const ogImage = new URL(image, site.url).href;
 ---
 <title>{pageTitle}</title>

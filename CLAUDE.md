@@ -112,3 +112,6 @@ and anything that reads as a generic template.
   keep them that way so a rebrand stays a one-file edit.
 - /sitemap-index.xml, /robots.txt, and /llms.txt are generated at build time from `site` + site.ts.
   Adding a new page type means confirming it lands in (or is correctly excluded from) the sitemap.
+- Internal links never use trailing slashes (`trailingSlash: 'never'`). Author hrefs, canonicals,
+  sitemap entries, and feed links slash-free — SEO.astro normalises canonicals; keep new link/URL
+  builders consistent.

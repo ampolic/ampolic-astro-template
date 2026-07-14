@@ -74,7 +74,7 @@ export async function GET(context: { site: URL }) {
 
   const items = await Promise.all(
     posts.map(async (post) => {
-      const link = new URL(`blog/${post.id}/`, feedSite).href;
+      const link = new URL(`blog/${post.id}`, feedSite).href;
       const { Content } = await render(post);
       const content = toFeedHtml(await container.renderToString(Content), link);
 
@@ -110,7 +110,7 @@ export async function GET(context: { site: URL }) {
     title: `${site.name} · Blog`,
     description: site.description,
     site: feedSite,
-    trailingSlash: true,
+    trailingSlash: false,
     stylesheet: '/rss.xsl',
     xmlns: {
       atom: 'http://www.w3.org/2005/Atom',
