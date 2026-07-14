@@ -71,6 +71,170 @@ html {
 }
 
 
+/* ==========================================================================
+   Modern CSS polish — progressive enhancement only.
+   Every rule here is additive: where the browser lacks the feature it falls
+   back to the plain-but-correct baseline (no animation, UA defaults, static
+   layout). Nothing here is required for the page to be usable, readable, or
+   operable with JS disabled. New transitions are disabled under
+   prefers-reduced-motion at the end of this block. Selection/caret/accent
+   colours reuse the AA-verified brand↔brand-contrast pairing (the same pair
+   used for buttons), so they clear AA in both themes.
+   ========================================================================== */
+
+/* color-scheme — wire the UA's native surfaces (form controls, scrollbars,
+   spellcheck underlines, the pre-paint canvas) to our theme choice. The inline
+   script in Base.astro always stamps [data-theme] before first paint, so the
+   explicit rules drive it; `light dark` on :root is the sensible default for
+   the brief window/edge case where no attribute is set.
+   Support: universal (all engines since ~2020). */
+:root { color-scheme: light dark; }
+:root[data-theme='light'] { color-scheme: light; }
+:root[data-theme='dark'] { color-scheme: dark; }
+
+/* Branded selection + form accents, straight from tokens.
+   accent-color: Chrome 93+/Firefox 92+/Safari 15.4+ — else UA default accent.
+   caret-color + ::selection: universal. */
+:root {
+  accent-color: var(--color-brand);
+  caret-color: var(--color-brand);
+}
+::selection {
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
+}
+
+/* Typographic niceties.
+   text-wrap: balance evens out heading line lengths (no lonely last word);
+   text-wrap: pretty improves ragging + prevents orphans in long prose.
+   balance: Chrome 114+/Firefox 121+/Safari 17.5+. pretty: Chrome 117+/Safari
+   17.5+ (Firefox: not yet — degrades to normal wrapping, no harm). */
+h1, h2, h3, h4 { text-wrap: balance; }
+.prose p, .prose li { text-wrap: pretty; }
+
+/* Tabular figures where digits are meant to line up in columns or swap in
+   place (stat readouts, data tables, dates, phone numbers). The proportional
+   default is kept for running prose. Support: universal. */
+[data-spec],
+.prose table,
+time,
+a[href^='tel:'] { font-variant-numeric: tabular-nums; }
+
+/* Anchor targets clear the sticky header instead of hiding beneath it.
+   Prose headings set their own larger value; this is the site-wide floor.
+   Support: universal. */
+:target { scroll-margin-top: 6rem; }
+
+/* Reserve the scrollbar's width at all times so opening a popover/menu (which
+   can toggle the page scrollbar) doesn't shift layout horizontally.
+   Support: Chrome 94+/Firefox 97+/Safari 18.2+ — else no gutter reserved. */
+html { scrollbar-gutter: stable; }
+
+/* Keep scroll momentum inside overlay surfaces from chaining to the page
+   behind them. Support: Chrome 63+/Firefox 59+/Safari 16+. */
+#share-panel,
+header details > nav { overscroll-behavior: contain; }
+
+/* Tuned link underlines: dropped clear of descenders, hairline-but-crisp, and
+   skipping ink through letter descenders. Only affects already-underlined
+   links (nav/buttons set text-decoration:none and are untouched).
+   Support: text-underline-offset + skip-ink universal; thickness Chrome 87+. */
+a {
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: max(1px, 0.0625em);
+  text-decoration-skip-ink: auto;
+}
+
+/* Baseline focus breathing room. Components add their own outline colour via
+   utilities; this guarantees the ring never hugs the glyph edges. Placed
+   BEFORE the high-contrast block so its stronger two-tone ring still wins.
+   Support: outline-offset universal; :focus-visible Chrome 86+/FF 85+/Saf 15.4+. */
+:focus-visible { outline-offset: 2px; }
+
+/* Textarea grows with its content instead of being stuck at rows=5. Guarded
+   so unsupported browsers keep the rows-based sizing untouched.
+   Support: Chrome 123+/Edge 123+ (Firefox/Safari: not yet → rows=5 fallback). */
+@supports (field-sizing: content) {
+  textarea {
+    field-sizing: content;
+    min-height: 8rem;
+    max-height: 24rem;
+  }
+}
+
+/* Smooth FAQ disclosure via the UA-generated content wrapper. interpolate-size
+   unlocks animating height to/from the `auto` keyword; ::details-content is the
+   box we clip. content-visibility is animated (allow-discrete) so the UA keeps
+   the closed panel hidden from AT + find-in-page until it's actually open.
+   Scoped to [data-faq] so the mobile-nav <details> (which animates via
+   @starting-style below) is left alone. Support: Chrome 129+/Safari 18.2+ —
+   elsewhere ::details-content is ignored and the panel just snaps open/closed.
+   */
+@supports (interpolate-size: allow-keywords) {
+  :root { interpolate-size: allow-keywords; }
+}
+details[data-faq]::details-content {
+  block-size: 0;
+  overflow: clip;
+  content-visibility: hidden;
+  transition: block-size 0.3s ease, content-visibility 0.3s allow-discrete;
+}
+details[data-faq][open]::details-content {
+  block-size: auto;
+  content-visibility: visible;
+}
+
+/* Enter transitions for overlay surfaces, keyed off @starting-style (the style
+   an element has the instant before it's first rendered). */
+
+/* Share popover: fade + slide down on open, reverse on close. The hidden base
+   state (opacity:0) is gated behind @supports so it only applies where the full
+   popover-animation stack exists — a browser without popover support never sees
+   opacity:0 and so can't get stuck with the panel invisible.
+   Support: Chrome 117+/Safari 17.4+/Firefox 129+. */
+@supports (transition-behavior: allow-discrete) {
+  #share-panel {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+    transition: opacity 0.18s ease, transform 0.18s ease,
+      overlay 0.18s allow-discrete, display 0.18s allow-discrete;
+  }
+  #share-panel:popover-open {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @starting-style {
+    #share-panel:popover-open {
+      opacity: 0;
+      transform: translateY(-0.25rem);
+    }
+  }
+}
+
+/* Mobile nav panel: fade + slide on open. No hidden base state is needed (the
+   UA sets closed <details> content to display:none), so this degrades to a
+   plain snap-open where @starting-style is unsupported — safe without a guard.
+   Support: @starting-style Chrome 117+/Safari 17.5+/Firefox 129+. */
+header details[open] > nav {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+@starting-style {
+  header details[open] > nav {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+}
+
+/* Honour prefers-reduced-motion: keep every enhancement above, drop only the
+   motion. Disclosure/overlay state changes become instant. */
+@media (prefers-reduced-motion: reduce) {
+  details[data-faq]::details-content,
+  #share-panel,
+  header details[open] > nav {
+    transition: none;
+  }
+}
+
 /* High-contrast preference — responds to the user's OS/browser "increase
    contrast" setting (Windows/macOS high-contrast, GNOME, or DevTools emulation).
    Adjusts TOKENS ONLY, never components: muted text is pushed toward the body
