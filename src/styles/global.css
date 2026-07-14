@@ -30,6 +30,11 @@
 
   /* Rhythm */
   --spacing-section: clamp(2.25rem, 4.5vw, 3.75rem);
+
+  /* Motion — the site's single easing voice: crisp deceleration, no overshoot,
+     the CSS twin of GSAP's `power3.out` (easeOutCubic) used in motion.ts. Shared
+     by the view-transition animations so navigation feels like the reveals. */
+  --ease-settle: cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 /* Dark overrides — remap the SAME token names so components never branch.
@@ -232,6 +237,77 @@ header details[open] > nav {
   #share-panel,
   header details[open] > nav {
     transition: none;
+  }
+}
+
+/* ==========================================================================
+   Cross-document View Transitions — native CSS, MPA-mode. No JS router, no
+   Astro <ClientRouter>: `navigation: auto` tells the browser to animate real
+   same-origin document navigations itself. Pure progressive enhancement — a
+   browser without the feature (or with reduced motion) does an ordinary,
+   instant document swap and every link still works. Only the visual polish is
+   lost, never the navigation.
+   Named groups:
+     • site-header  — the header/nav, identical on every page → frozen still.
+     • vt-post-<slug> — one blog card's featured image morphs into that post's
+       hero image (names matched across the two documents; see PostRow.astro
+       and blog/[...slug].astro). The name is unique per card/post.
+   ========================================================================== */
+@view-transition {
+  navigation: auto;
+}
+
+/* Every transition group borrows the site's easing + a 250ms tempo (this also
+   drives the per-post image morph's size/position interpolation). Universal
+   selector: unsupported engines simply keep the UA default (also 250ms). */
+::view-transition-group(*) {
+  animation-duration: 250ms;
+  animation-timing-function: var(--ease-settle);
+}
+
+/* Root = everything not lifted into its own named group: a fast fade paired
+   with a slight upward slide (old page rises out, new page rises into place). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 250ms;
+  animation-timing-function: var(--ease-settle);
+}
+::view-transition-old(root) {
+  animation-name: vt-root-out;
+}
+::view-transition-new(root) {
+  animation-name: vt-root-in;
+}
+@keyframes vt-root-out {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@keyframes vt-root-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Header/nav are byte-identical across pages — isolate them in a named group
+   and cancel its animation so they stay rock-steady (no cross-fade, no slide)
+   while the page content transitions underneath. More specific than the
+   universal rule above, so this wins regardless of source order. */
+::view-transition-group(site-header),
+::view-transition-image-pair(site-header),
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/* prefers-reduced-motion: opt out completely. `navigation: none` means the
+   browser performs a plain, instant navigation — no snapshots, no animation,
+   the named groups above are never even captured. */
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
   }
 }
 

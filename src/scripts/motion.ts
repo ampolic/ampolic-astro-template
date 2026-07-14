@@ -32,6 +32,13 @@ export function initMotion(): void {
         });
       });
 
+      // Elements that morph via a cross-document View Transition (their
+      // view-transition-name is set in the markup) must never also get a GSAP
+      // entrance reveal — that would animate them twice. They carry no reveal
+      // marker today, so this filter is a guard that keeps that guarantee true
+      // if a reveal wrapper is ever added around them.
+      const notMorph = (el: HTMLElement) => !el.hasAttribute('data-vt-morph');
+
       // Mechanical settle: crisp deceleration, no bounce/overshoot.
       const ease = 'power3.out';
       const from = { opacity: 0, y: 12 };
@@ -41,13 +48,13 @@ export function initMotion(): void {
       const to = { opacity: 1, y: 0, duration: 0.45, ease };
 
       // Hero page-load sequence: eyebrow → headline → subhead → CTA, 80ms apart.
-      const heroEls = gsap.utils.toArray<HTMLElement>('[data-hero]');
+      const heroEls = gsap.utils.toArray<HTMLElement>('[data-hero]').filter(notMorph);
       if (heroEls.length) {
         gsap.fromTo(heroEls, from, { ...to, stagger: 0.08 });
       }
 
       // Spec-strip metrics tick in one after another — readouts powering on.
-      const specEls = gsap.utils.toArray<HTMLElement>('[data-spec]');
+      const specEls = gsap.utils.toArray<HTMLElement>('[data-spec]').filter(notMorph);
       if (specEls.length) {
         gsap.fromTo(specEls, from, {
           ...to,
@@ -58,7 +65,7 @@ export function initMotion(): void {
 
       // Grids: stagger children 60ms on enter.
       document.querySelectorAll<HTMLElement>('[data-stagger]').forEach((grid) => {
-        gsap.fromTo(Array.from(grid.children), from, {
+        gsap.fromTo((Array.from(grid.children) as HTMLElement[]).filter(notMorph), from, {
           ...to,
           stagger: 0.06,
           scrollTrigger: { trigger: grid, start: 'top 85%', once: true },
@@ -67,6 +74,7 @@ export function initMotion(): void {
 
       // Enter-only fade/rise for any remaining sections.
       document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+        if (!notMorph(el)) return;
         gsap.fromTo(el, from, {
           ...to,
           scrollTrigger: { trigger: el, start: 'top 85%', once: true },
