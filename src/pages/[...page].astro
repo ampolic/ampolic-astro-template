@@ -1,0 +1,29 @@
+---
+/* Renders the `pages` content collection (WordPress-export markdown) at /<slug>.
+   Static .astro routes (about, contact, …) always take priority over this
+   dynamic route, so a collection page can never shadow a built page. */
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Prose from '../components/Prose.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages', ({ data }) => !data.draft);
+  return pages.map((page) => ({ params: { page: page.id }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+---
+
+<Base title={page.data.title} description={page.data.description} noindex={page.data.noindex}>
+  <section class="py-(--spacing-section)">
+    <div class="mx-auto max-w-6xl px-4">
+      <h1 class="font-display text-4xl font-semibold">{page.data.title}</h1>
+      <div class="mt-10">
+        <Prose>
+          <Content />
+        </Prose>
+      </div>
+    </div>
+  </section>
+</Base>

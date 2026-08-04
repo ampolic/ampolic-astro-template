@@ -23,6 +23,17 @@ export const postSchema = z.object({
   draft: z.boolean().default(false),
 });
 
+/* Free-form markdown pages (about, team, landing pages…), the shape WordPress
+   page exports convert to. Rendered by src/pages/[...page].astro at /<slug>. */
+export const pageSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  date: z.coerce.date().optional(),
+  updated: z.coerce.date().optional(),
+  draft: z.boolean().default(false),
+  noindex: z.boolean().default(false),
+});
+
 export const testimonialSchema = z.object({
   author: z.string(),
   role: z.string(),
