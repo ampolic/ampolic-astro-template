@@ -1,6 +1,6 @@
-# Astro Business Starter
+# ampolic-astro-template
 
-A fast, accessible, themeable static website template for small businesses, built with
+The foundation template for **Ampolic Digital Solutions** client sites. A fast, accessible, themeable static website template for small businesses, built with
 Astro 5, Tailwind CSS v4, and Cloudflare Pages. **Zero third-party JavaScript by
 default**, and every visual choice lives in design tokens so a rebrand is essentially a
 one-file edit.
@@ -30,9 +30,29 @@ accessibility test suite.
 No third-party analytics by default. Optionally enable Plausible or GA via `site.analytics`
 in `src/config/site.ts`.
 
+## Generating a client site
+
+This repo is a **GitHub template**. To spin up a new client site:
+
+1. GitHub → "Use this template" → create `ampolic/client-<name>` (with all branches).
+2. Clone, check out `dev`, and rebrand per `docs/CLIENT-SETUP.md`.
+3. Wire Decap CMS: set `repo:` in `public/admin/config.yml` to the new repo (backend
+   stays `github`, branch stays `dev`) — setup steps are in that file's header.
+4. Connect Cloudflare Pages: `main` = production, `dev` = staging URL.
+
+## Branch model
+
+Two permanent branches, in every Ampolic repo:
+
+- **`dev`** — default working branch; all commits (agents, CMS) land here; deploys to staging.
+- **`main`** — production, protected; only updated via a `dev` → `main` PR merged by a human.
+
+No feature branches. CI (`.github/workflows/ci.yml`) runs install → `astro check` → build
+on pushes to `dev` and PRs to `main`.
+
 ## Getting started
 
-Prerequisites: Node.js 18+ and pnpm.
+Prerequisites: Node.js 22+ (see `.nvmrc` / `engines`) and pnpm.
 
 ```bash
 pnpm install
@@ -51,7 +71,7 @@ pnpm format       # prettier
 src/
   components/         # .astro components (Header, Footer, Hero, SEO, ShareMenu, …)
   config/site.ts      # ALL business facts: name, nav, contact, hours, socials, analytics, legal, credit
-  content/            # content collections: services, posts, testimonials, faq
+  content/            # content collections: pages, posts, services, testimonials, faq
   content.config.ts   # collection definitions (schemas in content/schemas.ts, Zod-validated)
   layouts/Base.astro  # shell: font @font-face, <head>, anti-FOUC theme script, Header/Footer
   lib/                # helpers (jsonld, posts, share, readingTime, contact-validation)
@@ -61,11 +81,13 @@ src/
   styles/global.css   # Tailwind entry + @theme tokens (colors, radii, shadows, fonts) + print + view-transitions
 public/               # favicon.svg (theme-aware), favicon.ico, apple-touch-icon.png, og-default.png,
                       #   _headers, _redirects, rss.xsl
+public/admin/         # Decap CMS (git-based; commits content to dev — see config.yml header)
 functions/api/        # Cloudflare Pages Functions (contact.ts)
 scripts/              # build tooling (gen-apple-touch-icon.mjs)
 tests/                # a11y.spec.ts + unit tests
 docs/                 # DESIGN.md, CLIENT-SETUP.md, PRE-LAUNCH-CHECKLIST.md, IMAGE-CREDITS.md
-CLAUDE.md             # the working guardrails (stack, theming discipline, a11y/SEO/privacy rules)
+CLAUDE.md             # short agent rules (branch model, layout, prohibitions) → links to docs/
+docs/AGENT-GUARDRAILS.md  # the full working guardrails (stack, theming, a11y/SEO/privacy)
 ```
 
 ## Theming
@@ -79,7 +101,7 @@ All visual identity lives in **two** places, so a rebrand touches nothing else:
 2. **`src/layouts/Base.astro`** — the three Fontsource `@font-face` imports.
 
 Components reference tokens only — never hardcoded hex, radii, or shadows. The full
-discipline lives in **`CLAUDE.md`**; the demo brand's visual direction is in
+discipline lives in **`docs/AGENT-GUARDRAILS.md`**; the demo brand's visual direction is in
 **`docs/DESIGN.md`**.
 
 ### Light & dark mode
@@ -91,8 +113,11 @@ disabled under `prefers-reduced-motion`.
 
 ## Content model
 
-Four Zod-validated collections in `src/content/` (schemas in `content/schemas.ts`):
+Five Zod-validated collections in `src/content/` (schemas in `content/schemas.ts`),
+shaped to receive WordPress-export markdown (pages + posts) directly:
 
+- **pages** — `title`, `description`, `date?`, `updated?`, `draft`, body — rendered
+  at `/<slug>` by `src/pages/[...page].astro` (static routes always win on collision)
 - **services** — `title`, `summary`, `description?`, `icon` (Lucide name), `order`,
   `featured`, optional `image` + `imageAlt`, body
 - **posts** — `title`, `description`, `date`, `updated?`, `tags`, `draft`, `cover?`, body
