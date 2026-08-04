@@ -1,0 +1,97 @@
+# Decap CMS configuration
+#
+# PER-SITE SETUP (do this in each client repo generated from this template):
+#   1. Replace OWNER/REPO below with the client site's GitHub repo (e.g. ampolic/client-acme).
+#   2. Register a GitHub OAuth app and an OAuth proxy (Cloudflare Worker or similar),
+#      then set base_url/auth_endpoint here to point at it — the plain `github`
+#      backend needs an OAuth gateway when not hosted on Netlify.
+#   3. Editors need write access to the repo. All CMS commits land on `dev`
+#      (staging); production only updates via the dev -> main PR.
+#   4. Keep collections below in sync with src/content.config.ts and
+#      src/content/schemas.ts — they are the source of truth.
+#
+# Agents: do NOT change the backend settings in this file.
+
+backend:
+  name: github
+  repo: OWNER/REPO # set per client site
+  branch: dev
+
+publish_mode: editorial_workflow
+
+media_folder: src/assets/images/uploads
+public_folder: /src/assets/images/uploads
+
+collections:
+  - name: pages
+    label: Pages
+    folder: src/content/pages
+    create: true
+    extension: md
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: Meta description, widget: string }
+      - { name: date, label: Date, widget: datetime, required: false }
+      - { name: updated, label: Updated, widget: datetime, required: false }
+      - { name: draft, label: Draft, widget: boolean, default: false }
+      - { name: body, label: Body, widget: markdown }
+
+  - name: posts
+    label: Blog posts
+    folder: src/content/posts
+    create: true
+    extension: md
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: Meta description, widget: string }
+      - { name: date, label: Date, widget: datetime }
+      - { name: updated, label: Updated, widget: datetime, required: false }
+      - { name: tags, label: Tags, widget: list, default: [] }
+      - { name: cover, label: Cover image, widget: image, required: false }
+      - { name: draft, label: Draft, widget: boolean, default: false }
+      - { name: body, label: Body, widget: markdown }
+
+  - name: services
+    label: Services
+    folder: src/content/services
+    create: true
+    extension: md
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: summary, label: Summary, widget: string }
+      - { name: description, label: Meta description, widget: string, required: false }
+      - { name: icon, label: Icon (Lucide name), widget: string }
+      - { name: order, label: Order, widget: number }
+      - { name: featured, label: Featured, widget: boolean, default: false }
+      - { name: image, label: Image, widget: image, required: false }
+      - { name: imageAlt, label: Image alt text, widget: string, required: false }
+      - { name: body, label: Body, widget: markdown }
+
+  - name: testimonials
+    label: Testimonials
+    folder: src/content/testimonials
+    create: true
+    extension: md
+    fields:
+      - { name: author, label: Author, widget: string }
+      - { name: role, label: Role, widget: string }
+      - { name: quote, label: Quote, widget: text }
+      - {
+          name: rating,
+          label: Rating (1-5),
+          widget: number,
+          required: false,
+          min: 1,
+          max: 5,
+        }
+      - { name: body, label: Body, widget: markdown, required: false }
+
+  - name: faq
+    label: FAQ
+    folder: src/content/faq
+    create: true
+    extension: md
+    fields:
+      - { name: question, label: Question, widget: string }
+      - { name: order, label: Order, widget: number }
+      - { name: body, label: Answer, widget: markdown }
