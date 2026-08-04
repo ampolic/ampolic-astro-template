@@ -1,0 +1,18 @@
+# Stub: dev -> main promotion.
+# TODO: automate the promotion PR (open dev -> main PR, require CI green,
+# auto-merge on approval) — ideally as a reusable workflow in ampolic-core
+# once that repo exists. Manual-trigger only until then.
+name: Promote dev to main
+
+on:
+  workflow_dispatch:
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - run: |
+          echo "TODO: open a dev -> main promotion PR via gh CLI."
+          echo "Until automated, promote manually: open a PR from dev into main on GitHub."
