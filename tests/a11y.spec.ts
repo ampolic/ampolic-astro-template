@@ -44,8 +44,19 @@ interface Violation {
   targets: string[];
 }
 
-/** Run an axe scan on the CURRENT DOM. Logs "incomplete" as warnings, returns violations. */
+/** Run an axe scan on the CURRENT DOM. Logs "incomplete" as warnings, returns violations.
+    Scrolls through the page first so GSAP scroll-reveals reach their final
+    (opacity:1) state — axe otherwise measures contrast on the blended
+    pre-reveal frames of below-the-fold content. */
 async function scan(page: Page, where: string): Promise<Violation[]> {
+  await page.evaluate(async () => {
+    for (let y = 0; y <= document.body.scrollHeight; y += 500) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 40));
+    }
+    window.scrollTo(0, 0);
+  });
+  await page.waitForTimeout(600);
   const results = await new AxeBuilder({ page }).withTags(AXE_TAGS).analyze();
   for (const inc of results.incomplete) {
     for (const node of inc.nodes) {
@@ -146,6 +157,8 @@ test.describe('keyboard: homepage', () => {
       const sel = 'a[href], button, input:not([type="hidden"]), select, textarea, summary, [tabindex]:not([tabindex="-1"])';
       const visible = [...document.querySelectorAll<HTMLElement>(sel)].filter((el) => {
         if (el.closest('[hidden]')) return false;
+        // Deliberately unreachable controls (e.g. the form honeypot) opt out of Tab.
+        if (el.getAttribute('tabindex') === '-1') return false;
         const s = getComputedStyle(el);
         if (s.display === 'none' || s.visibility === 'hidden') return false;
         const r = el.getBoundingClientRect();

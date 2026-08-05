@@ -1,4 +1,7 @@
 @import 'tailwindcss';
+/* Tailwind must scan @ampolic/ui's source too — without this, classes used
+   only inside shared components (e.g. text-brand-contrast) are never emitted. */
+@source '../../node_modules/@ampolic/ui/src';
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
