@@ -32,6 +32,10 @@ in `src/config/site.ts`.
 
 ## Generating a client site
 
+**No blog needed?** Most client sites skip it — run `node scripts/remove-blog.mjs`
+right after generation to strip the blog/RSS/OG-post surface (~760 LOC). Content
+collections and Decap remain; only the `posts` collection goes.
+
 This repo is a **GitHub template**. To spin up a new client site:
 
 1. GitHub → "Use this template" → create `ampolic/client-<name>` (with all branches).
