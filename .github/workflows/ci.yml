@@ -8,7 +8,9 @@ on:
 
 jobs:
   build:
-    uses: ampolic/ampolic-core/.github/workflows/site-ci.yml@main
+    # Hosted in the public ampolic/.github repo — public repos cannot call
+    # reusable workflows that live in private repos (ampolic-core is private).
+    uses: ampolic/.github/.github/workflows/site-ci.yml@main
     with:
       node-version: '22'
     secrets:
