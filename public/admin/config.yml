@@ -17,7 +17,6 @@ backend:
   repo: OWNER/REPO # set per client site
   branch: dev
 
-publish_mode: editorial_workflow
 
 media_folder: src/assets/images/uploads
 public_folder: /src/assets/images/uploads
