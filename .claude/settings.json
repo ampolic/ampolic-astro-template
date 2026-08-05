@@ -2,9 +2,18 @@
   "enabledPlugins": {
     "cloudflare@claude-plugins-official": true
   },
-  "_TODO_marketplaces": [
-    "TODO: once these exist / are adopted, add via `claude plugin marketplace add` and enable their plugins here:",
-    "anthropics/knowledge-work-plugins",
-    "ampolic/ampolic-plugins"
-  ]
+  "extraKnownMarketplaces": {
+    "knowledge-work-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/knowledge-work-plugins"
+      }
+    },
+    "ampolic-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "ampolic/ampolic-plugins"
+      }
+    }
+  }
 }

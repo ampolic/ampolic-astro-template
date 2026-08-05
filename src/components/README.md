@@ -3,20 +3,17 @@
 Components in this directory belong to THIS site. Keep them ≤ 80 lines,
 token-driven (no hardcoded hex/radii/shadows), pure `.astro`.
 
-<!--
-TODO(ampolic-ui): shared components will come from the @ampolic/ui package
-(GitHub Packages, repo ampolic/ampolic-ui) once that repo exists. The package
-does NOT exist yet — do not add it to package.json or fabricate imports.
+Shared primitives (Button, Card, Callout, CtaBand, EmailLink, FaqList, Prose,
+SectionHeading, TestimonialCard) come from **`@ampolic/ui`** (GitHub Packages —
+install requires auth, see the ampolic-ui README):
 
-Planned pattern once published:
+```astro
+---
+import { Button, Card } from '@ampolic/ui';
+---
+```
 
-  // .npmrc          @ampolic:registry=https://npm.pkg.github.com
-  // package.json    "@ampolic/ui": "^1.0.0"
-  ---
-  import { Button, Card } from '@ampolic/ui';
-  ---
-
-At that point, components generic enough to live in ampolic-ui should be
-upstreamed there and deleted here; this directory keeps only what is truly
-site-specific (Hero copy layout, ServiceAreaMap, etc.).
--->
+Components generic enough for other client sites should be generalized and
+upstreamed to ampolic-ui (with a changeset), then deleted here. What stays is
+truly site-specific: Header/Footer/SEO/ContactForm (driven by config/site.ts),
+Hero, blog components, ServiceAreaMap, ThemeToggle.

@@ -4,7 +4,7 @@
    dynamic route, so a collection page can never shadow a built page. */
 import { getCollection, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import Prose from '../components/Prose.astro';
+import { Prose } from '@ampolic/ui';
 
 export async function getStaticPaths() {
   const pages = await getCollection('pages', ({ data }) => !data.draft);

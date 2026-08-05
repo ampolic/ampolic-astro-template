@@ -54,6 +54,11 @@ on pushes to `dev` and PRs to `main`.
 
 Prerequisites: Node.js 22+ (see `.nvmrc` / `engines`) and pnpm.
 
+Shared components come from **`@ampolic/ui`** on GitHub Packages, which requires
+auth even for installs: add `//npm.pkg.github.com/:_authToken=<PAT read:packages>`
+to your user `~/.npmrc` (CI uses `NODE_AUTH_TOKEN`). The repo `.npmrc` already
+maps the `@ampolic` scope to the registry.
+
 ```bash
 pnpm install
 pnpm dev          # dev server → http://localhost:4321
