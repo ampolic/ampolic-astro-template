@@ -170,27 +170,8 @@ a {
   }
 }
 
-/* Smooth FAQ disclosure via the UA-generated content wrapper. interpolate-size
-   unlocks animating height to/from the `auto` keyword; ::details-content is the
-   box we clip. content-visibility is animated (allow-discrete) so the UA keeps
-   the closed panel hidden from AT + find-in-page until it's actually open.
-   Scoped to [data-faq] so the mobile-nav <details> (which animates via
-   @starting-style below) is left alone. Support: Chrome 129+/Safari 18.2+ —
-   elsewhere ::details-content is ignored and the panel just snaps open/closed.
-   */
-@supports (interpolate-size: allow-keywords) {
-  :root { interpolate-size: allow-keywords; }
-}
-details[data-faq]::details-content {
-  block-size: 0;
-  overflow: clip;
-  content-visibility: hidden;
-  transition: block-size 0.3s ease, content-visibility 0.3s allow-discrete;
-}
-details[data-faq][open]::details-content {
-  block-size: auto;
-  content-visibility: visible;
-}
+/* FAQ disclosure styles now live inside @ampolic/ui FaqList (0.3.0+) —
+   single-open accordion with a reserved answer height, no height animation. */
 
 /* Enter transitions for overlay surfaces, keyed off @starting-style (the style
    an element has the instant before it's first rendered). */
@@ -236,7 +217,6 @@ header details[open] > nav {
 /* Honour prefers-reduced-motion: keep every enhancement above, drop only the
    motion. Disclosure/overlay state changes become instant. */
 @media (prefers-reduced-motion: reduce) {
-  details[data-faq]::details-content,
   #share-panel,
   header details[open] > nav {
     transition: none;
