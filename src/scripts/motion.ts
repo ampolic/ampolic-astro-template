@@ -17,19 +17,23 @@ export function initMotion(): void {
       // Keep ScrollTrigger in lockstep with Lenis' smoothed scroll position.
       lenis.on('scroll', ScrollTrigger.update);
 
-      // Smooth-scroll in-page anchor links (e.g. the post TOC) through Lenis.
-      // Lenis honors the target's scroll-margin-top, so the heading's scroll-mt
-      // (set in Prose) clears the sticky header — no extra offset needed. No-JS
-      // falls back to native anchors + the same scroll-margin-top.
-      document.querySelectorAll<HTMLAnchorElement>('a[data-toc-link]').forEach((link) => {
-        link.addEventListener('click', (e) => {
-          const id = link.dataset.tocLink;
-          const target = id ? document.getElementById(id) : null;
-          if (!target) return;
-          e.preventDefault();
-          lenis.scrollTo(target);
-          history.pushState(null, '', `#${id}`);
-        });
+      // Smooth-scroll ALL same-page anchor links through Lenis — nav items like
+      // /#about, in-page #contact CTAs, and the post TOC alike. Lenis honors the
+      // target's scroll-margin-top, so headings clear the sticky header with no
+      // extra offset. Cross-page anchors (e.g. /#about from /team) navigate
+      // natively; no-JS falls back to native anchors + the same scroll-margin.
+      document.addEventListener('click', (e) => {
+        if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href*="#"]');
+        if (!link || link.target === '_blank') return;
+        const url = new URL(link.href);
+        if (url.origin !== location.origin || url.pathname !== location.pathname) return;
+        if (url.hash.length < 2) return;
+        const target = document.getElementById(decodeURIComponent(url.hash.slice(1)));
+        if (!target) return;
+        e.preventDefault();
+        lenis.scrollTo(target);
+        history.pushState(null, '', url.hash);
       });
 
       // Elements that morph via a cross-document View Transition (their
