@@ -1,7 +1,7 @@
 ---
 import { site } from '../config/site';
 import { Icon } from 'astro-icon/components';
-import { EmailLink } from '@ampolic/ui';
+import { EmailLink, PoweredByAmpolic } from '@ampolic/ui';
 const year = new Date().getFullYear();
 ---
 <footer class="border-t border-line bg-surface-alt">
@@ -41,10 +41,7 @@ const year = new Date().getFullYear();
         <a href="/accessibility" class="hover:text-text">Accessibility</a>
       </nav>
       {site.credit.enabled && (
-        <a href={site.credit.url} target="_blank" rel="noopener" data-site-credit
-           class="underline-offset-2 hover:text-text hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
-          Site by {site.credit.name}
-        </a>
+        <PoweredByAmpolic href={site.credit.url} />
       )}
     </div>
   </div>
