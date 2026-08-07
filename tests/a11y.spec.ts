@@ -299,32 +299,44 @@ test.describe("keyboard: mobile nav", () => {
 });
 
 test.describe("keyboard: FAQ accordion", () => {
-  test("toggles with Enter and Space", async ({ page }) => {
+  test("defaults open, remains closable, and enforces a single-open group", async ({
+    page,
+  }) => {
     const path = await pathContaining(page, "main .faq details summary");
     expect(
       path,
       "a FAQ collection exists but no rendered FaqList was found",
     ).not.toBeNull();
     await page.goto(path!, { waitUntil: "load" });
-    const summary = page.locator("main .faq details summary").first();
+    const items = page.locator("main .faq details");
+    expect(
+      await items.count(),
+      "FAQ keyboard test requires two items",
+    ).toBeGreaterThan(1);
+    const first = items.nth(0);
+    const second = items.nth(1);
+    const firstSummary = first.locator("summary");
+    const secondSummary = second.locator("summary");
 
-    const details = page.locator("main .faq details").first();
-    await summary.focus();
-    const initiallyOpen = await details.evaluate((element) => element.hasAttribute("open"));
+    // FaqList's defaultOpen contract opens the first item on initial render.
+    await expect(first).toHaveAttribute("open", "");
+    await expect(second).not.toHaveAttribute("open", "");
 
+    // Enter can close and reopen the initially open item.
+    await firstSummary.focus();
     await page.keyboard.press("Enter");
-    if (initiallyOpen) await expect(details).not.toHaveAttribute("open", "");
-    else await expect(details).toHaveAttribute("open", "");
+    await expect(first).not.toHaveAttribute("open", "");
     await page.keyboard.press("Enter");
-    if (initiallyOpen) await expect(details).toHaveAttribute("open", "");
-    else await expect(details).not.toHaveAttribute("open", "");
+    await expect(first).toHaveAttribute("open", "");
 
+    // Space opens a sibling, native details[name] closes the first, and the
+    // open sibling remains independently closable without JavaScript.
+    await secondSummary.focus();
     await page.keyboard.press("Space");
-    if (initiallyOpen) await expect(details).not.toHaveAttribute("open", "");
-    else await expect(details).toHaveAttribute("open", "");
+    await expect(second).toHaveAttribute("open", "");
+    await expect(first).not.toHaveAttribute("open", "");
     await page.keyboard.press("Space");
-    if (initiallyOpen) await expect(details).toHaveAttribute("open", "");
-    else await expect(details).not.toHaveAttribute("open", "");
+    await expect(second).not.toHaveAttribute("open", "");
   });
 });
 
