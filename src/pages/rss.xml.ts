@@ -1,18 +1,22 @@
-import rss from '@astrojs/rss';
-import { experimental_AstroContainer } from 'astro/container';
-import mdxRenderer from '@astrojs/mdx/server.js';
-import { getImage } from 'astro:assets';
-import { render } from 'astro:content';
-import sanitizeHtml from 'sanitize-html';
-import { site } from '../config/site';
-import { getPublishedPosts } from '../lib/posts';
+import rss from "@astrojs/rss";
+import { experimental_AstroContainer } from "astro/container";
+import mdxRenderer from "@astrojs/mdx/server.js";
+import { getImage } from "astro:assets";
+import { render } from "astro:content";
+import sanitizeHtml from "sanitize-html";
+import { site } from "../config/site";
+import { resolveContentImage } from "../lib/contentImage";
+import { getPublishedPosts } from "../lib/posts";
 
 /** Most recent N posts carried in the feed. */
 const FEED_LIMIT = 20;
 
 /** Resolve a (possibly relative) URL against an absolute base; feed readers
  *  cannot be trusted to resolve relative links or image srcs themselves. */
-function absolutize(value: string | undefined, base: string): string | undefined {
+function absolutize(
+  value: string | undefined,
+  base: string,
+): string | undefined {
   if (!value) return value;
   try {
     return new URL(value, base).href;
@@ -30,25 +34,62 @@ function absolutize(value: string | undefined, base: string): string | undefined
 function toFeedHtml(html: string, base: string): string {
   return sanitizeHtml(html, {
     allowedTags: [
-      'h2', 'h3', 'h4', 'h5', 'h6',
-      'p', 'a', 'ul', 'ol', 'li', 'blockquote', 'pre', 'code',
-      'strong', 'em', 'b', 'i', 'u', 's', 'br', 'hr',
-      'img', 'figure', 'figcaption', 'aside',
-      'table', 'thead', 'tbody', 'tr', 'th', 'td', 'sup', 'sub',
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "p",
+      "a",
+      "ul",
+      "ol",
+      "li",
+      "blockquote",
+      "pre",
+      "code",
+      "strong",
+      "em",
+      "b",
+      "i",
+      "u",
+      "s",
+      "br",
+      "hr",
+      "img",
+      "figure",
+      "figcaption",
+      "aside",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "th",
+      "td",
+      "sup",
+      "sub",
     ],
     allowedAttributes: {
-      a: ['href', 'title'],
-      img: ['src', 'alt', 'title', 'width', 'height'],
+      a: ["href", "title"],
+      img: ["src", "alt", "title", "width", "height"],
     },
     // Drop these tags AND their contents (scripts, styles, interactive widgets).
-    nonTextTags: ['script', 'style', 'textarea', 'noscript', 'template', 'button'],
+    nonTextTags: [
+      "script",
+      "style",
+      "textarea",
+      "noscript",
+      "template",
+      "button",
+    ],
     transformTags: {
       a: (tagName, attribs) => {
-        if (attribs.href) attribs.href = absolutize(attribs.href, base) ?? attribs.href;
+        if (attribs.href)
+          attribs.href = absolutize(attribs.href, base) ?? attribs.href;
         return { tagName, attribs };
       },
       img: (tagName, attribs) => {
-        if (attribs.src) attribs.src = absolutize(attribs.src, base) ?? attribs.src;
+        if (attribs.src)
+          attribs.src = absolutize(attribs.src, base) ?? attribs.src;
         return { tagName, attribs };
       },
     },
@@ -60,7 +101,7 @@ const feedAuthor = `${site.email} (${site.name})`;
 
 export async function GET(context: { site: URL }) {
   const feedSite = context.site;
-  const feedUrl = new URL('rss.xml', feedSite).href;
+  const feedUrl = new URL("rss.xml", feedSite).href;
 
   // Same visibility rules as the blog index: no drafts, no future-dated posts.
   const now = Date.now();
@@ -80,16 +121,20 @@ export async function GET(context: { site: URL }) {
 
       // Featured image as media:content (absolute URL + mime); byte length is
       // not cheap to obtain from astro:assets, so media:content is used per spec.
-      let media = '';
+      let media = "";
       if (post.data.cover) {
-        const img = await getImage({ src: post.data.cover, width: 1200, format: 'webp' });
+        const cover = resolveContentImage(post.data.cover, `posts/${post.id}`)!;
+        const img = await getImage({ src: cover, width: 1200, format: "webp" });
         const imgUrl = new URL(img.src, feedSite).href;
         media = `<media:content url="${imgUrl}" medium="image" type="image/webp" />`;
       }
 
       // RSS 2.0 has no per-item "updated"; carry it as atom:updated (ISO 8601).
-      let updated = '';
-      if (post.data.updated && post.data.updated.getTime() > post.data.date.getTime()) {
+      let updated = "";
+      if (
+        post.data.updated &&
+        post.data.updated.getTime() > post.data.date.getTime()
+      ) {
         updated = `<atom:updated>${post.data.updated.toISOString()}</atom:updated>`;
       }
 
@@ -103,7 +148,7 @@ export async function GET(context: { site: URL }) {
         author: feedAuthor,
         customData: media + updated,
       };
-    })
+    }),
   );
 
   return rss({
@@ -111,17 +156,17 @@ export async function GET(context: { site: URL }) {
     description: site.description,
     site: feedSite,
     trailingSlash: false,
-    stylesheet: '/rss.xsl',
+    stylesheet: "/rss.xsl",
     xmlns: {
-      atom: 'http://www.w3.org/2005/Atom',
-      media: 'http://search.yahoo.com/mrss/',
-      content: 'http://purl.org/rss/1.0/modules/content/',
+      atom: "http://www.w3.org/2005/Atom",
+      media: "http://search.yahoo.com/mrss/",
+      content: "http://purl.org/rss/1.0/modules/content/",
     },
     customData: [
       `<language>en-us</language>`,
       `<lastBuildDate>${new Date().toUTCString()}</lastBuildDate>`,
       `<atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />`,
-    ].join(''),
+    ].join(""),
     items,
   });
 }

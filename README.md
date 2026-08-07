@@ -8,6 +8,10 @@ one-file edit.
 The repo ships a complete demo brand — **Summit Heating & Air**, a fictional Boulder, CO
 HVAC company — so it demonstrates convincingly out of the box.
 
+- **Preview:** `dev` direct-uploads to `https://dev.ampolic-astro-template.pages.dev`
+- **Production:** `main` direct-uploads to `https://ampolic-astro-template.pages.dev`
+- **CMS:** Sveltia at `/admin`, committing authorized edits to `dev`
+
 ## Stack
 
 - **Astro 5** — static output (`output: 'static'`), pure `.astro` components (no React/Vue/Svelte)
@@ -32,13 +36,18 @@ in `src/config/site.ts`.
 
 ## Generating a client site
 
+**No blog needed?** Most client sites skip it — run `node scripts/remove-blog.mjs`
+right after generation to strip the blog/RSS/OG-post surface (~760 LOC). Content
+collections and Sveltia remain; only the `posts` collection goes.
+
 This repo is a **GitHub template**. To spin up a new client site:
 
 1. GitHub → "Use this template" → create `ampolic/client-<name>` (with all branches).
 2. Clone, check out `dev`, and rebrand per `docs/CLIENT-SETUP.md`.
-3. Wire Decap CMS: set `repo:` in `public/admin/config.yml` to the new repo (backend
+3. Wire Sveltia CMS: set `repo:` in `public/admin/config.yml` to the new repo (backend
    stays `github`, branch stays `dev`) — setup steps are in that file's header.
-4. Connect Cloudflare Pages: `main` = production, `dev` = staging URL.
+4. Provision the Pages project through `ampolic-core/infra`, then configure the generated
+   repository's reusable CI for Wrangler direct upload: `main` = production, `dev` = preview.
 
 ## Branch model
 
@@ -47,12 +56,18 @@ Two permanent branches, in every Ampolic repo:
 - **`dev`** — default working branch; all commits (agents, CMS) land here; deploys to staging.
 - **`main`** — production, protected; only updated via a `dev` → `main` PR merged by a human.
 
-No feature branches. CI (`.github/workflows/ci.yml`) runs install → `astro check` → build
-on pushes to `dev` and PRs to `main`.
+No feature branches. CI (`.github/workflows/ci.yml`) runs authenticated install → check → test →
+build, then deploys by Wrangler direct upload on pushes: `dev` is preview and `main` is production.
+Pull requests build and test without deploying.
 
 ## Getting started
 
 Prerequisites: Node.js 22+ (see `.nvmrc` / `engines`) and pnpm.
+
+Shared components come from **`@ampolic/ui`** on GitHub Packages, which requires
+auth even for installs: add `//npm.pkg.github.com/:_authToken=<PAT read:packages>`
+to your user `~/.npmrc` (CI uses `NODE_AUTH_TOKEN`). The repo `.npmrc` already
+maps the `@ampolic` scope to the registry.
 
 ```bash
 pnpm install
@@ -81,9 +96,9 @@ src/
   styles/global.css   # Tailwind entry + @theme tokens (colors, radii, shadows, fonts) + print + view-transitions
 public/               # favicon.svg (theme-aware), favicon.ico, apple-touch-icon.png, og-default.png,
                       #   _headers, _redirects, rss.xsl
-public/admin/         # Decap CMS (git-based; commits content to dev — see config.yml header)
+public/admin/         # Sveltia CMS (git-based; commits content to dev — see config.yml header)
 functions/api/        # Cloudflare Pages Functions (contact.ts)
-scripts/              # build tooling (gen-apple-touch-icon.mjs)
+scripts/              # build tooling (remove-blog.mjs, gen-brand-icons.mjs)
 tests/                # a11y.spec.ts + unit tests
 docs/                 # DESIGN.md, CLIENT-SETUP.md, PRE-LAUNCH-CHECKLIST.md, IMAGE-CREDITS.md
 CLAUDE.md             # short agent rules (branch model, layout, prohibitions) → links to docs/

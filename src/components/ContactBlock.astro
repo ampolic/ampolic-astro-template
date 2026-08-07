@@ -1,6 +1,6 @@
 ---
 import { site } from '../config/site';
-import EmailLink from './EmailLink.astro';
+import { EmailLink } from '@ampolic/ui';
 const hasMap = Astro.slots.has('map');
 ---
 <div class:list={['grid gap-8', hasMap && 'sm:grid-cols-2']}>

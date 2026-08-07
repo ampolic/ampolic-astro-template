@@ -1,25 +1,21 @@
-# TODO: replace with reusable workflow call to
-# ampolic-core/.github/workflows/site-ci.yml@main once ampolic-core exists.
 name: CI
 
 on:
   push:
-    branches: [dev]
+    branches: [dev, main]
   pull_request:
     branches: [main]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm check
-      - run: pnpm build
+    # Hosted in the public ampolic/.github repo — public repos cannot call
+    # reusable workflows that live in private repos (ampolic-core is private).
+    # Deploys are direct-upload via wrangler: dev push -> preview (staging),
+    # main push -> production. Cloudflare's git-build pipeline is unused.
+    uses: ampolic/.github/.github/workflows/site-ci.yml@main
+    with:
+      node-version: '22'
+      deploy-project: ampolic-astro-template
+    secrets:
+      packages-token: ${{ secrets.PACKAGES_TOKEN }}
+      cloudflare-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}

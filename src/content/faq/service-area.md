@@ -1,5 +1,6 @@
 ---
 question: What's your service area?
+icon: lucide:map-pin
 order: 2
 ---
 

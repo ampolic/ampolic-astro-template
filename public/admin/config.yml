@@ -1,10 +1,9 @@
-# Decap CMS configuration
+# Sveltia CMS configuration (Decap-compatible config format)
 #
 # PER-SITE SETUP (do this in each client repo generated from this template):
-#   1. Replace OWNER/REPO below with the client site's GitHub repo (e.g. ampolic/client-acme).
-#   2. Register a GitHub OAuth app and an OAuth proxy (Cloudflare Worker or similar),
-#      then set base_url/auth_endpoint here to point at it — the plain `github`
-#      backend needs an OAuth gateway when not hosted on Netlify.
+#   1. Replace the template repo below with the client site's GitHub repo
+#      (e.g. ampolic/client-acme).
+#   2. Keep the shared OAuth gateway unless the client requires a separate app.
 #   3. Editors need write access to the repo. All CMS commits land on `dev`
 #      (staging); production only updates via the dev -> main PR.
 #   4. Keep collections below in sync with src/content.config.ts and
@@ -14,10 +13,10 @@
 
 backend:
   name: github
-  repo: OWNER/REPO # set per client site
+  repo: ampolic/ampolic-astro-template # replace in generated client sites
   branch: dev
-
-publish_mode: editorial_workflow
+  # Shared GitHub OAuth gateway (ampolic-core/workers/decap-auth).
+  base_url: https://decap-auth.muddy-voice-3b5b.workers.dev
 
 media_folder: src/assets/images/uploads
 public_folder: /src/assets/images/uploads
@@ -41,12 +40,14 @@ collections:
     folder: src/content/posts
     create: true
     extension: md
+    summary: "{{fields.date}} · {{fields.title}}"
+    sortable_fields: ["date", "title"]
     fields:
       - { name: title, label: Title, widget: string }
       - { name: description, label: Meta description, widget: string }
       - { name: date, label: Date, widget: datetime }
       - { name: updated, label: Updated, widget: datetime, required: false }
-      - { name: tags, label: Tags, widget: list, default: [] }
+      - { name: tags, label: Tags, widget: list, default: [], required: false }
       - { name: cover, label: Cover image, widget: image, required: false }
       - { name: draft, label: Draft, widget: boolean, default: false }
       - { name: body, label: Body, widget: markdown }
@@ -56,15 +57,27 @@ collections:
     folder: src/content/services
     create: true
     extension: md
+    summary: "{{fields.order}} · {{fields.title}}"
+    sortable_fields: ["order", "title"]
     fields:
       - { name: title, label: Title, widget: string }
       - { name: summary, label: Summary, widget: string }
-      - { name: description, label: Meta description, widget: string, required: false }
+      - {
+          name: description,
+          label: Meta description,
+          widget: string,
+          required: false,
+        }
       - { name: icon, label: Icon (Lucide name), widget: string }
       - { name: order, label: Order, widget: number }
       - { name: featured, label: Featured, widget: boolean, default: false }
       - { name: image, label: Image, widget: image, required: false }
-      - { name: imageAlt, label: Image alt text, widget: string, required: false }
+      - {
+          name: imageAlt,
+          label: Image alt text,
+          widget: string,
+          required: false,
+        }
       - { name: body, label: Body, widget: markdown }
 
   - name: testimonials
@@ -91,7 +104,15 @@ collections:
     folder: src/content/faq
     create: true
     extension: md
+    summary: "{{fields.order}} · {{fields.question}}"
+    sortable_fields: ["order", "question"]
     fields:
       - { name: question, label: Question, widget: string }
+      - {
+          name: icon,
+          label: "Icon (lucide name, e.g. lucide:circle-help)",
+          widget: string,
+          required: false,
+        }
       - { name: order, label: Order, widget: number }
       - { name: body, label: Answer, widget: markdown }

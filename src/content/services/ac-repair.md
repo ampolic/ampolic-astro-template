@@ -4,7 +4,7 @@ summary: Same-day diagnostics and straight quotes on repairs, plus new systems s
 icon: lucide:wind
 order: 1
 featured: true
-image: ../../assets/images/service-ac-repair.webp
+image: /src/assets/images/service-ac-repair.webp
 imageAlt: A technician inspecting a residential outdoor AC condenser with a flashlight
 ---
 

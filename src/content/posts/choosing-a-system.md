@@ -5,7 +5,7 @@ date: 2026-06-02
 updated: 2026-07-05
 tags: [buyer-guide, efficiency, heat-pumps]
 draft: false
-cover: ../../assets/images/blog-choosing-system.webp
+cover: /src/assets/images/blog-choosing-system.webp
 ---
 
 ## Sizing, and why the load calculation matters more

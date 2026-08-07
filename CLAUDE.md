@@ -1,7 +1,8 @@
 # ampolic-astro-template — agent rules
 
 Astro 5 template for Ampolic client sites. Every client repo is generated from
-this template. Staging = Cloudflare Pages `dev`, production = `main`.
+this template. Wrangler direct-upload maps `dev` to Cloudflare Pages preview
+and `main` to production; Cloudflare Git builds are unused.
 
 ## Branch rule (absolute)
 
@@ -11,12 +12,13 @@ Humans merge `dev` -> `main` via PR. No feature branches.
 ## Layout
 
 - `src/content/` — Zod-validated collections: pages, posts, services, testimonials, faq
-  (schemas in `src/content/schemas.ts`; Decap CMS edits these on `dev`)
+  (schemas in `src/content/schemas.ts`; Sveltia CMS edits these on `dev`)
 - `src/components/` — site-local `.astro` components only; shared ones will come
   from `@ampolic/ui` later (see `src/components/README.md`)
 - `src/config/site.ts` — ALL business facts; `src/styles/global.css` — all theming tokens
-- `public/admin/` — Decap CMS; `functions/api/` — Cloudflare Pages Functions
-- `.github/workflows/ci.yml` — install, check, build on `dev` pushes and PRs to `main`
+- `public/admin/` — Sveltia CMS; `functions/api/` — Cloudflare Pages Functions
+- `.github/workflows/ci.yml` — install/check/test/build; deploy `dev` preview and
+  `main` production by Wrangler direct upload
 
 ## Detailed rules
 
