@@ -195,7 +195,8 @@ NAP = Name, Address, Phone — it must be **identical** everywhere it appears.
 ## 9. Go Live
 
 - [ ] Final Lighthouse audit on production
-- [ ] Set canonical URLs to the client's live domain (not `example.com`)
+- [ ] Replace the template's `ampolic-astro-template.pages.dev` canonical URL in
+      both `src/config/site.ts` and `astro.config.mjs` with the client's live domain
 - [ ] Update any remaining placeholder text or links
 - [ ] Brief the client on theme toggle, contact form, and analytics dashboard access
 - [ ] Complete `docs/PRE-LAUNCH-CHECKLIST.md` before DNS cutover

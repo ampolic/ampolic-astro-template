@@ -1,10 +1,9 @@
-# Decap CMS configuration
+# Sveltia CMS configuration (Decap-compatible config format)
 #
 # PER-SITE SETUP (do this in each client repo generated from this template):
-#   1. Replace OWNER/REPO below with the client site's GitHub repo (e.g. ampolic/client-acme).
-#   2. Register a GitHub OAuth app and an OAuth proxy (Cloudflare Worker or similar),
-#      then set base_url/auth_endpoint here to point at it — the plain `github`
-#      backend needs an OAuth gateway when not hosted on Netlify.
+#   1. Replace the template repo below with the client site's GitHub repo
+#      (e.g. ampolic/client-acme).
+#   2. Keep the shared OAuth gateway unless the client requires a separate app.
 #   3. Editors need write access to the repo. All CMS commits land on `dev`
 #      (staging); production only updates via the dev -> main PR.
 #   4. Keep collections below in sync with src/content.config.ts and
@@ -14,8 +13,10 @@
 
 backend:
   name: github
-  repo: OWNER/REPO # set per client site
+  repo: ampolic/ampolic-astro-template # replace in generated client sites
   branch: dev
+  # Shared GitHub OAuth gateway (ampolic-core/workers/decap-auth).
+  base_url: https://decap-auth.muddy-voice-3b5b.workers.dev
 
 media_folder: src/assets/images/uploads
 public_folder: /src/assets/images/uploads
