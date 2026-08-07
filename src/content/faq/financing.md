@@ -1,5 +1,6 @@
 ---
 question: Do you offer financing on new systems?
+icon: lucide:badge-dollar-sign
 order: 1
 ---
 

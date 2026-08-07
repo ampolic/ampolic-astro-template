@@ -1,4 +1,4 @@
-import { z } from 'astro/zod';
+import { z } from "astro/zod";
 
 export const serviceSchema = z.object({
   title: z.string(),
@@ -43,5 +43,6 @@ export const testimonialSchema = z.object({
 
 export const faqSchema = z.object({
   question: z.string(),
+  icon: z.string().optional(),
   order: z.number(),
 });

@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 /* Accessibility tests run against the PRODUCTION build, never dev mode:
    the webServer below builds the site and serves the static `dist/` via
@@ -7,25 +7,29 @@ const PORT = Number(process.env.PORT ?? 4321);
 const BASE_URL = `http://localhost:${PORT}`;
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: "./tests",
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: 0,
   workers: 1,
-  reporter: [['list']],
-  timeout: 60_000,
+  reporter: [["list"]],
+  // Sitemap crawls scan every generated page; the full template intentionally
+  // contains far more routes than a typical instantiated client site.
+  timeout: 180_000,
   expect: { timeout: 10_000 },
   use: {
     baseURL: BASE_URL,
-    trace: 'retain-on-failure',
+    trace: "retain-on-failure",
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
     command: `pnpm build && pnpm preview --port ${PORT}`,
     url: BASE_URL,
-    reuseExistingServer: !process.env.CI,
+    // Never attach to a sibling site's preview server. Ampolic workspaces keep
+    // several generated sites side-by-side and they otherwise share this port.
+    reuseExistingServer: false,
     timeout: 180_000,
-    stdout: 'pipe',
-    stderr: 'pipe',
+    stdout: "pipe",
+    stderr: "pipe",
   },
 });

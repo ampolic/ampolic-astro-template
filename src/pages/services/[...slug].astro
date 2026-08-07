@@ -1,37 +1,51 @@
 ---
-import { getCollection, render } from 'astro:content';
-import { Image } from 'astro:assets';
-import Base from '../../layouts/Base.astro';
-import { Prose } from '@ampolic/ui';
-import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import { Prose } from "@ampolic/ui";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import { resolveContentImage } from "../../lib/contentImage";
 
 export async function getStaticPaths() {
-  const services = await getCollection('services');
-  return services.map((s) => ({ params: { slug: s.id }, props: { service: s } }));
+  const services = await getCollection("services");
+  return services.map((s) => ({
+    params: { slug: s.id },
+    props: { service: s },
+  }));
 }
 const { service } = Astro.props;
+const serviceImage = resolveContentImage(
+  service.data.image,
+  `services/${service.id}`,
+);
 const { Content } = await render(service);
 const crumbs = [
-  { label: 'Home', href: '/' },
-  { label: 'Services', href: '/services' },
+  { label: "Home", href: "/" },
+  { label: "Services", href: "/services" },
   { label: service.data.title },
 ];
 ---
-<Base title={service.data.title} description={service.data.description ?? service.data.summary}>
+
+<Base
+  title={service.data.title}
+  description={service.data.description ?? service.data.summary}
+>
   <article class="py-(--spacing-section)">
     <div class="mx-auto max-w-6xl px-4">
       <Breadcrumbs items={crumbs} class="mb-5" />
       <h1 class="font-display text-4xl font-semibold">{service.data.title}</h1>
-      {service.data.image && (
-        <Image
-          src={service.data.image}
-          alt={service.data.imageAlt ?? ''}
-          widths={[768, 1152]}
-          sizes="(min-width: 72rem) 72rem, 100vw"
-          loading="eager"
-          class="mt-8 aspect-[16/7] w-full rounded-(--radius-base) border border-line object-cover"
-        />
-      )}
+      {
+        serviceImage && (
+          <Image
+            src={serviceImage}
+            alt={service.data.imageAlt ?? ""}
+            widths={[768, 1152]}
+            sizes="(min-width: 72rem) 72rem, 100vw"
+            loading="eager"
+            class="border-line mt-8 aspect-[16/7] w-full rounded-(--radius-base) border object-cover"
+          />
+        )
+      }
       <Prose><Content /></Prose>
     </div>
   </article>

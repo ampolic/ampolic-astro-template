@@ -1,21 +1,22 @@
 ---
-import { getCollection } from 'astro:content';
-import Base from '../layouts/Base.astro';
-import Hero from '../components/Hero.astro';
-import { SectionHeading } from '@ampolic/ui';
-import ServiceCard from '../components/ServiceCard.astro';
-import { TestimonialCard } from '@ampolic/ui';
-import { CtaBand } from '@ampolic/ui';
-import { site } from '../config/site';
-import heroImage from '../assets/images/hero-technician-gauge.webp';
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import { SectionHeading } from "@ampolic/ui";
+import ServiceCard from "../components/ServiceCard.astro";
+import { TestimonialCard } from "@ampolic/ui";
+import { CtaBand } from "@ampolic/ui";
+import { site } from "../config/site";
+import { resolveContentImage } from "../lib/contentImage";
+import heroImage from "../assets/images/hero-technician-gauge.webp";
 
-const services = (await getCollection('services'))
+const services = (await getCollection("services"))
   .filter((s) => s.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
-const testimonials = await getCollection('testimonials');
+const testimonials = await getCollection("testimonials");
 
 // Display phone: +1-303-555-0142 → (303) 555-0142
-const digits = site.phone.replace(/\D/g, '').slice(-10);
+const digits = site.phone.replace(/\D/g, "").slice(-10);
 const phoneLabel = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 
 // Homepage title models the local-SEO convention: "[primaryService] in [city] | [name]".
@@ -29,6 +30,7 @@ const spec = [
   t.dispatch,
 ];
 ---
+
 <Base title={homeTitle} description={site.description}>
   <Hero
     eyebrow={`Licensed HVAC · ${site.address.locality}, ${site.address.region}`}
@@ -36,6 +38,8 @@ const spec = [
     subhead={site.description}
     ctaLabel="Get a quote"
     ctaHref="/contact"
+    secondaryLabel="View services"
+    secondaryHref="/services"
     phone={site.phone}
     phoneLabel={phoneLabel}
     image={heroImage}
@@ -43,31 +47,39 @@ const spec = [
   />
 
   <!-- Spec strip: credibility as one mono data row, not a badge wall -->
-  <section class="border-y border-line" aria-label="Company facts">
-    <ul class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-3 px-4 py-5 font-mono text-xs uppercase tracking-[0.12em] text-text-muted sm:text-sm">
-      {spec.map((item) => (
-        <li class="flex items-center gap-8" data-spec>
-          <span class="text-text">{item}</span>
-        </li>
-      ))}
+  <section class="border-line border-y" aria-label="Company facts">
+    <ul
+      class="text-text-muted mx-auto flex max-w-6xl flex-wrap items-center gap-x-8 gap-y-3 px-4 py-5 font-mono text-xs tracking-[0.12em] uppercase sm:text-sm"
+    >
+      {
+        spec.map((item) => (
+          <li class="flex items-center gap-8" data-spec>
+            <span class="text-text">{item}</span>
+          </li>
+        ))
+      }
     </ul>
   </section>
 
   <section class="bg-surface-alt py-(--spacing-section)">
     <div class="mx-auto max-w-6xl px-4">
-      <div data-reveal><SectionHeading eyebrow="What we do" heading="Services" /></div>
+      <div data-reveal>
+        <SectionHeading eyebrow="What we do" heading="Services" />
+      </div>
       <div class="mt-12 grid gap-6 md:grid-cols-3" data-stagger>
-        {services.map((s, i) => (
-          <ServiceCard
-            title={s.data.title}
-            summary={s.data.summary}
-            icon={s.data.icon}
-            href={`/services/${s.id}`}
-            index={String(i + 1).padStart(2, '0')}
-            image={s.data.image}
-            imageAlt={s.data.imageAlt}
-          />
-        ))}
+        {
+          services.map((s, i) => (
+            <ServiceCard
+              title={s.data.title}
+              summary={s.data.summary}
+              icon={s.data.icon}
+              href={`/services/${s.id}`}
+              index={String(i + 1).padStart(2, "0")}
+              image={resolveContentImage(s.data.image, `services/${s.id}`)}
+              imageAlt={s.data.imageAlt}
+            />
+          ))
+        }
       </div>
     </div>
   </section>
@@ -75,10 +87,16 @@ const spec = [
   <section class="py-(--spacing-section)">
     <div class="mx-auto max-w-6xl px-4">
       <div class="flex flex-wrap items-end justify-between gap-4" data-reveal>
-        <SectionHeading eyebrow="In their words" heading="What our customers say" />
-        <p class="font-mono text-sm text-text-muted">
-          <span class="text-2xl font-semibold text-text">{t.ratingValue}</span> / 5.0
-          <span class="mt-1 block text-xs uppercase tracking-[0.12em]">{t.reviewCount} verified reviews</span>
+        <SectionHeading
+          eyebrow="In their words"
+          heading="What our customers say"
+        />
+        <p class="text-text-muted font-mono text-sm">
+          <span class="text-text text-2xl font-semibold">{t.ratingValue}</span> /
+          5.0
+          <span class="mt-1 block text-xs tracking-[0.12em] uppercase"
+            >{t.reviewCount} verified reviews</span
+          >
         </p>
       </div>
       <div class="mt-12 grid gap-6 md:grid-cols-3" data-stagger>
@@ -98,18 +116,35 @@ const spec = [
 
   <!-- Contact strip: operations / dispatch register -->
   <section class="bg-surface-alt py-14" aria-label="Contact">
-    <dl class="mx-auto grid max-w-6xl gap-8 px-4 font-mono text-sm sm:grid-cols-3">
+    <dl
+      class="mx-auto grid max-w-6xl gap-8 px-4 font-mono text-sm sm:grid-cols-3"
+    >
       <div>
-        <dt class="text-xs uppercase tracking-[0.15em] text-brand">Dispatch</dt>
-        <dd class="mt-2 text-text"><a href={`tel:${site.phone}`} class="underline-offset-4 hover:underline">{phoneLabel}</a></dd>
+        <dt class="text-brand text-xs tracking-[0.15em] uppercase">Dispatch</dt>
+        <dd class="text-text mt-2">
+          <a
+            href={`tel:${site.phone}`}
+            class="underline-offset-4 hover:underline">{phoneLabel}</a>
+        </dd>
       </div>
       <div>
-        <dt class="text-xs uppercase tracking-[0.15em] text-brand">Boulder, CO</dt>
-        <dd class="mt-2 text-text">{site.address.street}, {site.address.locality} {site.address.region}</dd>
+        <dt class="text-brand text-xs tracking-[0.15em] uppercase">
+          Boulder, CO
+        </dt>
+        <dd class="text-text mt-2">
+          {site.address.street}, {site.address.locality}
+          {site.address.region}
+        </dd>
       </div>
       <div>
-        <dt class="text-xs uppercase tracking-[0.15em] text-brand">Hours</dt>
-        {site.hours.map((h) => <dd class="mt-2 text-text-muted">{h.days} {h.opens}–{h.closes}</dd>)}
+        <dt class="text-brand text-xs tracking-[0.15em] uppercase">Hours</dt>
+        {
+          site.hours.map((h) => (
+            <dd class="text-text-muted mt-2">
+              {h.days} {h.opens}–{h.closes}
+            </dd>
+          ))
+        }
       </div>
     </dl>
   </section>

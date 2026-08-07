@@ -28,16 +28,16 @@ reviewing both pages with their own counsel before launch.
   - Confirm `formProcessor` names the service that actually delivers form submissions and links its
     real privacy policy
 - [ ] Confirm the privacy page matches the services actually in use: the contact form fields
-  (name, email, message), the form processor, the OpenStreetMap embed, Cloudflare hosting/Turnstile,
-  and analytics only if enabled. Remove or amend any paragraph that no longer applies.
+      (name, email, message), the form processor, the OpenStreetMap embed, Cloudflare hosting/Turnstile,
+      and analytics only if enabled. Remove or amend any paragraph that no longer applies.
 - [ ] If enabling analytics: prefer a **cookieless** provider (Cloudflare Web Analytics or Plausible).
-  Set `legal.analyticsProvider` to the vendor's display name so the privacy page names it, and wire the
-  tag via `analytics.provider` (Plausible) or `legal.analyticsSnippet` (custom cookieless tag).
-  If the client insists on GA4 or ad pixels, a consent banner is likely required — that is **out of
-  template scope**; handle it per client.
+      Set `legal.analyticsProvider` to the vendor's display name so the privacy page names it, and wire the
+      tag via `analytics.provider` (Plausible) or `legal.analyticsSnippet` (custom cookieless tag).
+      If the client insists on GA4 or ad pixels, a consent banner is likely required — that is **out of
+      template scope**; handle it per client.
 - [ ] Escalation — recommend the client consult a lawyer directly if the business is health-related,
-  targets children, sells online, or runs email marketing. These carry obligations this template does
-  not attempt to cover.
+      targets children, sells online, or runs email marketing. These carry obligations this template does
+      not attempt to cover.
 - [ ] The client accepts responsibility for the legal review of both the privacy and terms pages.
 
 ## Escalation & client FAQ
@@ -55,7 +55,7 @@ Decline, and explain why. Canned response:
 > An overlay widget (accessiBe, UserWay, and similar) adds cost and a third-party
 > script that tracks your visitors — which conflicts with the no-third-party
 > privacy posture this site ships with. Overlays can interfere with the screen
-> readers and assistive tech people already use, and they have shown up *in* ADA
+> readers and assistive tech people already use, and they have shown up _in_ ADA
 > complaints rather than preventing them. They do not provide legal protection.
 >
 > If a visitor hits a specific barrier, they can report it via the contact on the
@@ -92,11 +92,17 @@ toggles. Accessibility lives in the code and responds to real user preferences.
 
 ## 4. Content & Media
 
-- [ ] Replace `public/og-default.png` with the client's OG image (1200×630px, includes logo/brand)
-- [ ] Replace `public/favicon.svg` with the client's favicon (keep the embedded
-  `prefers-color-scheme` block so the mark stays theme-aware)
-- [ ] Regenerate the iOS home-screen icon after swapping the logo:
-  `node scripts/gen-apple-touch-icon.mjs` (writes `public/apple-touch-icon.png`)
+- [ ] Add the client's source logo under `src/assets/images/`, then generate the complete
+      favicon/touch/OG set. Copy the facts from `site.ts` and colors from `@theme`; do not keep a
+      second brand configuration file:
+  ```sh
+  node scripts/gen-brand-icons.mjs \
+    --logo src/assets/images/client-logo.png \
+    --name "Client Name" --tagline "Client tagline" \
+    --surface "#ffffff" --scrim "#111827" --accent "#2563eb"
+  ```
+- [ ] Inspect `public/favicon.svg`, `favicon.ico`, `apple-touch-icon.png`, and
+      `og-default.png` after generation. A bespoke OG image may replace the generated default.
 - [ ] Update content collections (via markdown):
   - `src/content/services/` — add/edit the client's service offerings
   - `src/content/testimonials/` — add client testimonials
@@ -104,8 +110,8 @@ toggles. Accessibility lives in the code and responds to real user preferences.
   - `src/content/posts/` — add blog posts (optional)
 - [ ] Verify all collection frontmatter (title, description, published date, etc.) matches content structure
 - [ ] Local-SEO copy: the homepage H1/intro must name the city (from `site.ts` `city`), and each
-  service page should name the areas served where it reads naturally — not stuffed. The footer
-  "Serving:" line and JSON-LD `areaServed` are generated from `site.ts` `serviceAreas`.
+      service page should name the areas served where it reads naturally — not stuffed. The footer
+      "Serving:" line and JSON-LD `areaServed` are generated from `site.ts` `serviceAreas`.
 
 ## 5. Environment Variables (Cloudflare Pages)
 
@@ -117,17 +123,33 @@ Set these in the Cloudflare Pages project settings (do NOT commit to `.env` or `
 - [ ] `CONTACT_FROM_EMAIL` — the sender email (must be verified in Resend; e.g., "noreply@client.com")
 
 The contact form endpoint (`/api/contact`) is a Cloudflare Pages Function at `functions/api/contact.ts`. It:
-  - Verifies the Turnstile token (if provided) against TURNSTILE_SECRET_KEY
-  - Validates field presence and honeypot on no-JS fallback
-  - Sends via Resend using RESEND_API_KEY and CONTACT_TO_EMAIL
-  - Applies timing-based anti-spam to JS-stamped submits
+
+- Verifies the Turnstile token (if provided) against TURNSTILE_SECRET_KEY
+- Validates field presence and honeypot on no-JS fallback
+- Sends via Resend using RESEND_API_KEY and CONTACT_TO_EMAIL
+- Applies timing-based anti-spam to JS-stamped submits
 
 ## 6. Cloudflare Pages Deployment
 
-- [ ] Connect the GitHub repository to Cloudflare Pages:
-  - Framework preset: `Astro`
-  - Build command: `pnpm build`
-  - Build output directory: `dist`
+Ampolic sites use **Wrangler direct upload from reusable CI**. Do not connect the repository to
+Cloudflare's Git build system; it cannot reliably authenticate to GitHub Packages.
+
+- [ ] Have the human create/apply the site's Cloudflare Pages project through
+      `ampolic-core/infra` and record the exact project name. Agents never run `tofu apply`.
+- [ ] In `.github/workflows/ci.yml`, enable pushes to both permanent branches:
+      `branches: [dev, main]`.
+- [ ] Pass the Pages project to the reusable workflow:
+  ```yaml
+  with:
+    node-version: "22"
+    deploy-project: site-client-name
+  secrets:
+    packages-token: ${{ secrets.PACKAGES_TOKEN }}
+    cloudflare-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  ```
+- [ ] Confirm the organization Actions secrets `PACKAGES_TOKEN` (`read:packages`) and
+      `CLOUDFLARE_API_TOKEN` (Pages edit) are available to the repository.
+- [ ] Confirm a `dev` push creates a preview deployment and a `main` push updates production.
 - [ ] Ensure the Turnstile site key (in `site.ts`) matches the Turnstile project in Cloudflare
 - [ ] Test the contact form end-to-end:
   - JS path: verify Turnstile challenge and email delivery
@@ -158,17 +180,17 @@ Do these at launch so the business is discoverable and its listings agree with t
 NAP = Name, Address, Phone — it must be **identical** everywhere it appears.
 
 - [ ] **Google Search Console:** verify the domain (DNS TXT record), then submit the sitemap —
-  `https://<domain>/sitemap-index.xml`. Confirm it reports the expected page count with no errors.
+      `https://<domain>/sitemap-index.xml`. Confirm it reports the expected page count with no errors.
 - [ ] **Google Business Profile:** claim and complete the listing — primary + secondary categories,
-  hours, service area, phone, website link, and real photos. The NAP on GBP must match
-  `src/config/site.ts` **exactly** (same street format, same phone format). A mismatch splits
-  local ranking signals.
+      hours, service area, phone, website link, and real photos. The NAP on GBP must match
+      `src/config/site.ts` **exactly** (same street format, same phone format). A mismatch splits
+      local ranking signals.
 - [ ] **Bing Places** and **Apple Business Connect:** create/claim the listing on both, with the
-  same NAP, categories, hours, and website link.
+      same NAP, categories, hours, and website link.
 - [ ] Confirm `robots.txt` (generated) points at the live sitemap and that `llms.txt` renders at
-  `https://<domain>/llms.txt`.
+      `https://<domain>/llms.txt`.
 - [ ] **Schedule a 30-day post-launch Search Console review:** check indexed-page coverage, top
-  queries, and any crawl or structured-data errors, and fix what surfaced.
+      queries, and any crawl or structured-data errors, and fix what surfaced.
 
 ## 9. Go Live
 

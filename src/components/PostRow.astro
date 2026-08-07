@@ -1,38 +1,55 @@
 ---
-import { Image } from 'astro:assets';
-import { readingTime } from '../lib/readingTime';
-import TagList from './TagList.astro';
-import type { Post } from '../lib/posts';
-interface Props { post: Post }
+import { Image } from "astro:assets";
+import { readingTime } from "../lib/readingTime";
+import TagList from "./TagList.astro";
+import type { Post } from "../lib/posts";
+import { resolveContentImage } from "../lib/contentImage";
+interface Props {
+  post: Post;
+}
 const { post: p } = Astro.props;
+const cover = resolveContentImage(p.data.cover, `posts/${p.id}`);
 // Per-post morph name, matched on the post page's hero image. Prefixed + sanitised
 // so it is always a valid, unique CSS custom-ident (never starts with a digit).
-const vtName = `vt-post-${p.id.replace(/[^a-z0-9]+/gi, '-')}`;
+const vtName = `vt-post-${p.id.replace(/[^a-z0-9]+/gi, "-")}`;
 const fmtDate = (d: Date) =>
-  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
 ---
+
 <article>
-  <a href={`/blog/${p.id}`} class="group grid gap-4 sm:grid-cols-[13rem_1fr] sm:gap-6">
+  <a
+    href={`/blog/${p.id}`}
+    class="group grid gap-4 sm:grid-cols-[13rem_1fr] sm:gap-6"
+  >
     {
-      p.data.cover && (
+      cover && (
         <Image
-          src={p.data.cover}
+          src={cover}
           alt=""
           width={416}
           height={277}
           loading="lazy"
           data-vt-morph
           style={`view-transition-name: ${vtName}`}
-          class="aspect-[3/2] w-full rounded-(--radius-base) border border-line object-cover"
+          class="border-line aspect-[3/2] w-full rounded-(--radius-base) border object-cover"
         />
       )
     }
     <div>
-      <p class="font-mono text-xs uppercase tracking-[0.12em] text-text-muted">
-        {fmtDate(p.data.date)} · {readingTime(p.body ?? '').minutes} min read
+      <p class="text-text-muted font-mono text-xs tracking-[0.12em] uppercase">
+        {fmtDate(p.data.date)} · {readingTime(p.body ?? "").minutes} min read
       </p>
-      <h2 class="mt-2 font-display text-xl font-semibold tracking-tight group-hover:text-brand">{p.data.title}</h2>
-      <p class="mt-1 text-text-muted">{p.data.description}</p>
+      <h2
+        class="font-display group-hover:text-brand mt-2 text-xl font-semibold tracking-tight"
+      >
+        {p.data.title}
+      </h2>
+      <p class="text-text-muted mt-1">{p.data.description}</p>
     </div>
   </a>
   <TagList tags={p.data.tags} class="mt-3 sm:ml-[calc(13rem+1.5rem)]" />

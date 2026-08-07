@@ -1,5 +1,6 @@
 ---
 question: How often should I have my system maintained?
+icon: lucide:wrench
 order: 4
 ---
 

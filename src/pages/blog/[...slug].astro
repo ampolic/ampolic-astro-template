@@ -1,36 +1,49 @@
 ---
-import { render } from 'astro:content';
-import { Image, getImage } from 'astro:assets';
-import Base from '../../layouts/Base.astro';
-import { Prose } from '@ampolic/ui';
-import PostToc from '../../components/PostToc.astro';
-import TagList from '../../components/TagList.astro';
-import PostNav from '../../components/PostNav.astro';
-import RelatedPosts from '../../components/RelatedPosts.astro';
-import ShareMenu from '../../components/ShareMenu.astro';
-import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { readingTime } from '../../lib/readingTime';
-import { buildBlogPostingJsonLd } from '../../lib/jsonld';
-import { getPublishedPosts, getAdjacentPosts, getRelatedPosts, slugifyTag } from '../../lib/posts';
-import { site } from '../../config/site';
+import { render } from "astro:content";
+import { Image, getImage } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import { Prose } from "@ampolic/ui";
+import PostToc from "../../components/PostToc.astro";
+import TagList from "../../components/TagList.astro";
+import PostNav from "../../components/PostNav.astro";
+import RelatedPosts from "../../components/RelatedPosts.astro";
+import ShareMenu from "../../components/ShareMenu.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import { readingTime } from "../../lib/readingTime";
+import { buildBlogPostingJsonLd } from "../../lib/jsonld";
+import {
+  getPublishedPosts,
+  getAdjacentPosts,
+  getRelatedPosts,
+  slugifyTag,
+} from "../../lib/posts";
+import { site } from "../../config/site";
+import { resolveContentImage } from "../../lib/contentImage";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
   return posts.map((post) => ({
     params: { slug: post.id },
-    props: { post, ...getAdjacentPosts(post, posts), related: getRelatedPosts(post, posts, 3) },
+    props: {
+      post,
+      ...getAdjacentPosts(post, posts),
+      related: getRelatedPosts(post, posts, 3),
+    },
   }));
 }
 const { post, prev, next, related } = Astro.props;
 const { Content, headings } = await render(post);
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const hasToc = toc.length >= 2;
-const { words, minutes } = readingTime(post.body ?? '');
+const { words, minutes } = readingTime(post.body ?? "");
 
 const canonical = new URL(`/blog/${post.id}`, site.url).href;
 const shareUrl = new URL(Astro.url.pathname, Astro.site).href;
 const shareOgImage = new URL(`/og/${post.id}.png`, Astro.site).href;
-const cover = post.data.cover ? await getImage({ src: post.data.cover, width: 1200 }) : undefined;
+const coverSource = resolveContentImage(post.data.cover, `posts/${post.id}`);
+const cover = coverSource
+  ? await getImage({ src: coverSource, width: 1200 })
+  : undefined;
 const blogJsonLd = buildBlogPostingJsonLd({
   site,
   title: post.data.title,
@@ -41,12 +54,17 @@ const blogJsonLd = buildBlogPostingJsonLd({
   image: cover ? new URL(cover.src, site.url).href : undefined,
 });
 const fmtDate = (d: Date) =>
-  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
 const published = fmtDate(post.data.date);
 
 // Matches the blog-card image name (PostRow.astro) so the featured image morphs
 // into this hero on navigation. Same sanitiser → same ident for the same slug.
-const vtName = `vt-post-${post.id.replace(/[^a-z0-9]+/gi, '-')}`;
+const vtName = `vt-post-${post.id.replace(/[^a-z0-9]+/gi, "-")}`;
 const updated =
   post.data.updated && post.data.updated.getTime() > post.data.date.getTime()
     ? fmtDate(post.data.updated)
@@ -55,45 +73,76 @@ const updated =
 // Home → Blog → [primary tag] → post. Tag level only when the post has a tag.
 const primaryTag = post.data.tags[0];
 const crumbs = [
-  { label: 'Home', href: '/' },
-  { label: 'Blog', href: '/blog' },
-  ...(primaryTag ? [{ label: primaryTag, href: `/blog/tags/${slugifyTag(primaryTag)}` }] : []),
+  { label: "Home", href: "/" },
+  { label: "Blog", href: "/blog" },
+  ...(primaryTag
+    ? [{ label: primaryTag, href: `/blog/tags/${slugifyTag(primaryTag)}` }]
+    : []),
   { label: post.data.title },
 ];
 ---
-<Base title={post.data.title} description={post.data.description} image={`/og/${post.id}.png`}>
-  <script type="application/ld+json" is:inline set:html={JSON.stringify(blogJsonLd)} />
+
+<Base
+  title={post.data.title}
+  description={post.data.description}
+  image={`/og/${post.id}.png`}
+>
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(blogJsonLd)}
+  />
   <article class="py-(--spacing-section)">
     <div class="mx-auto max-w-3xl px-4">
       <div class="relative">
-        {hasToc && (
-          <div class="absolute top-0 right-full mr-8 hidden h-full xl:block">
-            <PostToc headings={toc} words={words} minutes={minutes} class="sticky top-28 w-56" />
-          </div>
-        )}
+        {
+          hasToc && (
+            <div class="absolute top-0 right-full mr-8 hidden h-full xl:block">
+              <PostToc
+                headings={toc}
+                words={words}
+                minutes={minutes}
+                class="sticky top-28 w-56"
+              />
+            </div>
+          )
+        }
         <Breadcrumbs items={crumbs} class="mb-5" />
-        <p class="font-mono text-xs uppercase tracking-[0.12em] text-brand">
-          {published} · {minutes} min read · {words.toLocaleString()} words{updated && ` · Updated ${updated}`}
+        <p class="text-brand font-mono text-xs tracking-[0.12em] uppercase">
+          {published} · {minutes} min read · {words.toLocaleString()} words{
+            updated && ` · Updated ${updated}`
+          }
         </p>
         <div class="flex items-start justify-between gap-4">
-          <h1 class="mt-3 font-display text-4xl font-semibold text-balance">{post.data.title}</h1>
-          <ShareMenu title={post.data.title} url={shareUrl} ogImage={shareOgImage} class="mt-3 shrink-0" />
+          <h1 class="font-display mt-3 text-4xl font-semibold text-balance">
+            {post.data.title}
+          </h1>
+          <ShareMenu
+            title={post.data.title}
+            url={shareUrl}
+            ogImage={shareOgImage}
+            class="mt-3 shrink-0"
+          />
         </div>
         <TagList tags={post.data.tags} class="mt-4" />
-        {post.data.cover && (
-          <Image
-            src={post.data.cover}
-            alt=""
-            widths={[480, 768, 1152]}
-            sizes="(min-width: 48rem) 48rem, 100vw"
-            loading="eager"
-            data-vt-morph
-            style={`view-transition-name: ${vtName}`}
-            class="mt-8 aspect-[16/9] w-full rounded-(--radius-base) border border-line object-cover"
-          />
-        )}
+        {
+          coverSource && (
+            <Image
+              src={coverSource}
+              alt=""
+              widths={[480, 768, 1152]}
+              sizes="(min-width: 48rem) 48rem, 100vw"
+              loading="eager"
+              data-vt-morph
+              style={`view-transition-name: ${vtName}`}
+              class="border-line mt-8 aspect-[16/9] w-full rounded-(--radius-base) border object-cover"
+            />
+          )
+        }
         <Prose><Content /></Prose>
-        {/* Print-only provenance line (hidden on screen; shown by @media print in global.css). */}
+        {
+          /* Print-only provenance line (hidden on screen; shown by @media print in global.css). */
+        }
         <p data-print-footer class="hidden">Printed from {canonical}</p>
         <PostNav prev={prev} next={next} />
         <RelatedPosts posts={related} />

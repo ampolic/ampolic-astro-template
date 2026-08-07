@@ -1,56 +1,135 @@
 ---
-import { Button } from '@ampolic/ui';
-import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
+import { Button } from "@ampolic/ui";
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 interface Props {
   eyebrow?: string;
   headline: string;
   subhead?: string;
   ctaLabel?: string;
   ctaHref?: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
   phone?: string;
   phoneLabel?: string;
   image?: ImageMetadata;
   imageAlt?: string;
 }
-const { eyebrow, headline, subhead, ctaLabel, ctaHref, phone, phoneLabel, image, imageAlt } = Astro.props;
+const {
+  eyebrow,
+  headline,
+  subhead,
+  ctaLabel,
+  ctaHref,
+  secondaryLabel,
+  secondaryHref,
+  phone,
+  phoneLabel,
+  image,
+  imageAlt,
+} = Astro.props;
+const secondaryClass = image
+  ? "inline-flex min-h-11 items-center justify-center rounded-(--radius-base) border border-on-hero/60 px-5 font-medium text-on-hero hover:bg-on-hero/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-on-hero"
+  : "inline-flex min-h-11 items-center justify-center rounded-(--radius-base) border border-line px-5 font-medium text-text hover:border-brand hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
 // Over a photo, text sits on the scrim (constant near-white); otherwise on the surface.
-const eyebrowColor = image ? 'text-brand-dark' : 'text-brand';
-const headColor = image ? 'text-on-hero' : 'text-text';
-const subColor = image ? 'text-on-hero/85' : 'text-text-muted';
-const phoneColor = image ? 'text-on-hero' : 'text-text';
+const eyebrowColor = image ? "text-brand-dark" : "text-brand";
+const headColor = image ? "text-on-hero" : "text-text";
+const subColor = image ? "text-on-hero/85" : "text-text-muted";
+const phoneColor = image ? "text-on-hero" : "text-text";
 ---
-<section class:list={[image ? 'relative isolate flex min-h-[100svh] items-center overflow-hidden' : 'py-(--spacing-section)']}>
-  {image && (
-    <>
-      <Image
-        src={image}
-        alt={imageAlt ?? ''}
-        widths={[640, 1024, 1600]}
-        sizes="100vw"
-        quality={68}
-        loading="eager"
-        fetchpriority="high"
-        class="absolute inset-0 -z-10 h-full w-full object-cover"
-      />
-      <div class="absolute inset-0 -z-10 bg-linear-to-r from-scrim/85 via-scrim/65 to-scrim/40" aria-hidden="true"></div>
-    </>
-  )}
-  <div class:list={['mx-auto w-full max-w-6xl px-4', image && 'py-(--spacing-section)']}>
+
+<section
+  class:list={[
+    image
+      ? "relative isolate flex min-h-[100svh] items-center overflow-hidden"
+      : "py-(--spacing-section)",
+  ]}
+>
+  {
+    image && (
+      <>
+        <Image
+          src={image}
+          alt={imageAlt ?? ""}
+          widths={[640, 1024, 1600]}
+          sizes="100vw"
+          quality={68}
+          loading="eager"
+          fetchpriority="high"
+          class="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+        <div
+          class="from-scrim/85 via-scrim/65 to-scrim/40 absolute inset-0 -z-10 bg-linear-to-r"
+          aria-hidden="true"
+        />
+      </>
+    )
+  }
+  <div
+    class:list={[
+      "mx-auto w-full max-w-6xl px-4",
+      image && "py-(--spacing-section)",
+    ]}
+  >
     <div class="max-w-2xl">
-      {eyebrow && (
-        <p class:list={['font-mono text-sm uppercase tracking-[0.18em]', eyebrowColor]} data-hero="1">{eyebrow}</p>
-      )}
-      <h1 class:list={['mt-5 font-display text-5xl font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl', headColor]} data-hero="2">{headline}</h1>
-      {subhead && <p class:list={['mt-6 max-w-[48ch] text-lg sm:text-xl', subColor]} data-hero="3">{subhead}</p>}
-      {(ctaLabel && ctaHref) || phone ? (
-        <div class="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4" data-hero="4">
-          {ctaLabel && ctaHref && <Button href={ctaHref}>{ctaLabel}</Button>}
-          {phone && (
-            <a href={`tel:${phone}`} class:list={['font-mono text-base underline-offset-4 hover:text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand', phoneColor]}>{phoneLabel ?? phone}</a>
-          )}
-        </div>
-      ) : null}
+      {
+        eyebrow && (
+          <p
+            class:list={[
+              "font-mono text-sm tracking-[0.18em] uppercase",
+              eyebrowColor,
+            ]}
+            data-hero="1"
+          >
+            {eyebrow}
+          </p>
+        )
+      }
+      <h1
+        class:list={[
+          "font-display mt-5 text-5xl font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl",
+          headColor,
+        ]}
+        data-hero="2"
+      >
+        {headline}
+      </h1>
+      {
+        subhead && (
+          <p
+            class:list={["mt-6 max-w-[48ch] text-lg sm:text-xl", subColor]}
+            data-hero="3"
+          >
+            {subhead}
+          </p>
+        )
+      }
+      {
+        (ctaLabel && ctaHref) || (secondaryLabel && secondaryHref) || phone ? (
+          <div
+            class="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4"
+            data-hero="4"
+          >
+            {ctaLabel && ctaHref && <Button href={ctaHref}>{ctaLabel}</Button>}
+            {secondaryLabel && secondaryHref && (
+              <a href={secondaryHref} class={secondaryClass}>
+                {secondaryLabel}
+              </a>
+            )}
+            {phone && (
+              <a
+                href={`tel:${phone}`}
+                class:list={[
+                  "hover:text-brand focus-visible:outline-brand font-mono text-base underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2",
+                  phoneColor,
+                ]}
+              >
+                {phoneLabel ?? phone}
+              </a>
+            )}
+          </div>
+        ) : null
+      }
     </div>
   </div>
 </section>
