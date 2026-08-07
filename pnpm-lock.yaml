@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ampolic/ui':
-        specifier: 0.5.3
-        version: 0.5.3(astro-icon@1.1.5)(astro@5.18.2(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(typescript@5.9.3)(yaml@2.9.0))
+        specifier: 0.5.4
+        version: 0.5.4(astro-icon@1.1.5)(astro@5.18.2(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(typescript@5.9.3)(yaml@2.9.0))
       '@astrojs/mdx':
         specifier: ^4.3.14
         version: 4.3.14(astro@5.18.2(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(typescript@5.9.3)(yaml@2.9.0))
@@ -99,8 +99,8 @@ importers:
 
 packages:
 
-  '@ampolic/ui@0.5.3':
-    resolution: {integrity: sha512-Plwxm+c/ZTOy3AWd8IVCrcIPwMAUkLJTx+JMk3xyHEItNu1xLJ2MElDtbqxFfcebdrOcvdJ4bmCKx1mdEGF/Pg==, tarball: https://npm.pkg.github.com/download/@ampolic/ui/0.5.3/39663fbaf614b1068309b6547735b498ba0f0154}
+  '@ampolic/ui@0.5.4':
+    resolution: {integrity: sha512-jRUCz71xFSgosRng08aX9vy68ghJ3cjoj+F5JRgEjeoqy+FOwsLhw+1WIEGio4BwIwg7Evk19ZaKeecoE1E+yQ==, tarball: https://npm.pkg.github.com/download/@ampolic/ui/0.5.4/fae3ce224ab630d05ad52cf701a60d5cd8737af6}
     peerDependencies:
       astro: ^5.0.0
       astro-icon: ^1.0.0
@@ -3550,7 +3550,7 @@ packages:
 
 snapshots:
 
-  '@ampolic/ui@0.5.3(astro-icon@1.1.5)(astro@5.18.2(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(typescript@5.9.3)(yaml@2.9.0))':
+  '@ampolic/ui@0.5.4(astro-icon@1.1.5)(astro@5.18.2(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(typescript@5.9.3)(yaml@2.9.0))':
     dependencies:
       astro: 5.18.2(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.62.2)(typescript@5.9.3)(yaml@2.9.0)
       astro-icon: 1.1.5
