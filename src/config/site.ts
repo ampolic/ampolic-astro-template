@@ -57,7 +57,13 @@ export interface Site {
      telegram, reddit, pinterest, email, sms. */
   shareLinks: ShareTarget[];
   analytics: { provider: "none" | "plausible" | "ga"; id?: string };
-  form: { endpoint: string; turnstileSiteKey: string; recipientLabel: string };
+  form: {
+    endpoint: string;
+    turnstileSiteKey: string;
+    recipientLabel: string;
+    showPhone?: boolean;
+    topics?: Array<{ value: string; label: string }>;
+  };
   /* Credibility facts rendered as the mono spec strip (est · rating · license · dispatch). */
   trust: {
     established: number;
@@ -173,6 +179,13 @@ export const site: Site = {
     endpoint: "/api/contact",
     turnstileSiteKey: "1x00000000000000000000AA",
     recipientLabel: "the Summit team",
+    showPhone: true,
+    topics: [
+      { value: "repair", label: "Repair or maintenance" },
+      { value: "installation", label: "New installation" },
+      { value: "estimate", label: "Estimate or replacement" },
+      { value: "other", label: "Something else" },
+    ],
   },
   trust: {
     established: 2009,

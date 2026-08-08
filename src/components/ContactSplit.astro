@@ -1,0 +1,18 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div
+  class:list={[
+    "border-line grid overflow-hidden border-y lg:grid-cols-2",
+    className,
+  ]}
+>
+  <div class="bg-surface-alt px-4 py-12 sm:px-8 lg:px-12">
+    <slot name="details" />
+  </div>
+  <div class="bg-surface px-4 py-12 sm:px-8 lg:px-12"><slot name="form" /></div>
+</div>

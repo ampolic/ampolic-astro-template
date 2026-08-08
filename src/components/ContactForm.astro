@@ -1,68 +1,117 @@
 ---
-import { site } from '../config/site';
-import { Button } from '@ampolic/ui';
+import { site } from "../config/site";
+import { Button, FormInput, FormSelect, FormTextarea } from "@ampolic/ui";
 ---
 
-<form id="contact" method="POST" action={site.form.endpoint} class="mx-auto grid max-w-xl gap-4">
+<form
+  id="contact-form"
+  method="POST"
+  action={site.form.endpoint}
+  class="grid gap-5"
+>
   <input type="hidden" name="startedAt" value="" />
-  {/* Honeypot — visually hidden (not display:none) so bots fill it; hidden from assistive tech. */}
   <div class="absolute -left-[9999px]" aria-hidden="true">
-    <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+    <label
+      >Website<input
+        type="text"
+        name="website"
+        tabindex="-1"
+        autocomplete="off"
+      /></label
+    >
   </div>
-  <label class="grid gap-1">
-    Name
-    <input
+  <label class="grid gap-2 font-medium"
+    >Name
+    <FormInput
       required
       name="name"
       autocomplete="name"
-      class="min-h-11 rounded-(--radius-base) border border-line bg-surface px-3"
+      placeholder="Your name"
     />
   </label>
-  <label class="grid gap-1">
-    Email
-    <input
+  <label class="grid gap-2 font-medium"
+    >Email
+    <FormInput
       required
       type="email"
       name="email"
       autocomplete="email"
-      class="min-h-11 rounded-(--radius-base) border border-line bg-surface px-3"
+      inputmode="email"
+      placeholder="you@example.com"
     />
   </label>
-  <label class="grid gap-1">
-    Message
-    <textarea
+  {
+    site.form.showPhone && (
+      <label class="grid gap-2 font-medium">
+        Phone{" "}
+        <span class="text-text-muted text-sm font-normal">(optional)</span>
+        <FormInput
+          type="tel"
+          name="phone"
+          autocomplete="tel"
+          inputmode="tel"
+          placeholder="(303) 555-0142"
+        />
+      </label>
+    )
+  }
+  {
+    site.form.topics && (
+      <label class="grid gap-2 font-medium">
+        How can we help?
+        <FormSelect required name="topic">
+          <option value="" disabled selected>
+            Select a topic
+          </option>
+          {site.form.topics.map((topic) => (
+            <option value={topic.value}>{topic.label}</option>
+          ))}
+        </FormSelect>
+      </label>
+    )
+  }
+  <label class="grid gap-2 font-medium"
+    >Message
+    <FormTextarea
       required
       name="message"
-      rows="5"
-      class="rounded-(--radius-base) border border-line bg-surface p-3"
-    ></textarea>
+      rows={5}
+      placeholder="Tell us a little about your project or service need."
+    />
   </label>
   <div class="cf-turnstile" data-sitekey={site.form.turnstileSiteKey}></div>
   <Button type="submit">Send message</Button>
-  <p id="contact-status" role="status" aria-live="polite" class="text-text-muted"></p>
+  <p
+    id="contact-status"
+    role="status"
+    aria-live="polite"
+    class="text-text-muted"
+  >
+  </p>
 </form>
 
 <script>
-  const form = document.getElementById('contact') as HTMLFormElement;
-  (form.elements.namedItem('startedAt') as HTMLInputElement).value = String(Date.now());
-
-  // Load Turnstile only when JS is present (progressive enhancement).
-  const s = document.createElement('script');
-  s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-  s.async = true;
-  document.head.appendChild(s);
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const status = document.getElementById('contact-status')!;
-    status.textContent = 'Sending…';
-    const res = await fetch(form.action, {
-      method: 'POST',
+  const form = document.getElementById("contact-form") as HTMLFormElement;
+  (form.elements.namedItem("startedAt") as HTMLInputElement).value = String(
+    Date.now(),
+  );
+  const script = document.createElement("script");
+  script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+  script.async = true;
+  document.head.appendChild(script);
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const status = document.getElementById("contact-status")!;
+    status.textContent = "Sending…";
+    const response = await fetch(form.action, {
+      method: "POST",
       body: new FormData(form),
-      headers: { accept: 'application/json' },
+      headers: { accept: "application/json" },
     });
-    const data = await res.json().catch(() => ({ ok: false }));
-    status.textContent = data.ok ? 'Thanks. We’ll be in touch shortly.' : 'Something went wrong. Please give us a call.';
+    const data = await response.json().catch(() => ({ ok: false }));
+    status.textContent = data.ok
+      ? "Thanks. We’ll be in touch shortly."
+      : "Something went wrong. Please give us a call.";
     if (data.ok) form.reset();
   });
 </script>
